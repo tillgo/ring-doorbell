@@ -21,7 +21,7 @@ npm run migration:generate
 
 ### Web-Client
 
-Change into the /server directory, then:
+Change into the /web directory, then:
 
 ```bash
 npm run dev
