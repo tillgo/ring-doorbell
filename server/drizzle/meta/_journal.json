@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1711639882497,
-      "tag": "0000_chubby_roulette",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1711648586373,
-      "tag": "0001_wet_black_queen",
+      "when": 1711653195099,
+      "tag": "0000_wakeful_ogun",
       "breakpoints": true
     }
   ]
