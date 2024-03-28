@@ -9,7 +9,7 @@ A Ring doorbell with Display for bidirectional Video calls and many other featur
 
 1. Change into the */server* directory
 
-2. Clone *.env.sample* and name it just *.env* 
+2. Clone *.env.example* and name it just *.env* 
 
 3. ```bash
    npm run dev
