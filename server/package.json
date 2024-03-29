@@ -18,6 +18,7 @@
     "drizzle-zod": "^0.5.1",
     "express": "^4.19.2",
     "postgres": "^3.4.4",
+    "socket.io": "^4.7.5",
     "zod": "^3.22.4"
   },
   "devDependencies": {
@@ -28,5 +29,9 @@
     "prettier": "^3.2.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.3"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.8",
+    "utf-8-validate": "^5.0.10"
   }
 }

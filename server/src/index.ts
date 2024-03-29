@@ -4,6 +4,8 @@ import postgres from 'postgres'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import { migrate } from 'drizzle-orm/postgres-js/migrator'
 import userRoutes from './routes/userRoutes'
+import * as http from 'http'
+import { Server } from 'socket.io'
 
 // In production use environment variables instead of .env file. Make sure to set the var NODE_ENV = 'production'.
 if (process.env.NODE_ENV !== 'production') {
@@ -11,7 +13,8 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export const app = express()
-app.use(express.json())
+const server = http.createServer(app)
+const io = new Server(server)
 
 const dbURL = process.env.DB_URL ?? ''
 const migrationClient = postgres(dbURL, { max: 1 })
@@ -27,9 +30,14 @@ migrate(drizzle(migrationClient), {
 const queryClient = postgres(dbURL)
 export const db = drizzle(queryClient)
 
+app.use(express.json())
 app.use('/api/users', userRoutes)
 
+io.on('connection', (socket) => {
+    console.log('A user connected')
+})
+
 const port = process.env.PORT || 8080
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Server running on port ${port}`)
 })
