@@ -4,7 +4,10 @@ import postgres from 'postgres'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import { migrate } from 'drizzle-orm/postgres-js/migrator'
 
-dotenv.config();
+// In production use environment variables instead of .env file. Make sure to set the var NODE_ENV = 'production'.
+if (process.env.NODE_ENV !== 'production') {
+    dotenv.config();
+}
 
 const app = express();
 

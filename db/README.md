@@ -2,13 +2,13 @@
 
 This is the guide to set up the database for development.
 
-If not done already, pull the postgres image from docker hub.
+1. If not done already, pull the postgres image from docker hub.
 
 ```bash
 docker pull postgres
 ```
 
-Then run the following command to create and start a new container.
+2. Then run the following command to create and start a new container.
 ```bash
 docker run --name ring-db -p 5432:5432 -e POSTGRES_DB=ring -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin -d postgres
 ```

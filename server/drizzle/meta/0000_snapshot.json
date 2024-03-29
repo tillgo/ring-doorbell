@@ -1,5 +1,5 @@
 {
-  "id": "5a1a0a12-e4e2-4fef-a262-5870c88d6b7c",
+  "id": "407831cc-872e-44f8-8521-24abc5d59f09",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -20,12 +20,26 @@
           "type": "varchar(50)",
           "primaryKey": false,
           "notNull": false
+        },
+        "passwordHash": {
+          "name": "passwordHash",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "users_username_unique": {
+          "name": "users_username_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "username"
+          ]
+        }
+      }
     }
   },
   "enums": {},
