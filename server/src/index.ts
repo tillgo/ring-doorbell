@@ -6,6 +6,10 @@ import { migrate } from 'drizzle-orm/postgres-js/migrator'
 import userRoutes from './routes/userRoutes'
 import * as http from 'http'
 import { Server } from 'socket.io'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
+import authRoutes from './routes/authRoutes'
+import { authenticate } from './middleware/authenticate'
 
 // In production use environment variables instead of .env file. Make sure to set the var NODE_ENV = 'production'.
 if (process.env.NODE_ENV !== 'production') {
@@ -31,7 +35,10 @@ const queryClient = postgres(dbURL)
 export const db = drizzle(queryClient)
 
 app.use(express.json())
-app.use('/api/users', userRoutes)
+app.use(cookieParser())
+app.use(cors({ origin: 'http://localhost:5173' }))
+app.use('/api/users', authenticate, userRoutes)
+app.use('/api/auth', authRoutes)
 
 io.on('connection', (socket) => {
     console.log('A user connected')
