@@ -8,6 +8,13 @@
       "when": 1711653195099,
       "tag": "0000_wakeful_ogun",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1711716878373,
+      "tag": "0001_chilly_boomerang",
+      "breakpoints": true
     }
   ]
 }
