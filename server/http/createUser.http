@@ -3,7 +3,7 @@ POST http://localhost:8080/api/users
 Content-Type: application/json
 
 {
-    "username": "PeterLustig",
+    "username": "Pa_dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
     "passwordHash": "afsefsefsefsef"
 }
 
