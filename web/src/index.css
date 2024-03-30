@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+
+    .mobile-appbar {
+      @apply justify-center fixed bottom-0 left-0 h-16 w-screen flex-row;
+    }
+
+    .desktop-appbar {
+      @apply justify-start fixed left-0 top-0 h-screen w-16 flex-col;
+    }
+
+  .appbar-element {
+    @apply relative flex items-center justify-center bg-secondary
+    h-12 w-12 mt-2 mb-2 mr-2 md:mx-auto p-2;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

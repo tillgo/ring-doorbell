@@ -4,7 +4,7 @@ import './index.css'
 import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
 import { ThemeProvider } from '@/components/theme-provider.tsx'
-
+import { AppContextProvider } from '@/base/appContext.tsx'
 
 const router = createRouter({ routeTree })
 
@@ -20,8 +20,10 @@ if (!rootElement.innerHTML) {
     root.render(
         <StrictMode>
             <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-                <RouterProvider router={router} />
+                <AppContextProvider>
+                    <RouterProvider router={router} />
+                </AppContextProvider>
             </ThemeProvider>
-        </StrictMode>,
+        </StrictMode>
     )
 }
