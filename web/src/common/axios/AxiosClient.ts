@@ -3,8 +3,17 @@ import { jwtDecode } from 'jwt-decode'
 
 export const AxiosClient = axios.create({
     baseURL: import.meta.env.VITE_SERVER_API_URL,
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 })
+
+AxiosClient.interceptors.request.use(config=> {
+    const token = localStorage.getItem("token");
+
+    if(token){
+        config.headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    return config;
+});
 
 AxiosClient.interceptors.response.use(
     (response) => response,
