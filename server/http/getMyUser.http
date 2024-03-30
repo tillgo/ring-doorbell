@@ -1,2 +1,6 @@
 
+# put valid bearer jwt token form sign-in response to Authorization header
+
 GET http://localhost:8080/api/users/me
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwN2ZkZTY4LWEyMWQtNGE3MC04YTg0LTUxZTg4YmRkMTljYyIsInVzZXJuYW1lIjoidXNlcjMiLCJpYXQiOjE3MTE4MDA4MDYsImV4cCI6MTcxMTgwNDQwNn0.mKIL1-ulWM0qCEOh8nMacz98KJKQZNwgyEgwbqs_NlA

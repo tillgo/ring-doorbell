@@ -1,0 +1,29 @@
+
+
+POST http://localhost:8080/api/auth/sign-up
+Content-Type: application/json
+
+{
+    "username": "user3",
+    "password": "Password123!"
+}
+
+###
+
+POST http://localhost:8080/api/auth/sign-in
+Content-Type: application/json
+
+{
+  "username": "user3",
+  "password": "Password123!"
+}
+
+###
+# this in the endpoint for refreshing the token, it requires the userId and the refreshToken in the body
+POST http://localhost:8080/api/auth/refresh-token
+Content-Type: application/json
+
+{
+  "userId": "707fde68-a21d-4a70-8a84-51e88bdd19cc",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTE4MDA4MDYsImV4cCI6MTc0MzM1ODQwNn0.1KleGHaqaUd8oFDVX0KQDMmhoLfIrGdIsfB_IS0QhxY"
+}

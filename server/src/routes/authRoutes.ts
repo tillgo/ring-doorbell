@@ -1,9 +1,16 @@
 import express from 'express'
 import { validate } from '../middleware/zodValidate'
-import { LoginData, LoginSchema } from '../shared/types'
-import { createUser, getUserWithPassword } from '../db/userRepository'
+import {
+    LoginData,
+    LoginSchema,
+    RefreshTokenData,
+    RefreshTokenSchema,
+    SaveRefreshTokenData,
+} from '../shared/types'
+import { createUser, getUserById, getUserWithPassword } from '../db/userRepository'
 import bcrypt from 'bcrypt'
-import { createSecretToken } from '../util/jwtUtils'
+import { createRefreshToken, createSecretToken, verifySecretToken } from '../util/jwtUtils'
+import { getRefreshToken, saveRefreshToken } from '../db/refreshTokenRepository'
 
 const router = express.Router()
 
@@ -28,11 +35,11 @@ router.post('/sign-up', validate({ body: LoginSchema }), async (req, res) => {
             const user = await createUser({ username: data.username, passwordHash: hash })
 
             const token = createSecretToken(user.id, user.username)
-            res.cookie('token', token, {
-                httpOnly: false,
-            })
+            const refreshToken = createRefreshToken()
 
-            res.status(201).json(user)
+            await saveRefreshToken({ userId: user.id, token: refreshToken, isValid: true })
+
+            res.status(201).json({ user, token, refreshToken })
         })
     } catch (error) {
         res.status(500).json({
@@ -61,15 +68,40 @@ router.post('/sign-in', validate({ body: LoginSchema }), async (req, res) => {
         }
 
         const token = createSecretToken(user.id, user.username)
-        res.cookie('token', token, {
-            httpOnly: false,
-        })
+        const refreshToken = createRefreshToken()
 
-        res.status(200).json(user)
+        await saveRefreshToken({ userId: user.id, token: refreshToken, isValid: true })
+
+        res.status(200).json({ user, token, refreshToken })
     } catch (error) {
         res.status(500).json({
             error: error,
             message: 'Login failed',
+        })
+    }
+})
+
+router.post('/refresh-token', validate({ body: RefreshTokenSchema }), async (req, res) => {
+    const data = req.body as RefreshTokenData
+
+    try {
+        verifySecretToken(data.refreshToken)
+
+        const refreshToken = await getRefreshToken(data)
+        if (!refreshToken || !refreshToken.isValid) {
+            return res.status(400).json({
+                message: "Refresh token and user don't match or refresh token is not valid",
+            })
+        }
+
+        const user = await getUserById(data.userId)
+        const newToken = createSecretToken(user.id, user.username)
+
+        res.status(200).json({ token: newToken })
+    } catch (error) {
+        res.status(400).json({
+            error: error,
+            message: 'Token refresh failed',
         })
     }
 })
