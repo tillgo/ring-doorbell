@@ -1,5 +1,5 @@
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
-import { users } from '../db/schema'
+import { refreshTokens, users } from '../db/schema'
 import { undefined, z } from 'zod'
 
 const UserSchema = createSelectSchema(users).omit({ passwordHash: true })
@@ -27,8 +27,17 @@ export const LoginSchema = z.object({
 })
 export type LoginData = z.infer<typeof LoginSchema>
 
-export const CreateUserSchema = createInsertSchema(users)
+const CreateUserSchema = createInsertSchema(users)
 export type CreateUserData = z.infer<typeof CreateUserSchema>
 
-export const GetUserSchema = createSelectSchema(users).pick({ username: true })
-export type GetUserData = z.infer<typeof GetUserSchema>
+export const UsernameSchema = createSelectSchema(users).pick({ username: true })
+export type Username = z.infer<typeof UsernameSchema>
+
+export const RefreshTokenSchema = z.object({
+    userId: z.string().uuid(),
+    refreshToken: z.string().max(255),
+})
+export type RefreshTokenData = z.infer<typeof RefreshTokenSchema>
+
+const SaveRefreshTokenSchema = createInsertSchema(refreshTokens)
+export type SaveRefreshTokenData = z.infer<typeof SaveRefreshTokenSchema>

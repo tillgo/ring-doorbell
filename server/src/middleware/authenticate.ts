@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 import { verifySecretToken } from '../util/jwtUtils'
+import { TokenExpiredError } from 'jsonwebtoken'
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.cookies.token
+    const token = req.headers['authorization']
 
     if (!token) {
         return res.status(401).json({
@@ -11,25 +12,24 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     }
 
     try {
-        const decoded = verifySecretToken(token)
+        const rawToken = token.replace(/^Bearer\s+/, '')
+        const decoded = verifySecretToken(rawToken)
 
-        if (decoded.id && decoded.exp) {
+        if (decoded.id) {
             // @ts-ignore
             req.userId = decoded.id
 
-            const now = Date.now() / 1000
-            if (decoded.exp >= now) {
-                return res.status(401).json({
-                    message: 'Unauthorized, Token expired',
-                })
-            }
             return next()
         }
 
         return res.status(401).json({
-            message: 'Unauthorized, invalid token',
+            message: 'Unauthorized, userId not found in token',
         })
     } catch (error) {
+        if (error instanceof TokenExpiredError) {
+            return res.status(401).send({ message: 'Unauthorized, Token expired' })
+        }
+
         return res.status(401).json({
             message: 'Unauthorized, invalid token',
         })

@@ -1,6 +1,6 @@
 import express from 'express'
 import { validate } from '../middleware/zodValidate'
-import { GetUserData, GetUserSchema } from '../shared/types'
+import { Username, UsernameSchema } from '../shared/types'
 import { getUser, getUserById } from '../db/userRepository'
 
 const router = express.Router()
@@ -25,8 +25,8 @@ router.get('/me', async (req, res) => {
 })
 
 // TODO: remove this route, instead create a route that returns the user by NFC tag ID
-router.get('/:username', validate({ params: GetUserSchema }), async (req, res) => {
-    const data = req.params as GetUserData
+router.get('/:username', validate({ params: UsernameSchema }), async (req, res) => {
+    const data = req.params as Username
 
     try {
         const user = await getUser(data)

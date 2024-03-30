@@ -2,7 +2,13 @@ import jwt, { JwtPayload } from 'jsonwebtoken'
 
 export const createSecretToken = (id: string, username: string) => {
     return jwt.sign({ id, username }, process.env.JWT_SECRET ?? '', {
-        expiresIn: '7d',
+        expiresIn: '1h',
+    })
+}
+
+export const createRefreshToken = () => {
+    return jwt.sign({}, process.env.JWT_SECRET ?? '', {
+        expiresIn: '1y',
     })
 }
 

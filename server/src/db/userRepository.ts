@@ -1,4 +1,4 @@
-import { GetUserData, User, CreateUserData, UserWithPassword } from '../shared/types'
+import { Username, User, CreateUserData, UserWithPassword } from '../shared/types'
 import { db } from '../index'
 import { users } from './schema'
 import { eq, getTableColumns } from 'drizzle-orm'
@@ -9,13 +9,13 @@ export const createUser = async (user: CreateUserData): Promise<User> => {
     return newUser[0]
 }
 
-export const getUser = async (data: GetUserData): Promise<User> => {
+export const getUser = async (data: Username): Promise<User> => {
     const { passwordHash, ...rest } = getTableColumns(users)
     const result = await db.select(rest).from(users).where(eq(users.username, data.username))
     return result[0]
 }
 
-export const getUserWithPassword = async (data: GetUserData): Promise<UserWithPassword> => {
+export const getUserWithPassword = async (data: Username): Promise<UserWithPassword> => {
     const result = await db.select().from(users).where(eq(users.username, data.username))
     return result[0]
 }
