@@ -13,7 +13,6 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "allowJs": true,
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
@@ -28,6 +27,6 @@
       "@/shared/*": ["../server/src/shared/*"]
     }
   },
-  "include": ["src", "tailwind.config.js"],
+  "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
