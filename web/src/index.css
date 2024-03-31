@@ -4,16 +4,15 @@
 
 @layer components {
     .mobile-appbar {
-        @apply fixed bottom-0 left-0 h-16 w-screen flex-row justify-center;
+        @apply fixed bottom-0 left-0 flex-row h-16 w-screen justify-around border-t-2;
     }
 
     .desktop-appbar {
-        @apply fixed left-0 top-0 h-screen w-16 flex-col justify-start;
+        @apply fixed left-0 top-0 h-screen w-16 flex-col justify-start gap-4 border-r-2 border-t-0 p-[7px];
     }
 
     .appbar-element {
-        @apply relative mb-2 mr-2 mt-2 flex
-    h-12 w-12 items-center justify-center bg-secondary p-2 md:mx-auto;
+        @apply flex justify-center bg-transparent p-2 rounded-lg hover:bg-accent;
     }
 }
 

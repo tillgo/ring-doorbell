@@ -4,13 +4,7 @@ import { Button } from '@/components/ui/button.tsx'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoginData, LoginSchema, User } from '@/shared/types'
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormMessage,
-} from '@/components/ui/form.tsx'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form.tsx'
 import { useState } from 'react'
 import Loader from '@/app/general/components/Loader.tsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.tsx'
@@ -35,7 +29,11 @@ export function Login() {
 
     const onSubmit: SubmitHandler<LoginData> = async (formData) => {
         try {
-            const { data } = await AxiosClient.post<{user: User, token: string, refreshToken: string}>('/auth/sign-in', formData)
+            const { data } = await AxiosClient.post<{
+                user: User
+                token: string
+                refreshToken: string
+            }>('/auth/sign-in', formData)
 
             localStorage.setItem('token', data.token)
             localStorage.setItem('refreshToken', data.refreshToken)
@@ -74,7 +72,11 @@ export function Login() {
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormControl>
-                                                <Input type="text" placeholder="Username" {...field} />
+                                                <Input
+                                                    type="text"
+                                                    placeholder="Username"
+                                                    {...field}
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -87,7 +89,11 @@ export function Login() {
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormControl>
-                                                <Input type="password" placeholder="Password" {...field} />
+                                                <Input
+                                                    type="password"
+                                                    placeholder="Password"
+                                                    {...field}
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>

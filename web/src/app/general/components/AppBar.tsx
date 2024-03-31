@@ -17,10 +17,10 @@ export const AppBar = (props: AppBarProps) => {
     const { routes } = props
 
     return (
-        <div className={'mobile-appbar md:desktop-appbar flex bg-secondary'}>
+        <nav className={'mobile-appbar md:desktop-appbar flex bg-primary-foreground'}>
             {routes.map((route, index) => {
                 return <AppBarElement key={index} route={route} />
             })}
-        </div>
+        </nav>
     )
 }

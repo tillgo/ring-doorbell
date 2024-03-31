@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 
 export function useLocalStorage(key: string) {
     const [value, setValue] = useState(() => {
@@ -13,32 +13,38 @@ export function useLocalStorage(key: string) {
     useEffect(() => {
         // Function to update state based on localStorage change
         const storageChangeHandler = (event: StorageEvent) => {
-            console.log('>>>>> storageChangeHandler', event.storageArea, event.key, key, event.newValue)
+            console.log(
+                '>>>>> storageChangeHandler',
+                event.storageArea,
+                event.key,
+                key,
+                event.newValue
+            )
             if (event.storageArea === localStorage && event.key === key) {
-                setValue(event.newValue);
+                setValue(event.newValue)
             }
-        };
+        }
 
         // Add event listener for storage changes
-        window.addEventListener('storage', storageChangeHandler);
+        window.addEventListener('storage', storageChangeHandler)
 
         // Cleanup function to remove event listener on unmount
         return () => {
-            window.removeEventListener('storage', storageChangeHandler);
-        };
-    }, [key]); // Re-run effect if `key` changes
+            window.removeEventListener('storage', storageChangeHandler)
+        }
+    }, [key]) // Re-run effect if `key` changes
 
     // Periodic check for changes (handles deletions)
     useEffect(() => {
         const intervalId = setInterval(() => {
-            const currentLocalStorageValue = window.localStorage.getItem(key);
+            const currentLocalStorageValue = window.localStorage.getItem(key)
             setValue(currentLocalStorageValue)
-        }, 1000); // Check every 1 second
+        }, 1000) // Check every 1 second
 
-        return () => clearInterval(intervalId);
-    }, [key]);
+        return () => clearInterval(intervalId)
+    }, [key])
 
-    return value;
+    return value
 }
 
-export default useLocalStorage;
+export default useLocalStorage
