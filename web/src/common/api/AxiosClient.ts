@@ -3,6 +3,9 @@ import { jwtDecode } from 'jwt-decode'
 
 export const AxiosClient = axios.create({
     baseURL: import.meta.env.VITE_SERVER_API_URL,
+    headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+    },
 })
 
 AxiosClient.interceptors.request.use((config) => {
