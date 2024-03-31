@@ -37,8 +37,10 @@ export const CallControllerDrawer = () => {
                 />
                 <DrawerFooter>
                     <Button>Submit</Button>
-                    <DrawerClose onClick={onDrawerClose}>
-                        <Button variant="outline">Cancel</Button>
+                    <DrawerClose asChild>
+                        <Button variant="outline" onClick={onDrawerClose}>
+                            Cancel
+                        </Button>
                     </DrawerClose>
                 </DrawerFooter>
             </DrawerContent>
