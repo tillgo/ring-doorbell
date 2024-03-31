@@ -35,7 +35,7 @@ AxiosClient.interceptors.response.use(
 
                 const decoded = jwtDecode(oldToken) as { id: string; username: string }
 
-                const response = await axios.post('/api/auth/refresh-token', {
+                const response = await AxiosClient.post('/auth/refresh-token', {
                     refreshToken,
                     userId: decoded.id,
                 })

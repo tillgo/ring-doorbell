@@ -3,12 +3,13 @@ import { Input } from '@/components/ui/input.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { LoginData, LoginSchema, User } from '@/shared/types'
+import { LoginData, LoginSchema } from '@/shared/types'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form.tsx'
 import { useState } from 'react'
 import Loader from '@/app/general/components/Loader.tsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.tsx'
-import { AxiosClient } from '@/common/axios/AxiosClient.ts'
+import { signUp } from '@/common/api/queries/auth.ts'
+import { AxiosError } from 'axios'
 
 export const Route = createFileRoute('/sign-up')({
     component: SignUp,
@@ -29,11 +30,7 @@ export function SignUp() {
 
     const onSubmit: SubmitHandler<LoginData> = async (formData) => {
         try {
-            const { data } = await AxiosClient.post<{
-                user: User
-                token: string
-                refreshToken: string
-            }>('/auth/sign-up', formData)
+            const { data } = await signUp(formData)
 
             localStorage.setItem('token', data.token)
             localStorage.setItem('refreshToken', data.refreshToken)
@@ -41,8 +38,9 @@ export function SignUp() {
             await navigate({ to: '/', params: {} })
         } catch (error) {
             form.reset()
-            //setSubmitError(error?.message)
-            console.log(error)
+            if (error instanceof AxiosError && error?.response?.data?.message)
+                setSubmitError(error.response.data.message)
+            console.error(error)
         }
     }
 

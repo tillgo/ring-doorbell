@@ -19,11 +19,7 @@ export const LoginSchema = z.object({
         .string()
         .describe('Password')
         .max(64, "Password can't be longer than 50 characters")
-        .min(6, 'Password must be at least 6 characters long')
-        .regex(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^])[A-Za-z\d@$!%*?&^]+$/,
-            'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
-        ),
+        .min(6, 'Password must be at least 6 characters long'),
 })
 export type LoginData = z.infer<typeof LoginSchema>
 
