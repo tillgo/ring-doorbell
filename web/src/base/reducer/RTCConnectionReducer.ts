@@ -1,6 +1,5 @@
 import { AnyCaseReducers, PayloadAction } from '@/common/react-toolkit'
 import { AppContextState } from '@/base/appContext.tsx'
-import SimplePeer, { SignalData } from 'simple-peer'
 
 export type RTCConnectionState = {
     rtcConnection: {
@@ -8,7 +7,7 @@ export type RTCConnectionState = {
         stream: MediaStream | undefined
         receivingCall: boolean
         caller: string
-        callerSignal: SignalData | undefined
+        callerSignal: string | undefined
         callAccepted: boolean
         idToCall: string
         callEnded: boolean
@@ -71,10 +70,7 @@ export const rtcConnectionReducers: AnyCaseReducers<AppContextState> = {
             },
         }
     },
-    updateCallerSignalRTCConn: (
-        state,
-        action: PayloadAction<SimplePeer.SignalData | undefined>
-    ) => {
+    updateCallerSignalRTCConn: (state, action: PayloadAction<string | undefined>) => {
         const callerSignal = action.payload
         return {
             ...state,

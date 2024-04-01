@@ -1,20 +1,20 @@
 # React + TypeScript + Vite
 
 ## Environment-Variables
-In the [**.env.example**](src/.env.example) file under the **/src** folder are all variables defined,
+In the [**.env.example**](.env.example) file under the **/src** folder are all variables defined,
 which can be defined for the application  
-If you add a new Environment-Variable please also add it to the [**.env.example**](src/.env.example) file as well
+If you add a new Environment-Variable please also add it to the [**.env.example**](.env.example) file as well
 as to the [**vite-env.d.ts**](src/vite-env.d.ts) file
   
 To expose a variable to the source code, it has to be prefixed with: **VITE_**
 
 ### Production
 **not relevant for developers**  
-Copy the [**.env.example**](src/.env.example) file, rename it to **.env.production** and insert correct variables for your 
+Copy the [**.env.example**](.env.example) file, rename it to **.env.production** and insert correct variables for your 
 production environment
 
 ### Development
-Copy the [**.env.example**](src/.env.example) file, rename it to **.env.development** file and insert the correct variables
+Copy the [**.env.example**](.env.example) file, rename it to **.env.development** file and insert the correct variables
 for your development environment
 
 ## Template

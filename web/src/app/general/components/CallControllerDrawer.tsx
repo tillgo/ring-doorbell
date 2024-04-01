@@ -2,17 +2,16 @@ import {
     Drawer,
     DrawerClose,
     DrawerContent,
-    DrawerDescription,
     DrawerFooter,
     DrawerHeader,
-    DrawerTitle,
 } from '@/components/ui/drawer.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { useAppDispatch, useAppSelector } from '@/base/appContext.tsx'
 import { useEffect, useRef } from 'react'
 import { socket } from '@/common/socketio/socket.ts'
-import SimplePeer from 'simple-peer'
-import { Input } from '@/components/ui/input.tsx'
+import Peer, { MediaConnection } from 'peerjs'
+import { CallControllerControlls } from '@/app/general/components/CallControllerControlls.tsx'
+import { VideoComponent } from '@/app/general/components/VideoComponent.tsx'
 
 export const CallControllerDrawer = () => {
     const dispatch = useAppDispatch()
@@ -21,14 +20,10 @@ export const CallControllerDrawer = () => {
 
     const myVideo = useRef<HTMLVideoElement>(null)
     const userVideo = useRef<HTMLVideoElement>(null)
-    const connectionRef = useRef<SimplePeer.Instance>()
+    const connectionRef = useRef<Peer>()
+    const callRef = useRef<MediaConnection>()
 
     useEffect(() => {
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-            dispatch({ type: 'updateRTCConnStream', payload: stream })
-            myVideo.current!.srcObject = stream
-        })
-
         socket.on('me', (id) => {
             dispatch({ type: 'updateMeRTCConn', payload: id })
         })
@@ -39,31 +34,31 @@ export const CallControllerDrawer = () => {
             dispatch({ type: 'updateNameRTCConn', payload: data.name })
             dispatch({ type: 'updateCallerSignalRTCConn', payload: data.signal })
         })
-    }, [])
+    }, [dispatch])
 
     const callUser = (id: string) => {
-        const peer = new SimplePeer({
-            initiator: true,
-            trickle: false,
-            stream: rtcData.stream,
-        })
+        const peer = new Peer()
 
-        peer.on('signal', (data) => {
+        peer.on('open', (rtcId) => {
             socket.emit('callUser', {
                 userToCall: id,
-                signalData: data,
+                signalData: rtcId,
                 from: rtcData.me,
                 name: rtcData.name,
             })
         })
 
-        peer.on('stream', (stream) => {
-            userVideo.current!.srcObject = stream
-        })
-
         socket.on('callAccepted', (signal) => {
             dispatch({ type: 'updateCallAcceptedRTCConn', payload: true })
-            peer.signal(signal)
+
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+                dispatch({ type: 'updateStreamRTCConn', payload: stream })
+                callRef.current = peer.call(signal, stream)
+            })
+
+            callRef.current?.on('stream', (remoteStream) => {
+                userVideo.current!.srcObject = remoteStream
+            })
         })
 
         connectionRef.current = peer
@@ -71,30 +66,52 @@ export const CallControllerDrawer = () => {
 
     const answerCall = () => {
         dispatch({ type: 'updateCallAcceptedRTCConn', payload: true })
-        const peer = new SimplePeer({
-            initiator: false,
-            trickle: false,
-            stream: rtcData.stream,
-        })
+        const peer = new Peer()
 
-        peer.on('signal', (data) => {
+        peer.on('open', (id) => {
             socket.emit('answerCall', {
-                signal: data,
+                signal: id,
                 to: rtcData.caller,
             })
         })
 
-        peer.on('stream', (stream) => {
-            userVideo.current!.srcObject = stream
+        peer.on('call', (call) => {
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+                dispatch({ type: 'updateStreamRTCConn', payload: stream })
+                call.answer(stream)
+            })
+
+            call.on('stream', (remoteStream) => {
+                userVideo.current!.srcObject = remoteStream
+            })
+            callRef.current = call
         })
 
-        rtcData.callerSignal && peer.signal(rtcData.callerSignal)
         connectionRef.current = peer
     }
 
     const leaveCall = () => {
         dispatch({ type: 'updateCallEndedRTCConn:', payload: true })
         connectionRef.current && connectionRef.current.destroy()
+    }
+
+    const enableVideo = () => {
+        console.log('Test123')
+        if (myVideo.current !== null) {
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+                console.log('Test')
+                dispatch({ type: 'updateStreamRTCConn', payload: stream })
+                myVideo.current!.srcObject = stream
+            })
+        }
+    }
+
+    //ToDo Bei disable auch keinen Stream mehr an den anderen User schicken
+    const disableVideo = () => {
+        if (myVideo.current) {
+            dispatch({ type: 'updateStreamRTCConn', payload: undefined })
+            myVideo.current.srcObject = null
+        }
     }
 
     const onDrawerClose = () => {
@@ -104,42 +121,34 @@ export const CallControllerDrawer = () => {
     return (
         <Drawer onClose={onDrawerClose} open={open}>
             <DrawerContent className={'h-full'}>
-                <DrawerHeader>
-                    <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-                    <DrawerDescription>This action cannot be undone.</DrawerDescription>
-                </DrawerHeader>
-                {rtcData.stream && (
-                    <video playsInline muted ref={myVideo} autoPlay className={'w-40'} />
-                )}
-                {rtcData.callAccepted && !rtcData.callEnded && (
-                    <video playsInline ref={userVideo} autoPlay className={'mb-2 w-40'} />
-                )}
-                <div className={'mb-2'}>{rtcData.me}</div>
-                <Input
-                    id={'id-field'}
-                    onChange={(event) => {
-                        dispatch({ type: 'updateIdToCallRTCConn', payload: event.target.value })
-                    }}
-                />
-                {rtcData.callAccepted && !rtcData.callEnded ? (
-                    <Button className={'mb-2 accent-red-600'} onClick={leaveCall}>
-                        End Call
-                    </Button>
-                ) : (
-                    <Button
-                        className={'mb-2 accent-green-600'}
-                        onClick={() => callUser(rtcData.idToCall)}
-                    >
-                        Call
-                    </Button>
-                )}
-
+                <DrawerHeader></DrawerHeader>
+                <div className={'flex justify-center'}>
+                    <VideoComponent
+                        isCallRunning={rtcData.callAccepted && !rtcData.callEnded}
+                        myVideo={myVideo}
+                        userVideo={userVideo}
+                    />
+                </div>
                 {rtcData.receivingCall && !rtcData.callAccepted ? (
                     <Button className={'mb-2'} onClick={answerCall}>
                         Accept Call
                     </Button>
                 ) : null}
-
+                <CallControllerControlls
+                    isVideoOn={!!rtcData.stream}
+                    isCallRunning={rtcData.receivingCall && !rtcData.callAccepted}
+                    id={rtcData.me}
+                    onEnableVideo={enableVideo}
+                    onDisableVideo={disableVideo}
+                    onStartCall={() => callUser(rtcData.idToCall)}
+                    onEndCall={leaveCall}
+                    onIdInputChange={(event) =>
+                        dispatch({
+                            type: 'updateIdToCallRTCConn',
+                            payload: event.target.value,
+                        })
+                    }
+                ></CallControllerControlls>
                 <DrawerFooter>
                     <DrawerClose onClick={onDrawerClose}>
                         <Button variant="outline">Cancel</Button>

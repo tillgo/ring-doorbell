@@ -10,7 +10,6 @@ function Index() {
     const dispatch = useAppDispatch()
 
     const onOpenDrawer = () => {
-        console.log('Test')
         dispatch({ type: 'updateCallControllerOpen', payload: true })
     }
 

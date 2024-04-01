@@ -15,7 +15,6 @@ export const initialStateCallController: CallControllerState = {
 
 export const callControllerReducers: AnyCaseReducers<AppContextState> = {
     updateCallControllerOpen: (state, action: PayloadAction<boolean>) => {
-        console.log('Bassd')
         const open = action.payload
         return {
             ...state,

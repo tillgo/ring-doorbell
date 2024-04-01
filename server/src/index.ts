@@ -18,7 +18,14 @@ if (process.env.NODE_ENV !== 'production') {
 
 export const app = express()
 const server = http.createServer(app)
-const io = new Server(server)
+const io = new Server(server, {
+    cors: {
+        origin: process.env.WEB_CLIENT_URL,
+        methods: ["GET", "POST"]
+    }
+})
+
+console.log(process.env.WEB_CLIENT_URL)
 
 const dbURL = process.env.DB_URL ?? ''
 const migrationClient = postgres(dbURL, { max: 1 })
@@ -43,7 +50,7 @@ app.use('/api/auth', authRoutes)
 io.on('connection', (socket) => {
     console.log('A user connected')
     //return socket-id to client
-    socket.emit(socket.id)
+    socket.emit('me', socket.id)
     socket.on("callUser", (data) => {
         io.to(data.userToCall).emit("callUser", {signal: data.signalData, from: data.from, name: data.name})
            })
@@ -52,6 +59,7 @@ io.on('connection', (socket) => {
     })
 
 })
+
 
 const port = process.env.PORT || 8080
 server.listen(port, () => {
