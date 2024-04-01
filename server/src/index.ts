@@ -21,8 +21,8 @@ const server = http.createServer(app)
 const io = new Server(server, {
     cors: {
         origin: process.env.WEB_CLIENT_URL,
-        methods: ["GET", "POST"]
-    }
+        methods: ['GET', 'POST'],
+    },
 })
 
 console.log(process.env.WEB_CLIENT_URL)
@@ -43,7 +43,7 @@ export const db = drizzle(queryClient)
 
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors({ origin: 'http://localhost:5173' }))
+app.use(cors({ origin: process.env.WEB_CLIENT_URL }))
 app.use('/api/users', authenticate, userRoutes)
 app.use('/api/auth', authRoutes)
 
@@ -51,15 +51,17 @@ io.on('connection', (socket) => {
     console.log('A user connected')
     //return socket-id to client
     socket.emit('me', socket.id)
-    socket.on("callUser", (data) => {
-        io.to(data.userToCall).emit("callUser", {signal: data.signalData, from: data.from, name: data.name})
-           })
-    socket.on("answerCall", (data) => {
-        io.to(data.to).emit("callAccepted", data.signal)
+    socket.on('callUser', (data) => {
+        io.to(data.userToCall).emit('callUser', {
+            signal: data.signalData,
+            from: data.from,
+            name: data.name,
+        })
     })
-
+    socket.on('answerCall', (data) => {
+        io.to(data.to).emit('callAccepted', data.signal)
+    })
 })
-
 
 const port = process.env.PORT || 8080
 server.listen(port, () => {
