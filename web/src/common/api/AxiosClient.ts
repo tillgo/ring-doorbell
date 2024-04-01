@@ -3,17 +3,20 @@ import { jwtDecode } from 'jwt-decode'
 
 export const AxiosClient = axios.create({
     baseURL: import.meta.env.VITE_SERVER_API_URL,
+    headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+    },
 })
 
-AxiosClient.interceptors.request.use(config=> {
-    const token = localStorage.getItem("token");
+AxiosClient.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token')
 
-    if(token){
-        config.headers["Authorization"] = `Bearer ${token}`;
+    if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`
     }
 
-    return config;
-});
+    return config
+})
 
 AxiosClient.interceptors.response.use(
     (response) => response,
@@ -33,9 +36,12 @@ AxiosClient.interceptors.response.use(
                     return Promise.reject(error)
                 }
 
-                const decoded = jwtDecode(oldToken) as { id: string }
+                const decoded = jwtDecode(oldToken) as { id: string; username: string }
 
-                const response = await axios.post('/api/auth/refresh-token', { refreshToken, userId: decoded.id })
+                const response = await AxiosClient.post('/auth/refresh-token', {
+                    refreshToken,
+                    userId: decoded.id,
+                })
                 const { token } = response.data
 
                 localStorage.setItem('token', token)
@@ -49,5 +55,5 @@ AxiosClient.interceptors.response.use(
         }
 
         return Promise.reject(error)
-    },
+    }
 )

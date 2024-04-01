@@ -1,12 +1,6 @@
 import express from 'express'
 import { validate } from '../middleware/zodValidate'
-import {
-    LoginData,
-    LoginSchema,
-    RefreshTokenData,
-    RefreshTokenSchema,
-    SaveRefreshTokenData,
-} from '../shared/types'
+import { LoginData, LoginSchema, RefreshTokenData, RefreshTokenSchema } from '../shared/types'
 import { createUser, getUserById, getUserWithPassword } from '../db/userRepository'
 import bcrypt from 'bcrypt'
 import { createRefreshToken, createSecretToken, verifySecretToken } from '../util/jwtUtils'

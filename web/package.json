@@ -11,25 +11,32 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.3.4",
     "@industriellesoftwaretechnik/react-toolkit": "github:industriellesoftwaretechnik/react-toolkit",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
+    "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-tooltip": "^1.0.7",
+    "@tanstack/react-query": "^5.28.9",
     "@tanstack/react-router": "^1.22.3",
     "@tanstack/router-devtools": "^1.22.3",
+    "@uidotdev/usehooks": "^2.4.1",
     "axios": "^1.6.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "i": "^0.3.7",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.363.0",
     "peerjs": "^1.5.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^5.0.1",
+    "react-hook-form": "^7.51.2",
     "socket.io-client": "^4.7.5",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
-    "vaul": "^0.9.0"
+    "vaul": "^0.9.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@tanstack/router-vite-plugin": "^1.20.5",
@@ -50,6 +57,7 @@
     "prettier-plugin-tailwindcss": "^0.5.13",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.2.2",
-    "vite": "^5.2.0"
+    "vite": "^5.2.0",
+    "vite-tsconfig-paths": "^4.3.2"
   }
 }

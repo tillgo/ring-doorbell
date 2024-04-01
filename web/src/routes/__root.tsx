@@ -1,31 +1,62 @@
-import { createRootRoute, Outlet } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/router-devtools'
+import { createRootRoute, Outlet, useMatchRoute, useNavigate } from '@tanstack/react-router'
 import { AppBar, Routes } from '@/app/general/components/AppBar.tsx'
-import { MdAdminPanelSettings, MdSpaceDashboard } from 'react-icons/md'
 import { CallControllerDrawer } from '@/app/general/components/CallControllerDrawer.tsx'
+import useAuth from '@/common/hooks/useAuth.ts'
+import { clsx } from 'clsx'
+import { useEffect } from 'react'
+import { LayoutDashboard, Shield, Settings } from 'lucide-react'
 
 const routes: Routes = [
     {
         tooltip: 'Dashboard',
         route: '/',
-        icon: <MdSpaceDashboard size={'auto'} />,
+        icon: <LayoutDashboard className={'h-8 w-8'} />,
     },
     {
         tooltip: 'Admin-Controls',
         route: 'admin',
-        icon: <MdAdminPanelSettings size={'auto'} />,
+        icon: <Shield className={'h-8 w-8'} />,
+    },
+    {
+        tooltip: 'Settings',
+        route: 'settings',
+        icon: <Settings className={'h-8 w-8'} />,
     },
 ]
 
 export const Route = createRootRoute({
-    component: () => (
-        <>
-            <div className="mb-16 md:pl-16">
-                <Outlet />
-            </div>
-            <CallControllerDrawer></CallControllerDrawer>
-            <AppBar routes={routes}></AppBar>
-            <TanStackRouterDevtools position={'top-right'} />
-        </>
-    ),
+    component: Main,
 })
+
+function Main() {
+    const { isAuthenticated } = useAuth()
+    const matchRoute = useMatchRoute()
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (
+            !isAuthenticated &&
+            !matchRoute({ to: '/login', pending: true }) &&
+            !matchRoute({ to: '/sign-up', pending: true })
+        ) {
+            navigate({ to: '/login', params: {} }).catch((error) => console.error(error))
+        }
+    }, [isAuthenticated, matchRoute, navigate])
+
+    return (
+        <>
+            <main className={clsx('', { 'mb-16 md:pl-16': isAuthenticated })}>
+                <Outlet />
+            </main>
+
+            {isAuthenticated && (
+                <>
+                    <CallControllerDrawer />
+                    <AppBar routes={routes} />
+                </>
+            )}
+
+            {/*<TanStackRouterDevtools position={'top-right'} />*/}
+        </>
+    )
+}
