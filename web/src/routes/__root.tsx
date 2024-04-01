@@ -10,17 +10,17 @@ const routes: Routes = [
     {
         tooltip: 'Dashboard',
         route: '/',
-        icon: <LayoutDashboard className={'h-8 w-8 bg-transparent'} />,
+        icon: <LayoutDashboard className={'h-8 w-8'} />,
     },
     {
         tooltip: 'Admin-Controls',
         route: 'admin',
-        icon: <Shield className={'h-8 w-8 bg-transparent'} />,
+        icon: <Shield className={'h-8 w-8'} />,
     },
     {
         tooltip: 'Settings',
         route: 'settings',
-        icon: <Settings className={'h-8 w-8 bg-transparent'} />,
+        icon: <Settings className={'h-8 w-8'} />,
     },
 ]
 

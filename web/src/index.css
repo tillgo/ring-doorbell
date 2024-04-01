@@ -12,7 +12,7 @@
     }
 
     .appbar-element {
-        @apply flex justify-center bg-transparent p-2 rounded-lg hover:bg-accent;
+        @apply flex justify-center p-2 rounded-lg hover:bg-accent;
     }
 }
 
@@ -82,6 +82,9 @@
 
 @layer base {
     * {
-        @apply border-border bg-background text-foreground;
+        @apply border-border;
+    }
+    body {
+        @apply bg-background text-foreground;
     }
 }
