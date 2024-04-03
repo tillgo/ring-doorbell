@@ -29,6 +29,13 @@
       "when": 1712143136783,
       "tag": "0003_broad_shooting_star",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1712144004049,
+      "tag": "0004_talented_serpent_society",
+      "breakpoints": true
     }
   ]
 }

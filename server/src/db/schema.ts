@@ -19,6 +19,7 @@ export const users_devices = pgTable(
             .references(() => devices.id),
 
         isOwner: boolean('isOwner').notNull(),
+        userNickname: varchar('userNickname', { length: 50 }),
     },
     (table) => {
         return {
