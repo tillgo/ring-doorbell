@@ -21,11 +21,9 @@ const server = http.createServer(app)
 const io = new Server(server, {
     cors: {
         origin: process.env.WEB_CLIENT_URL,
-        methods: ['GET', 'POST'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
     },
 })
-
-console.log(process.env.WEB_CLIENT_URL)
 
 const dbURL = process.env.DB_URL ?? ''
 const migrationClient = postgres(dbURL, { max: 1 })
