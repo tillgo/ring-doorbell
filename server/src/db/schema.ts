@@ -18,7 +18,6 @@ export const users_devices = pgTable(
             .notNull()
             .references(() => devices.id),
 
-        isOwner: boolean('isOwner').notNull(),
         userNickname: varchar('userNickname', { length: 50 }),
     },
     (table) => {
@@ -31,6 +30,9 @@ export const users_devices = pgTable(
 export const devices = pgTable('devices', {
     id: uuid('id').defaultRandom().primaryKey(),
     nickname: varchar('nickname', { length: 50 }),
+    ownerId: uuid('ownerId')
+        .notNull()
+        .references(() => users.id),
 
     createdAt: timestamp('createdAt').notNull().defaultNow(),
 })
