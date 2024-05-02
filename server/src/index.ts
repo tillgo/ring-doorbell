@@ -10,6 +10,7 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import authRoutes from './routes/authRoutes'
 import { authenticate } from './middleware/authenticate'
+import * as schema from './db/schema'
 
 // In production use environment variables instead of .env file. Make sure to set the var NODE_ENV = 'production'.
 if (process.env.NODE_ENV !== 'production') {
@@ -37,7 +38,7 @@ migrate(drizzle(migrationClient), {
     })
 
 const queryClient = postgres(dbURL)
-export const db = drizzle(queryClient)
+export const db = drizzle(queryClient, { schema })
 
 app.use(express.json())
 app.use(cookieParser())

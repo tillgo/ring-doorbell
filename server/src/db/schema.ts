@@ -1,4 +1,5 @@
 import { pgTable, timestamp, uuid, varchar, boolean, index, primaryKey } from 'drizzle-orm/pg-core'
+import { relations } from 'drizzle-orm'
 
 export const users = pgTable('users', {
     id: uuid('id').defaultRandom().primaryKey(),
@@ -7,6 +8,11 @@ export const users = pgTable('users', {
 
     createdAt: timestamp('createdAt').notNull().defaultNow(),
 })
+export const usersRelations = relations(users, ({ many }) => ({
+    users_devices: many(users_devices),
+    refreshTokens: many(refreshTokens),
+    ownedDevices: many(devices),
+}))
 
 export const users_devices = pgTable(
     'users_devices',
@@ -26,6 +32,10 @@ export const users_devices = pgTable(
         }
     }
 )
+export const users_devicesRelations = relations(users_devices, ({ one }) => ({
+    user: one(users, { fields: [users_devices.userId], references: [users.id] }),
+    device: one(devices, { fields: [users_devices.deviceId], references: [devices.id] }),
+}))
 
 export const devices = pgTable('devices', {
     id: uuid('id').defaultRandom().primaryKey(),
@@ -36,6 +46,11 @@ export const devices = pgTable('devices', {
 
     createdAt: timestamp('createdAt').notNull().defaultNow(),
 })
+export const devicesRelations = relations(devices, ({ one, many }) => ({
+    owner: one(users, { fields: [devices.ownerId], references: [users.id] }),
+    users_devices: many(users_devices),
+    visitors: many(visitors),
+}))
 
 export const visitors = pgTable('visitors', {
     id: uuid('id').defaultRandom().primaryKey(),
@@ -51,6 +66,9 @@ export const visitors = pgTable('visitors', {
 
     createdAt: timestamp('createdAt').notNull().defaultNow(),
 })
+export const visitorsRelations = relations(visitors, ({ one }) => ({
+    device: one(devices, { fields: [visitors.deviceId], references: [devices.id] }),
+}))
 
 export const refreshTokens = pgTable(
     'refreshTokens',
@@ -70,3 +88,6 @@ export const refreshTokens = pgTable(
         }
     }
 )
+export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
+    user: one(users, { fields: [refreshTokens.userId], references: [users.id] }),
+}))
