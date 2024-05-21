@@ -21,6 +21,7 @@ export const initialStateRTCConnection: RTCConnectionState = {
         stream: undefined,
         receivingCall: false,
         caller: '',
+        //ToDo check do I really need that?
         callerSignal: undefined,
         callAccepted: false,
         idToCall: '',

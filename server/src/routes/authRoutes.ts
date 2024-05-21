@@ -45,6 +45,7 @@ router.post('/sign-up', validate({ body: LoginSchema }), async (req, res) => {
 
 router.post('/sign-in', validate({ body: LoginSchema }), async (req, res) => {
     const data = req.body as LoginData
+    console.log(data)
 
     try {
         const user = await getUserWithPassword({ username: data.username })

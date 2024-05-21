@@ -22,6 +22,7 @@
     "@tanstack/react-router": "^1.22.3",
     "@tanstack/router-devtools": "^1.22.3",
     "@uidotdev/usehooks": "^2.4.1",
+    "@yudiel/react-qr-scanner": "^2.0.0-beta.3",
     "axios": "^1.6.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",

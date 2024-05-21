@@ -12,6 +12,7 @@ import { socket } from '@/common/socketio/socket.ts'
 import Peer, { MediaConnection } from 'peerjs'
 import { CallControllerControlls } from '@/app/general/components/CallControllerControlls.tsx'
 import { VideoComponent } from '@/app/general/components/VideoComponent.tsx'
+import { X } from 'lucide-react'
 
 export const CallControllerDrawer = () => {
     const dispatch = useAppDispatch()
@@ -151,8 +152,8 @@ export const CallControllerDrawer = () => {
                 ></CallControllerControlls>
                 <DrawerFooter>
                     <DrawerClose asChild>
-                        <Button variant="outline" onClick={onDrawerClose}>
-                            Cancel
+                        <Button size={'icon'} variant="outline" onClick={onDrawerClose}>
+                            <X className={'h-32 w-32'} />
                         </Button>
                     </DrawerClose>
                 </DrawerFooter>
