@@ -26,4 +26,9 @@ execute the following in the root directory
 ### Main Window Size
 To fit the touch screen, max size has to be 480px x 250px
 
+## Raspberry PI
+
+### Startup GUI
+```sudo startx```
+
 
