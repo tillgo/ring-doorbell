@@ -38,5 +38,13 @@ To fit the touch screen, max size has to be 480px x 250px
    python3 main.py
 ```
 
+### Important Libraries to install (if not already done)
+- pip3 install adafruit-circuitpython-pn532
+
+### Python Virtual Environment
+to use globally installed pyqt6 installation, include-system-site-packages = true is set in in ./venv/pyvenv.cfg
+
+
+
 
 
