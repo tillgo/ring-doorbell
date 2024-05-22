@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import { ThemeProvider } from '@/components/theme-provider.tsx'
+import { ThemeProvider } from '@/base/ThemeProvider.tsx'
 import { AppContextProvider } from '@/base/appContext.tsx'
 import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { routeTree } from '@/routeTree.gen.ts'

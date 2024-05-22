@@ -16,7 +16,6 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
         const decoded = verifySecretToken(rawToken)
 
         if (decoded.id) {
-            // @ts-ignore
             req.userId = decoded.id
 
             return next()

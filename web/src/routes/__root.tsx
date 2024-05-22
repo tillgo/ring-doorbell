@@ -1,6 +1,6 @@
 import { createRootRoute, Outlet, useMatchRoute, useNavigate } from '@tanstack/react-router'
-import { AppBar, Routes } from '@/app/general/components/AppBar.tsx'
-import { CallControllerDrawer } from '@/app/general/components/CallControllerDrawer.tsx'
+import { AppBar, Routes } from '@/base/components/AppBar.tsx'
+import { CallControllerDrawer } from '@/base/components/CallControllerDrawer.tsx'
 import useAuth from '@/common/hooks/useAuth.ts'
 import { clsx } from 'clsx'
 import { useEffect } from 'react'
@@ -45,7 +45,7 @@ function Main() {
 
     return (
         <>
-            <main className={clsx('', { 'mb-16 md:pl-16': isAuthenticated })}>
+            <main className={clsx('', { 'h-full w-full pb-16 md:pb-0 md:pl-16': isAuthenticated })}>
                 <Outlet />
             </main>
 

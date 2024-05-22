@@ -1,4 +1,4 @@
-import { AxiosClient } from '@/common/api/AxiosClient.ts'
+import { AxiosClient } from '@/base/api/AxiosClient.ts'
 import { LoginData, User } from '@/shared/types.ts'
 
 type LoginResponse = {

@@ -1,4 +1,4 @@
-import { AnyCaseReducers, PayloadAction } from '@/common/react-toolkit'
+import { AnyCaseReducers, PayloadAction } from 'src/lib/react-toolkit'
 import { AppContextState } from '@/base/appContext.tsx'
 
 export type CallControllerState = {

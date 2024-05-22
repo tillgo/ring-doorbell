@@ -1,14 +1,20 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { Input } from '@/components/ui/input.tsx'
-import { Button } from '@/components/ui/button.tsx'
+import { Input } from '@/lib/components/ui/input.tsx'
+import { Button } from '@/lib/components/ui/button.tsx'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoginData, LoginSchema } from '@/shared/types'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form.tsx'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/lib/components/ui/form.tsx'
 import { useState } from 'react'
-import Loader from '@/app/general/components/Loader.tsx'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.tsx'
-import { signUp } from '@/common/api/queries/auth.ts'
+import Loader from '@/common/components/Loader.tsx'
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/lib/components/ui/card.tsx'
+import { signUp } from '@/base/api/queries/auth.ts'
 import { AxiosError } from 'axios'
 
 export const Route = createFileRoute('/sign-up')({

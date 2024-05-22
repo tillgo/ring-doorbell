@@ -1,11 +1,11 @@
-import { Route } from '@/app/general/components/AppBar.tsx'
+import { Route } from '@/base/components/AppBar.tsx'
 import { Link } from '@tanstack/react-router'
 import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
-} from '@/components/ui/tooltip.tsx'
+} from '@/lib/components/ui/tooltip.tsx'
 import { useMediaQuery } from '@uidotdev/usehooks'
 
 type AppBarIconProps = {

@@ -1,28 +1,28 @@
 import { pgTable, timestamp, uuid, varchar, boolean, index, primaryKey } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
-export const users = pgTable('users', {
+export const user = pgTable('users', {
     id: uuid('id').defaultRandom().primaryKey(),
     username: varchar('username', { length: 50 }).unique().notNull(),
     passwordHash: varchar('passwordHash', { length: 64 }).notNull(),
 
     createdAt: timestamp('createdAt').notNull().defaultNow(),
 })
-export const usersRelations = relations(users, ({ many }) => ({
-    users_devices: many(users_devices),
-    refreshTokens: many(refreshTokens),
-    ownedDevices: many(devices),
+export const userRelations = relations(user, ({ many }) => ({
+    devices: many(user_device),
+    refreshTokens: many(refreshToken),
+    ownedDevices: many(device),
 }))
 
-export const users_devices = pgTable(
+export const user_device = pgTable(
     'users_devices',
     {
         userId: uuid('userId')
             .notNull()
-            .references(() => users.id),
+            .references(() => user.id),
         deviceId: uuid('deviceId')
             .notNull()
-            .references(() => devices.id),
+            .references(() => device.id),
 
         userNickname: varchar('userNickname', { length: 50 }),
     },
@@ -32,27 +32,29 @@ export const users_devices = pgTable(
         }
     }
 )
-export const users_devicesRelations = relations(users_devices, ({ one }) => ({
-    user: one(users, { fields: [users_devices.userId], references: [users.id] }),
-    device: one(devices, { fields: [users_devices.deviceId], references: [devices.id] }),
+export const user_deviceRelations = relations(user_device, ({ one }) => ({
+    user: one(user, { fields: [user_device.userId], references: [user.id] }),
+    device: one(device, { fields: [user_device.deviceId], references: [device.id] }),
 }))
 
-export const devices = pgTable('devices', {
+export const device = pgTable('devices', {
     id: uuid('id').defaultRandom().primaryKey(),
+
+    identifier: varchar('identifier', { length: 255 }).unique().notNull(),
+    secret: varchar('secret', { length: 255 }).notNull(),
+
     nickname: varchar('nickname', { length: 50 }),
-    ownerId: uuid('ownerId')
-        .notNull()
-        .references(() => users.id),
+    ownerId: uuid('ownerId').references(() => user.id), // nullable
 
     createdAt: timestamp('createdAt').notNull().defaultNow(),
 })
-export const devicesRelations = relations(devices, ({ one, many }) => ({
-    owner: one(users, { fields: [devices.ownerId], references: [users.id] }),
-    users_devices: many(users_devices),
-    visitors: many(visitors),
+export const deviceRelations = relations(device, ({ one, many }) => ({
+    owner: one(user, { fields: [device.ownerId], references: [user.id] }),
+    users: many(user_device),
+    visitors: many(visitor),
 }))
 
-export const visitors = pgTable('visitors', {
+export const visitor = pgTable('visitors', {
     id: uuid('id').defaultRandom().primaryKey(),
     name: varchar('name', { length: 50 }).notNull(),
     nickname: varchar('nickname', { length: 50 }),
@@ -60,23 +62,23 @@ export const visitors = pgTable('visitors', {
     nfcCardId: varchar('nfcCardId', { length: 255 }).unique().notNull(),
     deviceId: uuid('deviceId')
         .notNull()
-        .references(() => devices.id),
+        .references(() => device.id),
 
     isWhitelisted: boolean('isWhitelisted').notNull().default(false),
 
     createdAt: timestamp('createdAt').notNull().defaultNow(),
 })
-export const visitorsRelations = relations(visitors, ({ one }) => ({
-    device: one(devices, { fields: [visitors.deviceId], references: [devices.id] }),
+export const visitorRelations = relations(visitor, ({ one }) => ({
+    device: one(device, { fields: [visitor.deviceId], references: [device.id] }),
 }))
 
-export const refreshTokens = pgTable(
+export const refreshToken = pgTable(
     'refreshTokens',
     {
         id: uuid('id').defaultRandom().primaryKey(),
         userId: uuid('userId')
             .notNull()
-            .references(() => users.id),
+            .references(() => user.id),
         token: varchar('token', { length: 255 }).notNull(),
         isValid: boolean('isValid').notNull(),
 
@@ -88,6 +90,6 @@ export const refreshTokens = pgTable(
         }
     }
 )
-export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
-    user: one(users, { fields: [refreshTokens.userId], references: [users.id] }),
+export const refreshTokenRelations = relations(refreshToken, ({ one }) => ({
+    user: one(user, { fields: [refreshToken.userId], references: [user.id] }),
 }))

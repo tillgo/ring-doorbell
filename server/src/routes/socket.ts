@@ -1,11 +1,12 @@
 import * as http from 'http'
 import { Server } from 'socket.io'
 import { verifySecretToken } from '../util/jwtUtils'
+import { getConfig } from '../util/EnvManager'
 
 export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>) => {
     const io = new Server(server, {
         cors: {
-            origin: process.env.WEB_CLIENT_URL,
+            origin: getConfig().NODE_ENV !== 'production' ? '*' : undefined,
             methods: ['GET', 'POST', 'PUT', 'DELETE'],
         },
     })
