@@ -1,14 +1,13 @@
-import express from 'express'
+import express, { Request } from 'express'
 import { validate } from '../middleware/zodValidate'
 import { Username, UsernameSchema } from '../shared/types'
 import { getUser, getUserById } from '../db/userRepository'
 
 const router = express.Router()
 
-router.get('/me', async (req, res) => {
+router.get('/me', async (req: Request, res) => {
     try {
-        // @ts-ignore
-        const user = await getUserById(req.userId)
+        const user = await getUserById(req.userId!)
         if (!user) {
             return res.status(404).json({
                 message: 'User not found',

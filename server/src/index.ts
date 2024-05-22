@@ -11,22 +11,31 @@ import cookieParser from 'cookie-parser'
 import authRoutes from './routes/authRoutes'
 import { authenticate } from './middleware/authenticate'
 import * as schema from './db/schema'
+import { checkEnv, getConfig } from './util/EnvManager'
+
+declare module 'express' {
+    // @ts-ignore
+    interface Request extends express.Request {
+        userId?: string
+    }
+}
 
 // In production use environment variables instead of .env file. Make sure to set the var NODE_ENV = 'production'.
 if (process.env.NODE_ENV !== 'production') {
     dotenv.config()
 }
+checkEnv()
 
 export const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {
     cors: {
-        origin: process.env.WEB_CLIENT_URL,
+        origin: getConfig().NODE_ENV !== 'production' ? '*' : undefined,
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
     },
 })
 
-const dbURL = process.env.DB_URL ?? ''
+const dbURL = getConfig().DB_URL ?? ''
 const migrationClient = postgres(dbURL, { max: 1 })
 migrate(drizzle(migrationClient), {
     migrationsFolder: './drizzle',
@@ -42,7 +51,7 @@ export const db = drizzle(queryClient, { schema })
 
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors({ origin: process.env.WEB_CLIENT_URL }))
+app.use(cors({ origin: getConfig().NODE_ENV !== 'production' ? '*' : undefined }))
 app.use('/api/users', authenticate, userRoutes)
 app.use('/api/auth', authRoutes)
 
@@ -62,7 +71,7 @@ io.on('connection', (socket) => {
     })
 })
 
-const port = process.env.PORT || 8080
+const port = getConfig().PORT
 server.listen(port, () => {
     console.log(`Server running on port ${port}`)
 })

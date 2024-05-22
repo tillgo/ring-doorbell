@@ -45,7 +45,7 @@ function Main() {
 
     return (
         <>
-            <main className={clsx('', { 'mb-16 md:pl-16': isAuthenticated })}>
+            <main className={clsx('', { 'h-full w-full pb-16 md:pb-0 md:pl-16': isAuthenticated })}>
                 <Outlet />
             </main>
 
