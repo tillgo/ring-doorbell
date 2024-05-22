@@ -32,7 +32,8 @@ To fit the touch screen, max size has to be 480px x 250px
 ```sudo startx```
 
 ### Start project
-```cd ~/programms/ring-doorbell/bell-client/   
+```
+   cd ~/programms/ring-doorbell/bell-client/   
    source venv/bin/activate   
    python3 main.py
 ```
