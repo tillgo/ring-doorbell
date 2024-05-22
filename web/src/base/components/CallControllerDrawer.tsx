@@ -4,14 +4,14 @@ import {
     DrawerContent,
     DrawerFooter,
     DrawerHeader,
-} from '@/components/ui/drawer.tsx'
-import { Button } from '@/components/ui/button.tsx'
+} from '@/lib/components/ui/drawer.tsx'
+import { Button } from '@/lib/components/ui/button.tsx'
 import { useAppDispatch, useAppSelector } from '@/base/appContext.tsx'
 import { useEffect, useRef } from 'react'
-import { socket } from '@/common/socketio/socket.ts'
+import { socket } from '@/base/socketio/socket.ts'
 import Peer, { MediaConnection } from 'peerjs'
-import { CallControllerControlls } from '@/app/general/components/CallControllerControlls.tsx'
-import { VideoComponent } from '@/app/general/components/VideoComponent.tsx'
+import { CallControllerControlls } from '@/base/components/CallControllerControlls.tsx'
+import { VideoComponent } from '@/base/components/VideoComponent.tsx'
 import { X } from 'lucide-react'
 
 export const CallControllerDrawer = () => {

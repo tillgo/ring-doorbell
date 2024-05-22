@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button.tsx'
+import { Button } from '@/lib/components/ui/button.tsx'
 import { Phone, PhoneOff, Video, VideoOff } from 'lucide-react'
-import { Input } from '@/components/ui/input.tsx'
+import { Input } from '@/lib/components/ui/input.tsx'
 import { ChangeEvent } from 'react'
 
 type CallControllerControllsProps = {

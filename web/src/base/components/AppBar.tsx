@@ -1,4 +1,4 @@
-import { AppBarElement } from '@/app/general/components/AppBarElement.tsx'
+import { AppBarElement } from '@/base/components/AppBarElement.tsx'
 import { JSX } from 'react'
 
 export type Route = {

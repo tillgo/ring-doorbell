@@ -1,8 +1,8 @@
 import { Moon, Sun } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { useTheme } from '@/common/hooks/useTheme'
+import { Button } from '@/lib/components/ui/button.tsx'
+import { useTheme } from '@/common/hooks/useTheme.ts'
 
-export function ModeToggle() {
+export function ThemeToggle() {
     const { setTheme, theme } = useTheme()
 
     const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'

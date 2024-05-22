@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useEffect } from 'react'
 
-import { AnyCaseReducers, createReducer, ReducerOptions } from '@/common/react-toolkit/reducer'
+import { AnyCaseReducers, createReducer, ReducerOptions } from '@/lib/react-toolkit/reducer'
 
 export const createReducerContext = <State, Reducers extends AnyCaseReducers<State>>(
     opts: ReducerOptions<State, Reducers>

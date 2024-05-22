@@ -1,6 +1,6 @@
 import { createRootRoute, Outlet, useMatchRoute, useNavigate } from '@tanstack/react-router'
-import { AppBar, Routes } from '@/app/general/components/AppBar.tsx'
-import { CallControllerDrawer } from '@/app/general/components/CallControllerDrawer.tsx'
+import { AppBar, Routes } from '@/base/components/AppBar.tsx'
+import { CallControllerDrawer } from '@/base/components/CallControllerDrawer.tsx'
 import useAuth from '@/common/hooks/useAuth.ts'
 import { clsx } from 'clsx'
 import { useEffect } from 'react'
