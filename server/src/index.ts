@@ -5,12 +5,12 @@ import { drizzle } from 'drizzle-orm/postgres-js'
 import { migrate } from 'drizzle-orm/postgres-js/migrator'
 import userRoutes from './routes/userRoutes'
 import * as http from 'http'
-import { Server } from 'socket.io'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import authRoutes from './routes/authRoutes'
 import { authenticate } from './middleware/authenticate'
 import * as schema from './db/schema'
+import { setupSocket } from './routes/socket'
 
 // In production use environment variables instead of .env file. Make sure to set the var NODE_ENV = 'production'.
 if (process.env.NODE_ENV !== 'production') {
@@ -19,12 +19,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 export const app = express()
 const server = http.createServer(app)
-const io = new Server(server, {
-    cors: {
-        origin: process.env.WEB_CLIENT_URL,
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    },
-})
+setupSocket(server)
 
 const dbURL = process.env.DB_URL ?? ''
 const migrationClient = postgres(dbURL, { max: 1 })
@@ -46,21 +41,6 @@ app.use(cors({ origin: process.env.WEB_CLIENT_URL }))
 app.use('/api/users', authenticate, userRoutes)
 app.use('/api/auth', authRoutes)
 
-io.on('connection', (socket) => {
-    console.log('A user connected')
-    //return socket-id to client
-    socket.emit('me', socket.id)
-    socket.on('callUser', (data) => {
-        io.to(data.userToCall).emit('callUser', {
-            signal: data.signalData,
-            from: data.from,
-            name: data.name,
-        })
-    })
-    socket.on('answerCall', (data) => {
-        io.to(data.to).emit('callAccepted', data.signal)
-    })
-})
 
 const port = process.env.PORT || 8080
 server.listen(port, () => {

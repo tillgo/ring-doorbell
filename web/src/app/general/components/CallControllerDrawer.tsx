@@ -8,13 +8,17 @@ import {
 import { Button } from '@/components/ui/button.tsx'
 import { useAppDispatch, useAppSelector } from '@/base/appContext.tsx'
 import { useEffect, useRef } from 'react'
-import { socket } from '@/common/socketio/socket.ts'
 import Peer, { MediaConnection } from 'peerjs'
 import { CallControllerControlls } from '@/app/general/components/CallControllerControlls.tsx'
 import { VideoComponent } from '@/app/general/components/VideoComponent.tsx'
 import { X } from 'lucide-react'
+import { useSocket } from '@/common/hooks/useSocket.ts'
 
-export const CallControllerDrawer = () => {
+export const CallControllerDrawer = (props: { userId: string }) => {
+    // ToDo socket connects itself two times. What is the problem? (Maybe component gets completly rerendered)
+    const socket = useSocket()
+
+    const { userId } = props
     const dispatch = useAppDispatch()
     const open = useAppSelector((s) => s.callController.open)
     const rtcData = useAppSelector((s) => s.rtcConnection)
@@ -25,31 +29,39 @@ export const CallControllerDrawer = () => {
     const callRef = useRef<MediaConnection>()
 
     useEffect(() => {
-        socket.on('me', (id) => {
-            dispatch({ type: 'updateMeRTCConn', payload: id })
-        })
+        // Only connect, if socket not already connected
+        if (!socket?.connected) {
+            socket?.connect()
+        }
+    }, [socket])
 
-        socket.on('callUser', (data) => {
+    useEffect(() => {
+        socket?.on('callClient', (data) => {
             dispatch({ type: 'updateReceivingCallRTCConn', payload: true })
             dispatch({ type: 'updateCallerRTCConn', payload: data.from })
             dispatch({ type: 'updateNameRTCConn', payload: data.name })
             dispatch({ type: 'updateCallerSignalRTCConn', payload: data.signal })
         })
-    }, [dispatch])
+
+        socket?.on('callFailed', (message) => {
+            //ToDo handle failed call
+            console.log(message)
+        })
+    }, [dispatch, socket])
 
     const callUser = (id: string) => {
         const peer = new Peer()
 
         peer.on('open', (rtcId) => {
-            socket.emit('callUser', {
-                userToCall: id,
+            socket?.emit('callClient', {
+                clientToCall: id,
                 signalData: rtcId,
-                from: rtcData.me,
+                from: userId,
                 name: rtcData.name,
             })
         })
 
-        socket.on('callAccepted', (signal) => {
+        socket?.on('callAccepted', (signal) => {
             dispatch({ type: 'updateCallAcceptedRTCConn', payload: true })
 
             navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
@@ -70,7 +82,7 @@ export const CallControllerDrawer = () => {
         const peer = new Peer()
 
         peer.on('open', (id) => {
-            socket.emit('answerCall', {
+            socket?.emit('answerCall', {
                 signal: id,
                 to: rtcData.caller,
             })
@@ -97,7 +109,6 @@ export const CallControllerDrawer = () => {
     }
 
     const enableVideo = () => {
-        console.log('Test123')
         if (myVideo.current !== null) {
             navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
                 console.log('Test')
@@ -138,7 +149,7 @@ export const CallControllerDrawer = () => {
                 <CallControllerControlls
                     isVideoOn={!!rtcData.stream}
                     isCallRunning={rtcData.receivingCall && !rtcData.callAccepted}
-                    id={rtcData.me}
+                    id={userId}
                     onEnableVideo={enableVideo}
                     onDisableVideo={disableVideo}
                     onStartCall={() => callUser(rtcData.idToCall)}

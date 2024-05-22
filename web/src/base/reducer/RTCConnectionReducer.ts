@@ -3,7 +3,6 @@ import { AppContextState } from '@/base/appContext.tsx'
 
 export type RTCConnectionState = {
     rtcConnection: {
-        me: string
         stream: MediaStream | undefined
         receivingCall: boolean
         caller: string
@@ -17,7 +16,6 @@ export type RTCConnectionState = {
 
 export const initialStateRTCConnection: RTCConnectionState = {
     rtcConnection: {
-        me: '',
         stream: undefined,
         receivingCall: false,
         caller: '',
@@ -31,16 +29,6 @@ export const initialStateRTCConnection: RTCConnectionState = {
 }
 
 export const rtcConnectionReducers: AnyCaseReducers<AppContextState> = {
-    updateMeRTCConn: (state, action: PayloadAction<string>) => {
-        const me = action.payload
-        return {
-            ...state,
-            rtcConnection: {
-                ...state.rtcConnection,
-                me: me,
-            },
-        }
-    },
     updateStreamRTCConn: (state, action: PayloadAction<MediaStream | undefined>) => {
         const stream = action.payload
         return {

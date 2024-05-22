@@ -29,7 +29,7 @@ export const Route = createRootRoute({
 })
 
 function Main() {
-    const { isAuthenticated } = useAuth()
+    const { isAuthenticated, userId } = useAuth()
     const matchRoute = useMatchRoute()
     const navigate = useNavigate()
 
@@ -49,9 +49,9 @@ function Main() {
                 <Outlet />
             </main>
 
-            {isAuthenticated && (
+            {isAuthenticated && userId && (
                 <>
-                    <CallControllerDrawer />
+                    <CallControllerDrawer userId={userId} />
                     <AppBar routes={routes} />
                 </>
             )}

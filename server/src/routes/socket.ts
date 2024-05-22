@@ -1,0 +1,77 @@
+import * as http from 'http'
+import { Server } from 'socket.io'
+import { verifySecretToken } from '../util/jwtUtils'
+
+export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>) => {
+    const io = new Server(server, {
+        cors: {
+            origin: process.env.WEB_CLIENT_URL,
+            methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        },
+    })
+
+
+    // Auth Handler
+    io.use((socket, next) => {
+        try {
+            const { jwt } = socket.handshake.auth
+            if (!jwt) {
+                return next(new Error('Unauthorized'))
+            }
+            const payload = verifySecretToken(jwt)
+            socket.data.authId = payload.id
+        } catch (err) {
+            return next(new Error('Unauthorized'))
+        }
+
+
+        next()
+    })
+
+    // Map of clients <clientId, socketId> which are currently online
+    // client id can either be userId or deviceId
+    const clients: Map<string, string> = new Map()
+
+    io.on('connection', (socket) => {
+        console.log('A user connected')
+
+        // Set or update client (client is online)
+        clients.set(socket.data.authId, socket.id)
+
+
+        socket.on('callClient', (data) => {
+            const clientToCall = data.clientToCall
+            const clientToCallSocketId = clients.get(clientToCall)
+            // if clientToCall is online (connected), notify clientToCall
+            if (clientToCallSocketId) {
+                io.to(clientToCallSocketId).emit('callClient', {
+                    signal: data.signalData,
+                    from: data.from,
+                    name: data.name,
+                })
+                // else notify sender, that client is not online
+            } else {
+                io.to(socket.id).emit('callFailed', 'Client is not online')
+            }
+
+        })
+        socket.on('answerCall', (data) => {
+            const clientToCall = data.to
+            const clientToCallSocketId = clients.get(clientToCall)
+            if (clientToCallSocketId) {
+                io.to(clientToCallSocketId).emit('callAccepted', data.signal)
+            } else {
+                io.to(socket.id).emit('callFailed', 'Client is not online')
+            }
+
+        })
+
+        // On disconnect remove client from clients map
+        socket.on('disconnect', function() {
+            console.log('Got disconnect!')
+            clients.delete(socket.data.authId)
+
+
+        })
+    })
+}
