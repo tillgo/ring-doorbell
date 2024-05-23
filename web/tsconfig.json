@@ -24,6 +24,7 @@
       "@/*": [
         "./src/*"
       ],
+      "@/lib/components/ui/button.tsx": ["./src/lib/components/ui/custom-button.tsx"],
       "@/shared/*": ["../server/src/shared/*"]
     }
   },

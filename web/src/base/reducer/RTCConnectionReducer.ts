@@ -3,9 +3,10 @@ import { AppContextState } from '@/base/appContext.tsx'
 
 export type RTCConnectionState = {
     rtcConnection: {
-        stream: MediaStream | undefined
+        myStream: MediaStream | undefined
+        oppositeStream: MediaStream | undefined
         receivingCall: boolean
-        caller: string
+        oppositeId: string
         callerSignal: string | undefined
         callAccepted: boolean
         idToCall: string
@@ -16,9 +17,10 @@ export type RTCConnectionState = {
 
 export const initialStateRTCConnection: RTCConnectionState = {
     rtcConnection: {
-        stream: undefined,
+        myStream: undefined,
+        oppositeStream: undefined,
         receivingCall: false,
-        caller: '',
+        oppositeId: '',
         //ToDo check do I really need that?
         callerSignal: undefined,
         callAccepted: false,
@@ -29,13 +31,23 @@ export const initialStateRTCConnection: RTCConnectionState = {
 }
 
 export const rtcConnectionReducers: AnyCaseReducers<AppContextState> = {
-    updateStreamRTCConn: (state, action: PayloadAction<MediaStream | undefined>) => {
+    updateMyStreamRTCConn: (state, action: PayloadAction<MediaStream | undefined>) => {
         const stream = action.payload
         return {
             ...state,
             rtcConnection: {
                 ...state.rtcConnection,
-                stream: stream,
+                myStream: stream,
+            },
+        }
+    },
+    updateOppositeStreamRTCConn: (state, action: PayloadAction<MediaStream | undefined>) => {
+        const stream = action.payload
+        return {
+            ...state,
+            rtcConnection: {
+                ...state.rtcConnection,
+                oppositeStream: stream,
             },
         }
     },
@@ -49,13 +61,13 @@ export const rtcConnectionReducers: AnyCaseReducers<AppContextState> = {
             },
         }
     },
-    updateCallerRTCConn: (state, action: PayloadAction<string>) => {
+    updateOppositeIdRTCConn: (state, action: PayloadAction<string>) => {
         const caller = action.payload
         return {
             ...state,
             rtcConnection: {
                 ...state.rtcConnection,
-                caller: caller,
+                oppositeId: caller,
             },
         }
     },

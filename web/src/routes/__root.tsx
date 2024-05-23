@@ -5,6 +5,7 @@ import useAuth from '@/common/hooks/useAuth.ts'
 import { clsx } from 'clsx'
 import { useEffect } from 'react'
 import { LayoutDashboard, Shield, Settings } from 'lucide-react'
+import { ReceiveCallDialog } from '@/base/components/ReceiveCallDialog.tsx'
 
 const routes: Routes = [
     {
@@ -53,6 +54,7 @@ function Main() {
                 <>
                     <CallControllerDrawer userId={userId} />
                     <AppBar routes={routes} />
+                    <ReceiveCallDialog />
                 </>
             )}
 

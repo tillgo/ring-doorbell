@@ -3,7 +3,7 @@ import { Phone, PhoneOff, Video, VideoOff } from 'lucide-react'
 import { Input } from '@/lib/components/ui/input.tsx'
 import { ChangeEvent } from 'react'
 
-type CallControllerControllsProps = {
+export type CallControllerControllsProps = {
     isVideoOn: boolean
     isCallRunning: boolean
     id: string
@@ -27,22 +27,22 @@ export const CallControllerControlls = (props: CallControllerControllsProps) => 
     } = props
 
     return (
-        <div className={'mt-5 flex justify-center space-x-5'}>
+        <div className={'mt-5 flex justify-center space-x-5 rounded-xl bg-background p-3'}>
             {isVideoOn ? (
                 <Button
-                    className={'h-28 w-28 rounded-xl'}
+                    className={'h-20 w-20 rounded-xl border-none bg-transparent bg-opacity-30'}
                     variant={'outline'}
                     onClick={onDisableVideo}
                 >
-                    <VideoOff className={'h-28 w-28  bg-transparent'} />
+                    <VideoOff className={'h-20 w-20  bg-transparent'} />
                 </Button>
             ) : (
                 <Button
-                    className={'h-28 w-28 rounded-xl'}
+                    className={'h-20 w-20 rounded-xl border-none bg-transparent bg-opacity-30'}
                     variant={'outline'}
                     onClick={onEnableVideo}
                 >
-                    <Video className={'h-28 w-28  bg-transparent'} />
+                    <Video className={'h-20 w-20  bg-transparent'} />
                 </Button>
             )}
 
@@ -50,19 +50,19 @@ export const CallControllerControlls = (props: CallControllerControllsProps) => 
                 <Button
                     variant={'outline'}
                     size={'icon'}
-                    className={'h-28 w-28 rounded-xl '}
+                    className={'h-20 w-20 rounded-xl border-none bg-transparent bg-opacity-30'}
                     onClick={onEndCall}
                 >
-                    <PhoneOff className={'h-20 w-20  bg-transparent'} />
+                    <PhoneOff className={'h-10 w-10  bg-transparent'} />
                 </Button>
             ) : (
                 <Button
                     variant={'outline'}
                     size={'icon'}
-                    className={'h-28 w-28 rounded-xl'}
+                    className={'h-20 w-20 rounded-xl border-none bg-transparent bg-opacity-30'}
                     onClick={onStartCall}
                 >
-                    <Phone className={'h-20 w-20  bg-transparent'} />
+                    <Phone className={'h-10 w-10  bg-transparent'} />
                 </Button>
             )}
             <div className={'flex flex-col justify-end'}>

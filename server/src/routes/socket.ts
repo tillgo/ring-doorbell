@@ -41,9 +41,8 @@ export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typ
 
 
         socket.on('callClient', (data) => {
-            const clientToCall = data.clientToCall
+            const clientToCall = data.to
             const clientToCallSocketId = clients.get(clientToCall)
-            // if clientToCall is online (connected), notify clientToCall
             if (clientToCallSocketId) {
                 io.to(clientToCallSocketId).emit('callClient', {
                     signal: data.signalData,
@@ -65,6 +64,16 @@ export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typ
                 io.to(socket.id).emit('callFailed', 'Client is not online')
             }
 
+        })
+
+        socket.on('leaveCall', (data)=> {
+            const clientToCall = data.to
+            const clientToCallSocketId = clients.get(clientToCall)
+            if (clientToCallSocketId) {
+                io.to(clientToCallSocketId).emit('callOver')
+            } else {
+                io.to(socket.id).emit('callFailed', 'Client is not online')
+            }
         })
 
         // On disconnect remove client from clients map

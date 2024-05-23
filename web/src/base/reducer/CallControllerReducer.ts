@@ -4,12 +4,14 @@ import { AppContextState } from '@/base/appContext.tsx'
 export type CallControllerState = {
     callController: {
         open: boolean
+        isAnswerCall: boolean
     }
 }
 
 export const initialStateCallController: CallControllerState = {
     callController: {
         open: false,
+        isAnswerCall: false,
     },
 }
 
@@ -21,6 +23,16 @@ export const callControllerReducers: AnyCaseReducers<AppContextState> = {
             callController: {
                 ...state.callController,
                 open: open,
+            },
+        }
+    },
+    updateIsAnswerCall: (state, action: PayloadAction<boolean>) => {
+        const isAnswerCall = action.payload
+        return {
+            ...state,
+            callController: {
+                ...state.callController,
+                isAnswerCall: isAnswerCall,
             },
         }
     },

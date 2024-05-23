@@ -15,7 +15,6 @@ function Index() {
     const { data } = useQuery({ queryKey: ['me'], queryFn: fetchMyUser })
 
     const onOpenDrawer = () => {
-        console.log('Test')
         dispatch({ type: 'updateCallControllerOpen', payload: true })
     }
 
