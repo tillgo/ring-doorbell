@@ -13,8 +13,6 @@ class MainController(QMainWindow):
         self.ui.pushButton.clicked.connect(lambda : print("Button clicked"))
         self.show()
 
-        wait_for_nfc_id(self.handle_nfc_id_found)
-
     def start_app(self):
         wait_for_nfc_id(self.handle_nfc_id_found)
 
