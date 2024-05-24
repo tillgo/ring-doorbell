@@ -1,3 +1,5 @@
+import threading
+
 from PyQt6.QtWidgets import QMainWindow
 
 import main_window
@@ -12,8 +14,11 @@ class MainController(QMainWindow):
         self.ui.setupUi(self)
         self.ui.pushButton.clicked.connect(lambda : print("Button clicked"))
         self.show()
+        # start waiting for nfc id in new thread
+        threading.Thread(target=self.start_app())
 
     def start_app(self):
+        # ToDo cancel methode, if "i have no card" button is clicked
         wait_for_nfc_id(self.handle_nfc_id_found)
 
     def handle_nfc_id_found(self, uid):
