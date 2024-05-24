@@ -12,11 +12,13 @@ import { authenticate } from './middleware/authenticate'
 import * as schema from './db/schema'
 import { checkEnv, getConfig } from './util/EnvManager'
 import { setupSocket } from './routes/socket'
+import { JWTPayload } from './shared/types'
 
 declare module 'express' {
     // @ts-ignore
     interface Request extends express.Request {
-        userId?: string
+       client?: { id: string, type: JWTPayload['type'] }
+
     }
 }
 

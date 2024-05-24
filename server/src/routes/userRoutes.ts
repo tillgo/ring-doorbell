@@ -7,7 +7,13 @@ const router = express.Router()
 
 router.get('/me', async (req: Request, res) => {
     try {
-        const user = await getUserById(req.userId!)
+        const client = req.client!
+        if(client.type === 'DEVICE') {
+            return res.status(403).json({
+                message: 'No access for devices',
+            })
+        }
+        const user = await getUserById(client.id)
         if (!user) {
             return res.status(404).json({
                 message: 'User not found',

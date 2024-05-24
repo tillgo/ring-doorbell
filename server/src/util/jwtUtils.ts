@@ -1,8 +1,9 @@
-import jwt, { JwtPayload } from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import { getConfig } from './EnvManager'
+import { JWTPayload } from '../shared/types'
 
-export const createSecretToken = (id: string, username: string) => {
-    return jwt.sign({ id, username }, getConfig().JWT_SECRET, {
+export const createSecretToken = ({id, name, type}: JWTPayload) => {
+    return jwt.sign({ id, name: name, type }, getConfig().JWT_SECRET, {
         expiresIn: '1h',
     })
 }
@@ -14,5 +15,5 @@ export const createRefreshToken = () => {
 }
 
 export const verifySecretToken = (token: string) => {
-    return jwt.verify(token, getConfig().JWT_SECRET) as JwtPayload
+    return jwt.verify(token, getConfig().JWT_SECRET) as JWTPayload
 }

@@ -1,10 +1,18 @@
 import express from 'express'
 import { validate } from '../middleware/zodValidate'
-import { LoginData, LoginSchema, RefreshTokenData, RefreshTokenSchema } from '../shared/types'
+import {
+    DeviceLoginData,
+    DeviceLoginSchema,
+    LoginData,
+    LoginSchema,
+    RefreshTokenData,
+    RefreshTokenSchema,
+} from '../shared/types'
 import { createUser, getUserById, getUserWithPassword } from '../db/userRepository'
 import bcrypt from 'bcrypt'
 import { createRefreshToken, createSecretToken, verifySecretToken } from '../util/jwtUtils'
 import { getRefreshToken, saveRefreshToken } from '../db/refreshTokenRepository'
+import { getDeviceWithSecret } from '../db/deviceRepository'
 
 const router = express.Router()
 
@@ -28,7 +36,7 @@ router.post('/sign-up', validate({ body: LoginSchema }), async (req, res) => {
 
             const user = await createUser({ username: data.username, passwordHash: hash })
 
-            const token = createSecretToken(user.id, user.username)
+            const token = createSecretToken({id: user.id, name: user.username, type: 'USER'})
             const refreshToken = createRefreshToken()
 
             await saveRefreshToken({ userId: user.id, token: refreshToken, isValid: true })
@@ -62,12 +70,37 @@ router.post('/sign-in', validate({ body: LoginSchema }), async (req, res) => {
             })
         }
 
-        const token = createSecretToken(user.id, user.username)
+        const token = createSecretToken({id: user.id, name: user.username, type: 'USER'})
         const refreshToken = createRefreshToken()
 
         await saveRefreshToken({ userId: user.id, token: refreshToken, isValid: true })
 
         res.status(200).json({ user, token, refreshToken })
+    } catch (error) {
+        res.status(500).json({
+            error: error,
+            message: 'Login failed',
+        })
+    }
+})
+
+router.post('/bell/sign-in', validate({body: DeviceLoginSchema}), async (req, res) => {
+    const data = req.body as DeviceLoginData
+
+    try {
+        const device = await getDeviceWithSecret({identifier: data.identifier})
+        if (!device) {
+            return res.status(400).json({
+                message: 'Device not found',
+            })
+        }
+
+        // ToDo überlegen was machen, wenn kein Nickname gesetzt
+        const token = createSecretToken({id: device.id, name: device.nickname ?? 'No Nickname', type: 'DEVICE'})
+
+        const {secret, ...deviceWithoutSecret} = device
+
+        res.status(200).json({ device: deviceWithoutSecret, token})
     } catch (error) {
         res.status(500).json({
             error: error,
@@ -90,7 +123,7 @@ router.post('/refresh-token', validate({ body: RefreshTokenSchema }), async (req
         }
 
         const user = await getUserById(data.userId)
-        const newToken = createSecretToken(user.id, user.username)
+        const newToken = createSecretToken({id: user.id, name: user.username, type: 'USER'})
 
         res.status(200).json({ token: newToken })
     } catch (error) {

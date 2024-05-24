@@ -15,14 +15,14 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
         const rawToken = token.replace(/^Bearer\s+/, '')
         const decoded = verifySecretToken(rawToken)
 
-        if (decoded.id) {
-            req.userId = decoded.id
+        if (decoded.id && decoded.type) {
+            req.client = { id: decoded.id, type: decoded.type }
 
             return next()
         }
 
         return res.status(401).json({
-            message: 'Unauthorized, userId not found in token',
+            message: 'Unauthorized, clientId or type not found in token',
         })
     } catch (error) {
         if (error instanceof TokenExpiredError) {

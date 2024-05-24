@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { jwtDecode } from 'jwt-decode'
 import { useLocalStorage } from './useLocalStorage'
+import { JWTPayload } from '@/shared/types.ts'
 
 export function isAuthenticatedInitial() {
     const token = localStorage.getItem('token')
@@ -30,10 +31,10 @@ function useAuth() {
 
     useEffect(() => {
         if (token) {
-            const decodedToken = jwtDecode(token) as { id: string; username: string; exp: number }
+            const decodedToken = jwtDecode(token) as JWTPayload
 
             // if expired, but refresh token is available
-            if (decodedToken.exp < Date.now() / 1000 && refreshToken) {
+            if (decodedToken.exp! < Date.now() / 1000 && refreshToken) {
                 const decodedRefreshToken = jwtDecode(refreshToken)
                 if (decodedRefreshToken.exp! < Date.now() / 1000) {
                     setUsername(null)
@@ -42,13 +43,13 @@ function useAuth() {
                     return
                 }
 
-                setUsername(decodedToken.username)
+                setUsername(decodedToken.name)
                 setUserId(decodedToken.id)
                 setIsAuthenticated(true)
                 return
             }
 
-            setUsername(decodedToken.username)
+            setUsername(decodedToken.name)
             setUserId(decodedToken.id)
             setIsAuthenticated(true)
         } else {

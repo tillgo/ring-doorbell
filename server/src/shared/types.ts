@@ -1,6 +1,7 @@
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
-import { refreshToken, user } from '../db/schema'
+import { device, refreshToken, user } from '../db/schema'
 import { z } from 'zod'
+import { JwtPayload } from 'jsonwebtoken'
 
 const UserSchema = createSelectSchema(user).omit({ passwordHash: true })
 export type User = z.infer<typeof UserSchema>
@@ -29,6 +30,12 @@ export type CreateUserData = z.infer<typeof CreateUserSchema>
 export const UsernameSchema = createSelectSchema(user).pick({ username: true })
 export type Username = z.infer<typeof UsernameSchema>
 
+export const DeviceLoginSchema = createSelectSchema(device).pick({ identifier: true, secret: true })
+export type DeviceLoginData = z.infer<typeof DeviceLoginSchema>
+
+export const DeviceIdentifierSchema = createSelectSchema(device).pick({identifier: true })
+export type DeviceIdentifier = z.infer<typeof DeviceIdentifierSchema>
+
 export const RefreshTokenSchema = z.object({
     userId: z.string().uuid(),
     refreshToken: z.string().max(255),
@@ -37,3 +44,5 @@ export type RefreshTokenData = z.infer<typeof RefreshTokenSchema>
 
 const SaveRefreshTokenSchema = createInsertSchema(refreshToken)
 export type SaveRefreshTokenData = z.infer<typeof SaveRefreshTokenSchema>
+
+export type JWTPayload = JwtPayload & {id: string, name: string, type: 'USER' | 'DEVICE' }
