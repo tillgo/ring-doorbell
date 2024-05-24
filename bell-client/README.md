@@ -32,6 +32,7 @@ To fit the touch screen, max size has to be 480px x 250px
 ```sudo startx```
 
 ### Start project
+!!!must be executed directly on the pi. Not possible over ssh!!!
 ```
    cd ~/programms/ring-doorbell/bell-client/   
    source venv/bin/activate   
