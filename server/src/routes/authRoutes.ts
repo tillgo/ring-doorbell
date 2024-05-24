@@ -123,6 +123,12 @@ router.post('/refresh-token', validate({ body: RefreshTokenSchema }), async (req
         }
 
         const user = await getUserById(data.userId)
+        if(!user){
+            return res.status(401).json({
+                message: 'User doesnt exist anymore',
+            })
+        }
+
         const newToken = createSecretToken({id: user.id, name: user.username, type: 'USER'})
 
         res.status(200).json({ token: newToken })

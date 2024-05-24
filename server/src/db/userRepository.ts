@@ -9,19 +9,27 @@ export const createUser = async (data: CreateUserData): Promise<User> => {
     return newUser[0]
 }
 
-export const getUser = async (data: Username): Promise<User> => {
-    const { passwordHash, ...rest } = getTableColumns(user)
-    const result = await db.select(rest).from(user).where(eq(user.username, data.username))
-    return result[0]
+export const getUser = async (data: Username): Promise<User | undefined> => {
+    return await db.query.user.findFirst({
+        columns: {
+            passwordHash: false
+        },
+        where: (user, {eq}) => eq(user.username, data.username),
+    }).execute()
+
 }
 
-export const getUserWithPassword = async (data: Username): Promise<UserWithPassword> => {
-    const result = await db.select().from(user).where(eq(user.username, data.username))
-    return result[0]
+export const getUserWithPassword = async (data: Username): Promise<UserWithPassword | undefined> => {
+    return await db.query.user.findFirst({
+        where: (user, {eq}) => eq(user.username, data.username),
+    }).execute()
 }
 
-export const getUserById = async (id: string): Promise<User> => {
-    const { passwordHash, ...rest } = getTableColumns(user)
-    const result = await db.select(rest).from(user).where(eq(user.id, id))
-    return result[0]
+export const getUserById = async (id: string): Promise<User | undefined> => {
+    return await db.query.user.findFirst({
+        columns: {
+            passwordHash: false
+        },
+        where: (user, {eq}) => eq(user.id, id),
+    }).execute()
 }
