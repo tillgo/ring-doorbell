@@ -32,6 +32,7 @@ def wait_for_nfc_id(on_nfc_id_found_callback: Callable[[bytearray], None]):
         # else if NFC-Card was found call callback function
         on_nfc_id_found_callback(uid)
         print("Found card with UID:", [hex(i) for i in uid])
+        return
 
 
 
