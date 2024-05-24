@@ -15,7 +15,8 @@ class MainController(QMainWindow):
         self.ui.pushButton.clicked.connect(lambda : print("Button clicked"))
         self.show()
         # start waiting for nfc id in new thread
-        threading.Thread(target=self.start_app())
+        t1 = threading.Thread(target=self.start_app)
+        t1.start()
 
     def start_app(self):
         # ToDo cancel methode, if "i have no card" button is clicked
