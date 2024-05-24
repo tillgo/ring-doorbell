@@ -11,7 +11,6 @@ export type RTCConnectionState = {
         callAccepted: boolean
         idToCall: string
         callEnded: boolean
-        name: string
     }
 }
 
@@ -26,7 +25,6 @@ export const initialStateRTCConnection: RTCConnectionState = {
         callAccepted: false,
         idToCall: '',
         callEnded: false,
-        name: '',
     },
 }
 
@@ -108,16 +106,6 @@ export const rtcConnectionReducers: AnyCaseReducers<AppContextState> = {
             rtcConnection: {
                 ...state.rtcConnection,
                 callEnded: callEnded,
-            },
-        }
-    },
-    updateNameRTCConn: (state, action: PayloadAction<string>) => {
-        const name = action.payload
-        return {
-            ...state,
-            rtcConnection: {
-                ...state.rtcConnection,
-                name: name,
             },
         }
     },

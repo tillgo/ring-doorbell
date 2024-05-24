@@ -6,11 +6,12 @@ import Peer, { MediaConnection } from 'peerjs'
 import { VideoComponent } from '@/base/components/VideoComponent.tsx'
 import { X } from 'lucide-react'
 import { SocketContext } from '@/common/provider/SocketProvider.tsx'
+import useAuth from '@/common/hooks/useAuth.ts'
 
 export const CallControllerDrawer = (props: { userId: string }) => {
     // ToDo socket connects itself two times. What is the problem? (Maybe component gets completly rerendered)
     const socket = useContext(SocketContext)
-
+    const { username } = useAuth()
     const { userId } = props
     const dispatch = useAppDispatch()
     const callControllerState = useAppSelector((s) => s.callController)
@@ -68,7 +69,7 @@ export const CallControllerDrawer = (props: { userId: string }) => {
                 to: id,
                 signalData: rtcId,
                 from: userId,
-                name: rtcData.name,
+                name: username,
             })
         })
 
@@ -83,6 +84,12 @@ export const CallControllerDrawer = (props: { userId: string }) => {
             callRef.current?.on('stream', (remoteStream) => {
                 dispatch({ type: 'updateOppositeStreamRTCConn', payload: remoteStream })
             })
+        })
+
+        socket?.on('callDenied', () => {
+            //ToDo just for testing purposes, in reality the webclient doesnt make calls, so cant get denied
+            console.log('Call Denied')
+            connectionRef.current && connectionRef.current.destroy()
         })
 
         connectionRef.current = peer

@@ -76,6 +76,16 @@ export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typ
             }
         })
 
+        socket.on('denyCall', (data) => {
+            const clientToCall = data.to
+            const clientToCallSocketId = clients.get(clientToCall)
+            if(clientToCallSocketId) {
+                io.to(clientToCallSocketId).emit('callDenied')
+            } else  {
+                io.to(socket.id).emit('callFailed', 'Client is not online')
+            }
+        })
+
         // On disconnect remove client from clients map
         socket.on('disconnect', function() {
             console.log('Got disconnect!')
