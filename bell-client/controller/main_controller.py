@@ -23,5 +23,6 @@ class MainController(QMainWindow):
         wait_for_nfc_id(self.handle_nfc_id_found)
 
     def handle_nfc_id_found(self, uid):
+        print("It works at least a little bit")
         self.ui.uid_label.setText("".join([hex(i) for i in uid]))
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.greeting_page)
