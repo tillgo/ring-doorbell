@@ -46,7 +46,7 @@ export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typ
             if (clientToCallSocketId) {
                 io.to(clientToCallSocketId).emit('callClient', {
                     signal: data.signalData,
-                    from: data.from,
+                    from: socket.data.authId,
                     name: data.name,
                 })
                 // else notify sender, that client is not online

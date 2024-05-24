@@ -68,7 +68,6 @@ export const CallControllerDrawer = (props: { userId: string }) => {
             socket?.emit('callClient', {
                 to: id,
                 signalData: rtcId,
-                from: userId,
                 name: username,
             })
         })
