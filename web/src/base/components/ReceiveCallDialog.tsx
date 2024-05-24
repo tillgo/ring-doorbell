@@ -1,11 +1,15 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/lib/components/ui/dialog.tsx'
-
 import { Button } from '@/lib/components/ui/custom-button.tsx'
 import { Phone, PhoneMissed } from 'lucide-react'
 
 import { useAppDispatch, useAppSelector } from '@/base/appContext.tsx'
 import { useContext, useEffect, useState } from 'react'
 import { SocketContext } from '@/common/provider/SocketProvider.tsx'
+import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/lib/components/ui/alert-dialog.tsx'
 
 export const ReceiveCallDialog = () => {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false)
@@ -36,19 +40,14 @@ export const ReceiveCallDialog = () => {
         socket?.emit('denyCall', { to: rtcData.oppositeId })
     }
 
-    const handleOpenChange = (isOpen: boolean) => {
-        if (!isOpen) {
-            //ToDo implement deny logic
-        }
-        setDialogOpen(isOpen)
-    }
-
     return (
-        <Dialog open={dialogOpen} onOpenChange={handleOpenChange}>
-            <DialogContent className="w-11/12 rounded-xl sm:max-w-md">
-                <DialogHeader>
-                    <DialogTitle>{callerName ?? 'Unknown'} is calling</DialogTitle>
-                </DialogHeader>
+        <AlertDialog open={dialogOpen}>
+            <AlertDialogContent className="w-11/12 rounded-xl sm:max-w-md">
+                <AlertDialogHeader>
+                    <AlertDialogTitle className={'text-center'}>
+                        {callerName ?? 'Unknown'} is calling
+                    </AlertDialogTitle>
+                </AlertDialogHeader>
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                     <Button
                         onClick={handleAcceptCall}
@@ -69,7 +68,7 @@ export const ReceiveCallDialog = () => {
                         Deny
                     </Button>
                 </div>
-            </DialogContent>
-        </Dialog>
+            </AlertDialogContent>
+        </AlertDialog>
     )
 }
