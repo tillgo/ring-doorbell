@@ -32,7 +32,7 @@ export const app = express()
 const server = http.createServer(app)
 setupSocket(server)
 
-const dbURL = getConfig().DB_URL ?? ''
+const dbURL = getConfig().DB_URL
 const migrationClient = postgres(dbURL, { max: 1 })
 migrate(drizzle(migrationClient), {
     migrationsFolder: './drizzle',

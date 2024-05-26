@@ -51,7 +51,7 @@ export function Login() {
     }
 
     return (
-        <div className="flex h-screen justify-center p-6">
+        <div className="flex min-h-screen justify-center">
             <Form {...form}>
                 <form
                     onChange={() => {
@@ -60,7 +60,7 @@ export function Login() {
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="flex flex-col justify-center"
                 >
-                    <Card className="w-[350px]">
+                    <Card className="max-w-[350px]">
                         <CardHeader>
                             <CardTitle className="text-2xl">Login</CardTitle>
                             <CardDescription>

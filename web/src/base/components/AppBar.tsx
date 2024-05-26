@@ -17,7 +17,7 @@ export const AppBar = (props: AppBarProps) => {
     const { routes } = props
 
     return (
-        <nav className={'mobile-appbar md:desktop-appbar flex bg-primary-foreground'}>
+        <nav className={'mobile-appbar md:desktop-appbar z-10 flex bg-background'}>
             {routes.map((route, index) => {
                 return <AppBarElement key={index} route={route} />
             })}

@@ -46,8 +46,14 @@ function Main() {
 
     return (
         <>
-            <main className={clsx('', { 'h-full w-full pb-16 md:pb-0 md:pl-16': isAuthenticated })}>
-                <Outlet />
+            <main
+                className={clsx('min-h-screen w-full bg-muted/40 p-4 md:p-8', {
+                    'pb-20 md:pb-8 md:pl-24': isAuthenticated,
+                })}
+            >
+                <div className="mx-auto w-full max-w-4xl">
+                    <Outlet />
+                </div>
             </main>
 
             {isAuthenticated && userId && (

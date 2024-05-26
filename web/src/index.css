@@ -8,7 +8,7 @@
     }
 
     .desktop-appbar {
-        @apply fixed left-0 top-0 h-screen w-16 flex-col justify-start gap-4 border-r-2 border-t-0 p-[7px];
+        @apply fixed left-0 top-0 pt-8 h-screen w-16 flex-col justify-start gap-6 border-r-2 border-t-0 p-[7px];
     }
 
     .appbar-element {
@@ -30,13 +30,13 @@
         --primary: 222.2 47.4% 11.2%;
         --primary-foreground: 210 40% 98%;
 
-        --secondary: 210 40% 96.1%;
+        --secondary: 210 40% 94%;
         --secondary-foreground: 222.2 47.4% 11.2%;
 
         --muted: 210 40% 96.1%;
         --muted-foreground: 215.4 16.3% 46.9%;
 
-        --accent: 210 40% 96.1%;
+        --accent: 210 40% 94%;
         --accent-foreground: 222.2 47.4% 11.2%;
 
         --success: 142.4 71.8% 29.2%;

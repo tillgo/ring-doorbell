@@ -19,7 +19,7 @@ function Index() {
     }
 
     return (
-        <div className="flex p-2">
+        <div className="flex">
             <h3>Welcome {data?.username ?? '-'}!</h3>
             <Button onClick={onOpenDrawer}>Open Drawer</Button>
             <ThemeToggle />

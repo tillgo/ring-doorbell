@@ -6,10 +6,10 @@ export const Route = createFileRoute('/register-device')({
 })
 function RegisterDevice() {
     return (
-        <div className="mx-auto h-full w-full max-w-2xl">
-            <section className="aspect-square w-full">
+        <div className="mx-auto w-full max-w-2xl">
+            <section className="w-full">
                 <Scanner
-                    components={{ audio: false, tracker: true }}
+                    components={{ audio: false, tracker: true, torch: false }}
                     onResult={(text, result) => console.log(text, result)}
                 />
             </section>
