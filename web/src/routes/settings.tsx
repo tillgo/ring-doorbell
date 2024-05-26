@@ -1,7 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { Button } from '@/lib/components/ui/custom-button'
 import { handleLogout } from '@/common/utils/logout.ts'
-import { BellRing, LogOut, SunMoon } from 'lucide-react'
+import { BellRing, LogOut, Plus, SunMoon } from 'lucide-react'
 import {
     Card,
     CardContent,
@@ -28,8 +28,14 @@ function Settings() {
                     <CardDescription>Manage your door bell devices.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
+                    <Link to="/register-device">
+                        <Button variant="secondary" className="w-full">
+                            <Plus className="mr-2 h-4 w-4" />
+                            Register a new device
+                        </Button>
+                    </Link>
                     <div className="flex items-center space-x-4 rounded-md border p-4">
-                        TODO: Option to register device and set nickname
+                        TODO: list of devices and change nicknames
                     </div>
                 </CardContent>
             </Card>
