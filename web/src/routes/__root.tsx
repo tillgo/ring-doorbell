@@ -14,8 +14,8 @@ const routes: Routes = [
         icon: <LayoutDashboard className={'h-8 w-8'} />,
     },
     {
-        tooltip: 'Admin-Controls',
-        route: 'admin',
+        tooltip: 'Admin Controls',
+        route: 'admin-controls',
         icon: <Shield className={'h-8 w-8'} />,
     },
     {

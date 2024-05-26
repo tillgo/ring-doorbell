@@ -12,14 +12,21 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as SignUpImport } from './routes/sign-up'
+import { Route as SettingsImport } from './routes/settings'
 import { Route as RegisterDeviceImport } from './routes/register-device'
 import { Route as LoginImport } from './routes/login'
+import { Route as AdminControlsImport } from './routes/admin-controls'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
 const SignUpRoute = SignUpImport.update({
   path: '/sign-up',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SettingsRoute = SettingsImport.update({
+  path: '/settings',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -30,6 +37,11 @@ const RegisterDeviceRoute = RegisterDeviceImport.update({
 
 const LoginRoute = LoginImport.update({
   path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AdminControlsRoute = AdminControlsImport.update({
+  path: '/admin-controls',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -46,12 +58,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/admin-controls': {
+      preLoaderRoute: typeof AdminControlsImport
+      parentRoute: typeof rootRoute
+    }
     '/login': {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
     '/register-device': {
       preLoaderRoute: typeof RegisterDeviceImport
+      parentRoute: typeof rootRoute
+    }
+    '/settings': {
+      preLoaderRoute: typeof SettingsImport
       parentRoute: typeof rootRoute
     }
     '/sign-up': {
@@ -65,8 +85,10 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
+  AdminControlsRoute,
   LoginRoute,
   RegisterDeviceRoute,
+  SettingsRoute,
   SignUpRoute,
 ])
 

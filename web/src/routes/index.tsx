@@ -1,9 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useAppDispatch } from '@/base/appContext.tsx'
 import { Button } from '@/lib/components/ui/button.tsx'
-import { ThemeToggle } from '@/common/components/ThemeToggle.tsx'
-import { useQuery } from '@tanstack/react-query'
-import { fetchMyUser } from '@/base/api/queries/users.ts'
 
 export const Route = createFileRoute('/')({
     component: Index,
@@ -12,17 +9,16 @@ export const Route = createFileRoute('/')({
 function Index() {
     const dispatch = useAppDispatch()
 
-    const { data } = useQuery({ queryKey: ['me'], queryFn: fetchMyUser })
+    // const { data } = useQuery({ queryKey: ['me'], queryFn: fetchMyUser })
 
     const onOpenDrawer = () => {
         dispatch({ type: 'updateCallControllerOpen', payload: true })
     }
 
     return (
-        <div className="flex">
-            <h3>Welcome {data?.username ?? '-'}!</h3>
+        <div className="flex flex-col gap-6">
+            <h1 className="text-3xl font-semibold">Dashboard</h1>
             <Button onClick={onOpenDrawer}>Open Drawer</Button>
-            <ThemeToggle />
         </div>
     )
 }
