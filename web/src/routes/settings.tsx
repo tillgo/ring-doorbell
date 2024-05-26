@@ -16,6 +16,7 @@ export const Route = createFileRoute('/settings')({
     component: Settings,
 })
 
+// TODO: implement push notifications
 function Settings() {
     return (
         <div className="flex flex-col gap-6">
@@ -23,7 +24,8 @@ function Settings() {
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Device Settings</CardTitle>
+                    <CardTitle>Devices</CardTitle>
+                    <CardDescription>Manage your door bell devices.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
                     <div className="flex items-center space-x-4 rounded-md border p-4">
@@ -71,14 +73,9 @@ function Settings() {
             <Card>
                 <CardHeader>
                     <CardTitle>Account</CardTitle>
-                    <CardDescription>Manage your account settings and preferences.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
-                    <div className="flex items-center space-x-4 rounded-md border p-4">
-                        TODO: Add account settings
-                    </div>
-
-                    <Button variant="destuctiveSoft" onClick={handleLogout}>
+                    <Button variant="destructive" onClick={handleLogout}>
                         <LogOut className="mr-2 h-4 w-4" />
                         Log out
                     </Button>
