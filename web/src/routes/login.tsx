@@ -51,7 +51,7 @@ export function Login() {
     }
 
     return (
-        <div className="flex min-h-screen justify-center">
+        <div className="flex h-full justify-center md:mt-12">
             <Form {...form}>
                 <form
                     onChange={() => {

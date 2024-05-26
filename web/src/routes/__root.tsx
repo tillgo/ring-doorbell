@@ -47,11 +47,11 @@ function Main() {
     return (
         <>
             <main
-                className={clsx('min-h-screen w-full bg-muted/40 p-4 md:p-8', {
+                className={clsx('min-h-dvh w-full bg-muted/40 p-4 md:p-8', {
                     'pb-20 md:pb-8 md:pl-24': isAuthenticated,
                 })}
             >
-                <div className="mx-auto w-full max-w-4xl">
+                <div className="mx-auto h-full w-full max-w-4xl">
                     <Outlet />
                 </div>
             </main>
