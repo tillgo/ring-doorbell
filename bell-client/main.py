@@ -3,7 +3,6 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWid
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QPixmap
 from picamera_stream import PiCameraStream
-from utils.camera_thread import CameraThread
 
 
 class MainWindow(QMainWindow):
@@ -19,9 +18,7 @@ class MainWindow(QMainWindow):
         self.video_label = QLabel(self)
         layout.addWidget(self.video_label)
 
-        self.thread = CameraThread()
-        self.thread.change_pixmap_signal.connect(self.update_frame)
-        self.thread.start()
+
 
     def update_frame(self, pixmap):
         print("Pixmap")
