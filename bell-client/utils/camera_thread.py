@@ -10,7 +10,7 @@ from picamera2 import Picamera2, MappedArray
 
 
 class CameraThread(QThread):
-    frame_available = Signal(QImage)
+    frame_available = Signal(VideoFrame)
 
     def __init__(self, capture_device=0, parent=None):
         super().__init__()
