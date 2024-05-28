@@ -7,6 +7,10 @@ WORKDIR /tmp/
 COPY web/ . web/
 COPY server/ . server/
 
+# Install dependencies for backend
+WORKDIR /tmp/server
+RUN npm install
+
 # Install dependencies for frontend
 WORKDIR /tmp/web
 RUN npm install
@@ -17,10 +21,8 @@ RUN npm run build
 
 WORKDIR /usr/src/app
 # Copy backend
-COPY server/ .
+COPY /tmp/server/ .
 
-# Install dependencies for backend
-RUN npm install
 # Build Backend
 RUN npm run build
 # Copy static frontent to public folder in backend
