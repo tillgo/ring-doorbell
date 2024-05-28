@@ -26,7 +26,6 @@ export const AppBarElement = (props: AppBarIconProps) => {
                         activeProps={{
                             className: 'bg-accent',
                         }}
-                        activeOptions={{ exact: true }}
                     >
                         {route.icon}
                     </Link>
