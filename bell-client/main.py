@@ -24,6 +24,7 @@ class MainWindow(QMainWindow):
         self.timer.start(50)  # Update every 50 milliseconds
 
     async def update_frame(self):
+        print("Test")
         frame = await self.camera_stream.recv()
         print(frame)
         if frame is not None:
