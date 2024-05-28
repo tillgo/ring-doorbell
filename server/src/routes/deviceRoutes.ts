@@ -28,6 +28,11 @@ router.post('/register', validate({ body: DeviceRegisterSchema }), async (req: R
             message: 'Incorrect identifier or password',
         })
     }
+    if (device.ownerId) {
+        return res.status(400).json({
+            message: 'Device already registered',
+        })
+    }
 
     const isPasswordCorrect = await bcrypt.compare(data.password, device.passwordHash)
     if (!isPasswordCorrect) {
