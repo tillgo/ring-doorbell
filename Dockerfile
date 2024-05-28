@@ -15,6 +15,9 @@ RUN npm install
 WORKDIR /tmp/web
 RUN npm install
 
+# TODO: get real env from somewhere better
+RUN cp .env.example .env.production
+
 # Build frontend
 RUN npm run build
 
