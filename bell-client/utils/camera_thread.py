@@ -8,7 +8,7 @@ class CameraThread(QThread):
 
     def __init__(self):
         super().__init__()
-        self.cap = cv2.VideoCapture(1)  # Change to your camera index if needed
+        self.cap = cv2.VideoCapture(0)
         print("Open?:")
         print(self.cap.isOpened())
 
