@@ -23,8 +23,9 @@ class MainWindow(QMainWindow):
         self.stream_thread.frame_available.connect(self.update_frame)
         self.stream_thread.start()
 
-    async def update_frame(self):
-        frame = await self.camera_stream.recv()
+    def update_frame(self, frame):
+        print("Frame;")
+        print(frame)
         if frame is not None:
             pixmap = QPixmap()
             pixmap.loadFromData(frame)
