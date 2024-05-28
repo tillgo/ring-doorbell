@@ -57,6 +57,15 @@ app.use('/api/users', authenticate, userRoutes)
 app.use('/api/devices', authenticate, deviceRoutes)
 app.use('/api/auth', authRoutes)
 
+// TODO: api error handling middleware here
+
+app.use((req, res) => {
+    if (req.url.startsWith('/api')) {
+        return res.status(404).send({ message: 'Not found' })
+    }
+    res.sendFile(path.join(__dirname, 'public', 'index.html'))
+})
+
 const port = getConfig().PORT
 server.listen(port, () => {
     console.log(`Server running on port ${port}`)
