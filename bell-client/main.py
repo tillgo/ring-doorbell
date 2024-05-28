@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
         
     def setup_webrtc(self):
         self.pc = RTCPeerConnection()
-        self.sio = socketio.Client()
+        self.sio = socketio.SimpleClient()
         self.sio.connect('http://127.0.0.1:5000')
 
         @self.sio.event
