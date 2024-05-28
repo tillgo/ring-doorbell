@@ -1,29 +1,35 @@
-from picamera.array import PiRGBArray
-from picamera2 import PiCamera2
-import time
 import cv2
 
-#Instantiate and configure picamera
-camera2 = PiCamera2()
-camera2.resolution = (640, 480)
-camera2.framerate = 32
-raw_capture = PiRGBArray(camera2, size=(640, 480))
+def main():
+    # Open a connection to the camera
+    cap = cv2.VideoCapture(0)  # 0 is typically the default camera
 
-#let camera module warm up
-time.sleep(0.1)
+    if not cap.isOpened():
+        print("Error: Could not open camera.")
+        return
 
-# define an OpenCV window to display  video
-cv2.namedWindow("Frame")
+    # Set camera resolution (optional)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
-#Capture continuous frames to access video
-for frame in camera2.capture_continuous(raw_capture, format="bgr", use_video_port=True):
-    image = frame.array
-    cv2.imshow("Frame", image)
-    key = cv2.waitKey(1) & 0xFF
-    raw_capture.truncate(0)
-    #if 'q' is pressed, close OpenCV window and end video
-    if key != ord('q'):
-        pass
-    else:
-        cv2.destroyAllWindows()
-        break
+    while True:
+        # Capture frame-by-frame
+        ret, frame = cap.read()
+
+        if not ret:
+            print("Error: Could not read frame.")
+            break
+
+        # Display the resulting frame
+        cv2.imshow('Raspberry Pi Camera Stream', frame)
+
+        # Break the loop on 'q' key press
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    # When everything is done, release the capture and close windows
+    cap.release()
+    cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    main()
