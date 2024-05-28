@@ -1,28 +1,29 @@
-# https://medium.com/@ilias.info.tel/display-opencv-camera-on-a-pyqt-app-4465398546f7
 import cv2
-import imutils
-from PyQt6.QtCore import QThread, pyqtSignal as Signal
-from PyQt6.QtGui import QImage
+from PyQt6.QtCore import QThread, pyqtSignal
+from PyQt6.QtGui import QPixmap, QImage
 
 
-def cvimage_to_label(image):
-    image = imutils.resize(image, width=640)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    image = QImage(image,
-                   image.shape[1],
-                   image.shape[0],
-                   QImage.Format_RGB888)
-    return image
+class CameraThread(QThread):
+    change_pixmap_signal = pyqtSignal(QPixmap)
 
-
-class MyThread(QThread):
-    frame_signal = Signal(QImage)
+    def __init__(self):
+        super().__init__()
+        self.cap = cv2.VideoCapture(0)  # Change to your camera index if needed
 
     def run(self):
-        self.cap = cv2.VideoCapture(0)
-        while self.cap.isOpened():
-            _, frame = self.cap.read()
-            print("printing frame")
-            print(frame)
-            frame = cvimage_to_label(frame)
-            self.frame_signal.emit(frame)
+        while True:
+            ret, frame = self.cap.read()
+
+            if ret:
+                rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                height, width, ch = rgb_image.shape
+                bytes_per_line = 3 * width
+                qimg = QImage(rgb_image.data, width, height, bytes_per_line, QImage.Format.Format_RGB888)
+                pixmap = QPixmap(qimg)
+                self.change_pixmap_signal.emit(pixmap)
+
+            if cv2.waitKey(1) == ord('q'):
+                break
+
+        # Clean up resources
+        self.cap.release()

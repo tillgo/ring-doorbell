@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Button } from '@/lib/components/ui/custom-button'
+import { Button } from '@/lib/components/ui/button.tsx'
 import { handleLogout } from '@/common/utils/logout.ts'
 import { BellRing, LogOut, Plus, SunMoon } from 'lucide-react'
 import {
@@ -11,6 +11,8 @@ import {
 } from '@/lib/components/ui/card.tsx'
 import { Switch } from '@/lib/components/ui/switch.tsx'
 import { ThemeToggle } from '@/common/components/ThemeToggle.tsx'
+import { useFetchMyDevicesQuery } from '@/base/api/hooks/useFetchMyDevicesQuery.ts'
+import { DeviceItem } from '@/common/components/DeviceItem.tsx'
 
 export const Route = createFileRoute('/settings')({
     component: Settings,
@@ -18,6 +20,8 @@ export const Route = createFileRoute('/settings')({
 
 // TODO: implement push notifications
 function Settings() {
+    const { data: devices = [] } = useFetchMyDevicesQuery()
+
     return (
         <div className="flex flex-col gap-6">
             <h1 className="text-3xl font-semibold">Settings</h1>
@@ -28,15 +32,18 @@ function Settings() {
                     <CardDescription>Manage your door bell devices.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
-                    <Link to="/register-device">
+                    <Link to="/settings/register-device">
                         <Button variant="secondary" className="w-full">
                             <Plus className="mr-2 h-4 w-4" />
                             Register a new device
                         </Button>
                     </Link>
-                    <div className="flex items-center space-x-4 rounded-md border p-4">
-                        TODO: list of devices and change nicknames
-                    </div>
+                    {devices.map((device) => (
+                        <DeviceItem key={device.id} device={device} />
+                    ))}
+                    {devices.length === 0 && (
+                        <span className="text-muted-foreground">No connected devices found</span>
+                    )}
                 </CardContent>
             </Card>
 

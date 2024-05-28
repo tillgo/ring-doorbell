@@ -94,14 +94,13 @@ router.post('/bell/sign-in', validate({ body: DeviceLoginSchema }), async (req, 
             })
         }
 
-        // ToDo überlegen was machen, wenn kein Nickname gesetzt
         const token = createSecretToken({
             id: device.id,
-            name: device.nickname ?? 'No Nickname',
+            name: device.nickname ?? device.id,
             type: 'DEVICE',
         })
 
-        const { secret, ...deviceWithoutSecret } = device
+        const { secretHash, ...deviceWithoutSecret } = device
 
         res.status(200).json({ device: deviceWithoutSecret, token })
     } catch (error) {
