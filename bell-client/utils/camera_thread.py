@@ -15,7 +15,9 @@ class CameraThread(QThread):
     def run(self):
         while True:
             ret, frame = self.cap.read()
-
+            print(ret)
+            print(frame)
+            print("-----------------")
             if ret:
                 rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 height, width, ch = rgb_image.shape
