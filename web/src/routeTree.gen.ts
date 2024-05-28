@@ -15,6 +15,7 @@ import { Route as SignUpImport } from './routes/sign-up'
 import { Route as SettingsImport } from './routes/settings'
 import { Route as LoginImport } from './routes/login'
 import { Route as AdminControlsImport } from './routes/admin-controls'
+import { Route as IndexImport } from './routes/index'
 import { Route as SettingsRegisterDeviceImport } from './routes/settings_.register-device'
 
 // Create/Update Routes
@@ -39,6 +40,11 @@ const AdminControlsRoute = AdminControlsImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const IndexRoute = IndexImport.update({
+  path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const SettingsRegisterDeviceRoute = SettingsRegisterDeviceImport.update({
   path: '/settings/register-device',
   getParentRoute: () => rootRoute,
@@ -48,6 +54,10 @@ const SettingsRegisterDeviceRoute = SettingsRegisterDeviceImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/': {
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
     '/admin-controls': {
       preLoaderRoute: typeof AdminControlsImport
       parentRoute: typeof rootRoute
@@ -74,6 +84,7 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren([
+  IndexRoute,
   AdminControlsRoute,
   LoginRoute,
   SettingsRoute,
