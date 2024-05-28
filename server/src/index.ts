@@ -13,12 +13,12 @@ import * as schema from './db/schema'
 import { checkEnv, getConfig } from './util/EnvManager'
 import { setupSocket } from './routes/socket'
 import { JWTPayload } from './shared/types'
+import deviceRoutes from './routes/deviceRoutes'
 
 declare module 'express' {
     // @ts-ignore
     interface Request extends express.Request {
-       client?: { id: string, type: JWTPayload['type'] }
-
+        client?: { id: string; type: JWTPayload['type'] }
     }
 }
 
@@ -50,8 +50,8 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(cors({ origin: getConfig().NODE_ENV !== 'production' ? '*' : undefined }))
 app.use('/api/users', authenticate, userRoutes)
+app.use('/api/devices', authenticate, deviceRoutes)
 app.use('/api/auth', authRoutes)
-
 
 const port = getConfig().PORT
 server.listen(port, () => {

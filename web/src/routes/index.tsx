@@ -9,8 +9,6 @@ export const Route = createFileRoute('/')({
 function Index() {
     const dispatch = useAppDispatch()
 
-    // const { data } = useQuery({ queryKey: ['me'], queryFn: fetchMyUser })
-
     const onOpenDrawer = () => {
         dispatch({ type: 'updateCallControllerOpen', payload: true })
     }

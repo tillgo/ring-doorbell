@@ -41,7 +41,8 @@ export const device = pgTable('devices', {
     id: uuid('id').defaultRandom().primaryKey(),
 
     identifier: varchar('identifier', { length: 255 }).unique().notNull(),
-    secret: varchar('secret', { length: 255 }).notNull(),
+    secretHash: varchar('secretHash', { length: 64 }).notNull(),
+    passwordHash: varchar('passwordHash', { length: 64 }).notNull(),
 
     nickname: varchar('nickname', { length: 50 }),
     ownerId: uuid('ownerId').references(() => user.id), // nullable
