@@ -4,6 +4,7 @@ import time
 import cv2
 from PyQt6.QtCore import QThread, Qt, pyqtSignal as Signal
 from PyQt6.QtGui import QImage
+from av import VideoFrame
 from PyQt6.QtWidgets import QWidget, QLabel, QApplication
 from picamera2 import Picamera2, MappedArray
 
