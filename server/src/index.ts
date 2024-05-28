@@ -47,7 +47,7 @@ const queryClient = postgres(dbURL)
 export const db = drizzle(queryClient, { schema })
 
 // serve static frontend
-app.use('/', express.static('public'))
+app.use(express.static('public'))
 
 app.use(express.json())
 app.use(cookieParser())
