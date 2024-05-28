@@ -19,16 +19,14 @@ class MainWindow(QMainWindow):
         self.video_label = QLabel(self)
         layout.addWidget(self.video_label)
 
-        self.stream_thread = CameraThread()
-        self.stream_thread.frame_available.connect(self.update_frame)
-        self.stream_thread.start()
+        self.thread = CameraThread()
+        self.thread.change_pixmap_signal.connect(self.update_frame)
+        self.thread.start()
 
-    def update_frame(self, frame):
-        print("Frame;")
-        print(frame)
-        if frame is not None:
-            pixmap = QPixmap()
-            pixmap.fromImage(frame)
+    def update_frame(self, pixmap):
+        print("Pixmap")
+        print(pixmap)
+        if pixmap is not None:
             self.video_label.setPixmap(pixmap)
             self.video_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 

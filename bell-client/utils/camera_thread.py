@@ -1,29 +1,29 @@
-import fractions
-import time
-
 import cv2
-from PyQt6.QtCore import QThread, Qt, pyqtSignal as Signal
-from PyQt6.QtGui import QImage
-from av import VideoFrame
-from PyQt6.QtWidgets import QWidget, QLabel, QApplication
-from picamera2 import Picamera2, MappedArray
+from PyQt6.QtCore import QThread, pyqtSignal
+from PyQt6.QtGui import QPixmap, QImage
 
 
 class CameraThread(QThread):
-    frame_available = Signal(QImage)
+    change_pixmap_signal = pyqtSignal(QPixmap)
 
-    def __init__(self, capture_device=0, parent=None):
+    def __init__(self):
         super().__init__()
-        self.camera = Picamera2()
-        self.camera.configure(self.camera.create_preview_configuration(main={"format": "RGB888"}))
-        self.camera.start()
+        self.cap = cv2.VideoCapture(0)  # Change to your camera index if needed
 
     def run(self):
-        while self.isRunning():
-            frame = self.camera.capture_array()
-            # Convert BGR to RGB for PyQt
-            rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            height, width, channels = rgb_image.shape
-            bytes_per_line = channels * width
-            qt_image = QImage(rgb_image.data, width, height, bytes_per_line, QImage.Format.Format_RGB888)
-            self.frame_available.emit(qt_image)
+        while True:
+            ret, frame = self.cap.read()
+
+            if ret:
+                rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                height, width, ch = rgb_image.shape
+                bytes_per_line = 3 * width
+                qimg = QImage(rgb_image.data, width, height, bytes_per_line, QImage.Format.Format_RGB888)
+                pixmap = QPixmap(qimg)
+                self.change_pixmap_signal.emit(pixmap)
+
+            if cv2.waitKey(1) == ord('q'):
+                break
+
+        # Clean up resources
+        self.cap.release()
