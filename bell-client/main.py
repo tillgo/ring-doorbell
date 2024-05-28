@@ -8,7 +8,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Raspberry Pi Camera Stream")
-        self.setGeometry(100, 100, 480, 250)
+        self.setGeometry(0, 0, 480, 250)
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
