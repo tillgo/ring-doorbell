@@ -37,8 +37,10 @@ export const DeviceLoginSchema = createSelectSchema(device).pick({
 export type DeviceLoginData = z.infer<typeof DeviceLoginSchema>
 
 export const DeviceRegisterSchema = z.object({
-    identifier: z.string({ message: 'Device identifier required' }),
-    password: z.string({ message: 'Device password required' }),
+    identifier: z
+        .string({ message: 'Device identifier required' })
+        .min(1, 'Device identifier required'),
+    password: z.string({ message: 'Device password required' }).min(1, 'Device password required'),
     nickname: z.string().optional(),
 })
 export type DeviceRegisterData = z.infer<typeof DeviceRegisterSchema>
