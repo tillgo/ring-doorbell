@@ -10,7 +10,7 @@ class PiCameraStream(VideoStreamTrack):
         self.camera = Picamera2()
         self.camera.configure(self.camera.create_preview_configuration(main={"format": "RGB888"}))
         self.camera.start()
-        self.recv()
+        self.camera.capture_array()
 
     async def recv(self):
         frame = await asyncio.get_event_loop().run_in_executor(None, self.capture_frame)
