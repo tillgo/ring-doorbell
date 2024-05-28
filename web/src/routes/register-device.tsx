@@ -41,6 +41,8 @@ function RegisterDevice() {
 
     const onSubmit: SubmitHandler<DeviceRegisterData> = async (formData) => {
         registerDevice({ ...formData, nickname: formData.nickname || undefined })
+
+        //TODO: redirect to settings page
     }
 
     const handleScanQrCode = (text: string) => {
