@@ -1,5 +1,5 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QPixmap
 from picamera_stream import PiCameraStream
@@ -20,6 +20,9 @@ class MainWindow(QMainWindow):
         self.camera_stream = PiCameraStream()
 
         print("Test init main window before timer")
+        self.updateImgButton = QPushButton("Update Image")
+        self.updateImgButton.clicked.connect(self.update_frame)
+        layout.addWidget(self.updateImgButton)
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(50)  # Update every 50 milliseconds
