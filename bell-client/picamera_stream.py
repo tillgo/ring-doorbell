@@ -18,6 +18,8 @@ class PiCameraStream(VideoStreamTrack):
     def capture_frame(self):
         frame = self.camera.capture_array()
         video_frame = VideoFrame.from_ndarray(frame, format="rgb24")
+        print("capture frame")
+        print(video_frame)
         video_frame.pts = int(time.time() * 1000000)
         video_frame.time_base = fractions.Fraction(1, 1000000)
         return video_frame
