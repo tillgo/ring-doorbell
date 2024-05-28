@@ -32,7 +32,7 @@ RUN npm install
 RUN npm run build
 # Copy static frontent to public folder in backend
 RUN mkdir -p ./dist/src/public
-RUN cp -a /tmp/web/dist/. ./dist/public/
+RUN cp -a /tmp/web/dist/. ./dist/src/public/
 RUN ls -la ./dist/src/public
 
 

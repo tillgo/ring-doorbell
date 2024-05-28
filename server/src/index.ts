@@ -14,6 +14,7 @@ import { checkEnv, getConfig } from './util/EnvManager'
 import { setupSocket } from './routes/socket'
 import { JWTPayload } from './shared/types'
 import deviceRoutes from './routes/deviceRoutes'
+import path from 'node:path'
 
 declare module 'express' {
     // @ts-ignore
@@ -47,7 +48,7 @@ const queryClient = postgres(dbURL)
 export const db = drizzle(queryClient, { schema })
 
 // serve static frontend
-app.use(express.static('public'))
+app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(express.json())
 app.use(cookieParser())
