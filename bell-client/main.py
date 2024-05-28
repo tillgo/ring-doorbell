@@ -19,6 +19,7 @@ class MainWindow(QMainWindow):
 
         self.camera_stream = PiCameraStream()
 
+        print("Test init main window before timer")
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(50)  # Update every 50 milliseconds
