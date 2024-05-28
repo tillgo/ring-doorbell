@@ -22,7 +22,7 @@ def capture_done(job):
 
 
 
-if __name = "__main__":
+if __name__ == "__main__":
     picam2 = Picamera2()
     picam2.configure(picam2.create_preview_configuration())
 
