@@ -22,5 +22,7 @@ class MyThread(QThread):
         self.cap = cv2.VideoCapture(0)
         while self.cap.isOpened():
             _, frame = self.cap.read()
+            print("printing frame")
+            print(frame)
             frame = cvimage_to_label(frame)
             self.frame_signal.emit(frame)
