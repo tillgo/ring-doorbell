@@ -1,8 +1,10 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QPixmap
 from picamera_stream import PiCameraStream
+from utils.camera_thread import CameraThread
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -17,20 +19,12 @@ class MainWindow(QMainWindow):
         self.video_label = QLabel(self)
         layout.addWidget(self.video_label)
 
-        self.camera_stream = PiCameraStream()
+        self.stream_thread = CameraThread()
+        self.stream_thread.frame_available.connect(self.update_frame)
+        self.stream_thread.start()
 
-        print("Test init main window before timer")
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_frame)
-        self.timer.start(50)  # Update every 50 milliseconds
-
-    async def update_frame(self):
-        print("----------------------------------------------------------------------"
-              "-----------------------------------------------------------------------"
-              "-------------------------------------------------------------------------"
-              "--------------------------------------------------------------------------"
-              "-------------------------------------------------------------------------")
-        frame = await self.camera_stream.recv()
+    def update_frame(self, frame):
+        print("Frame;")
         print(frame)
         if frame is not None:
             pixmap = QPixmap()

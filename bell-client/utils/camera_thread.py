@@ -1,28 +1,26 @@
-# https://medium.com/@ilias.info.tel/display-opencv-camera-on-a-pyqt-app-4465398546f7
 import cv2
-import imutils
-from PyQt6.QtCore import QThread, pyqtSignal as Signal
+from PyQt6.QtCore import QThread, Qt, pyqtSignal as Signal
 from PyQt6.QtGui import QImage
+from PyQt6.QtWidgets import QWidget, QLabel, QApplication
 
 
-def cvimage_to_label(image):
-    image = imutils.resize(image, width=640)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    image = QImage(image,
-                   image.shape[1],
-                   image.shape[0],
-                   QImage.Format_RGB888)
-    return image
+class CameraThread(QThread):
+    frame_available = Signal(QImage)
 
-
-class MyThread(QThread):
-    frame_signal = Signal(QImage)
+    def __init__(self, capture_device=0, parent=None):
+        super().__init__(parent)
+        self.cap = cv2.VideoCapture(capture_device)
 
     def run(self):
-        self.cap = cv2.VideoCapture(0)
-        while self.cap.isOpened():
-            _, frame = self.cap.read()
-            print("printing frame")
-            print(frame)
-            frame = cvimage_to_label(frame)
-            self.frame_signal.emit(frame)
+        while self.isRunning():
+            ret, frame = self.cap.read()
+            print("At least method works")
+            if ret:
+                print("There is a frame")
+                print(frame)
+                # Convert BGR to RGB for PyQt
+                rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                height, width, channels = rgb_image.shape
+                bytes_per_line = channels * width
+                qt_image = QImage(rgb_image.data, width, height, bytes_per_line, QImage.Format_RGB888)
+                self.frame_available.emit(qt_image)
