@@ -21,7 +21,9 @@ RUN npm run build
 
 WORKDIR /usr/src/app
 # Copy backend
-RUN cp /tmp/server .
+COPY server/ .
+
+RUN npm install
 
 # Build Backend
 RUN npm run build
