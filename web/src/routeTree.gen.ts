@@ -13,10 +13,9 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as SignUpImport } from './routes/sign-up'
 import { Route as SettingsImport } from './routes/settings'
-import { Route as RegisterDeviceImport } from './routes/register-device'
 import { Route as LoginImport } from './routes/login'
 import { Route as AdminControlsImport } from './routes/admin-controls'
-import { Route as IndexImport } from './routes/index'
+import { Route as SettingsRegisterDeviceImport } from './routes/settings_.register-device'
 
 // Create/Update Routes
 
@@ -30,11 +29,6 @@ const SettingsRoute = SettingsImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const RegisterDeviceRoute = RegisterDeviceImport.update({
-  path: '/register-device',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const LoginRoute = LoginImport.update({
   path: '/login',
   getParentRoute: () => rootRoute,
@@ -45,8 +39,8 @@ const AdminControlsRoute = AdminControlsImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexRoute = IndexImport.update({
-  path: '/',
+const SettingsRegisterDeviceRoute = SettingsRegisterDeviceImport.update({
+  path: '/settings/register-device',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -54,20 +48,12 @@ const IndexRoute = IndexImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
     '/admin-controls': {
       preLoaderRoute: typeof AdminControlsImport
       parentRoute: typeof rootRoute
     }
     '/login': {
       preLoaderRoute: typeof LoginImport
-      parentRoute: typeof rootRoute
-    }
-    '/register-device': {
-      preLoaderRoute: typeof RegisterDeviceImport
       parentRoute: typeof rootRoute
     }
     '/settings': {
@@ -78,18 +64,21 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignUpImport
       parentRoute: typeof rootRoute
     }
+    '/settings/register-device': {
+      preLoaderRoute: typeof SettingsRegisterDeviceImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren([
-  IndexRoute,
   AdminControlsRoute,
   LoginRoute,
-  RegisterDeviceRoute,
   SettingsRoute,
   SignUpRoute,
+  SettingsRegisterDeviceRoute,
 ])
 
 /* prettier-ignore-end */

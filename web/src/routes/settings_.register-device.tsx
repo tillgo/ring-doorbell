@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { Scanner } from '@yudiel/react-qr-scanner'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { DeviceRegisterData, DeviceRegisterSchema } from '@/shared/types.ts'
@@ -16,13 +16,43 @@ import { Input } from '@/lib/components/ui/input.tsx'
 import { Button } from '@/lib/components/ui/button.tsx'
 import { useState } from 'react'
 import { useRegisterDeviceMutation } from '@/base/api/hooks/useRegisterDeviceMutation.ts'
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from '@/lib/components/ui/breadcrumb.tsx'
 
 type QrData = {
     identifier: string
     password: string
 }
 
-export const Route = createFileRoute('/register-device')({
+const BreadCrumbs = () => {
+    return (
+        <Breadcrumb>
+            <BreadcrumbList>
+                <BreadcrumbItem>
+                    <BreadcrumbLink>
+                        <Link to={'/settings'}>Settings</Link>
+                    </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                    <BreadcrumbLink>
+                        <Link to={'/settings/register-device'}>
+                            <BreadcrumbPage>Register Device</BreadcrumbPage>
+                        </Link>
+                    </BreadcrumbLink>
+                </BreadcrumbItem>
+            </BreadcrumbList>
+        </Breadcrumb>
+    )
+}
+
+export const Route = createFileRoute('/settings/register-device')({
     component: RegisterDevice,
 })
 function RegisterDevice() {
@@ -57,7 +87,9 @@ function RegisterDevice() {
     }
 
     return (
-        <div className="mx-auto flex w-full max-w-2xl flex-col gap-8">
+        <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
+            <BreadCrumbs />
+
             {isScanning && (
                 <section className="w-full">
                     <Scanner
