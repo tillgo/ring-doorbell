@@ -6,12 +6,10 @@ import Peer, { MediaConnection } from 'peerjs'
 import { VideoComponent } from '@/base/components/VideoComponent.tsx'
 import { X } from 'lucide-react'
 import { SocketContext } from '@/common/provider/SocketProvider.tsx'
-import useAuth from '@/common/hooks/useAuth.ts'
 
 export const CallControllerDrawer = (props: { userId: string }) => {
     // ToDo socket connects itself two times. What is the problem? (Maybe component gets completly rerendered)
     const socket = useContext(SocketContext)
-    const { username } = useAuth()
     const { userId } = props
     const dispatch = useAppDispatch()
     const callControllerState = useAppSelector((s) => s.callController)
@@ -68,7 +66,6 @@ export const CallControllerDrawer = (props: { userId: string }) => {
             socket?.emit('callClient', {
                 to: id,
                 signalData: rtcId,
-                name: username,
             })
         })
 

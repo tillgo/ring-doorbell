@@ -19,8 +19,7 @@ export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typ
             if (!jwt) {
                 return next(new Error('Unauthorized'))
             }
-            const payload = verifySecretToken(jwt)
-            socket.data.authId = payload.id
+            socket.data.authClient = verifySecretToken(jwt)
         } catch (err) {
             return next(new Error('Unauthorized'))
         }
@@ -35,9 +34,9 @@ export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typ
 
     io.on('connection', (socket) => {
         console.log('A user connected')
-
+        console.log(socket.data.authClient)
         // Set or update client (client is online)
-        clients.set(socket.data.authId, socket.id)
+        clients.set(socket.data.authClient.id, socket.id)
 
 
         socket.on('callClient', (data) => {
@@ -46,8 +45,8 @@ export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typ
             if (clientToCallSocketId) {
                 io.to(clientToCallSocketId).emit('callClient', {
                     signal: data.signalData,
-                    from: socket.data.authId,
-                    name: data.name,
+                    from: socket.data.authClient.id,
+                    name: socket.data.authClient.name,
                 })
                 // else notify sender, that client is not online
             } else {
