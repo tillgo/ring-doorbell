@@ -36,14 +36,6 @@ export const validate =
 
             return next()
         } catch (error) {
-            if (error instanceof ZodError) {
-                res.status(400).json({
-                    error: error,
-                    message: 'Validation errors occurred',
-                })
-            } else {
-                console.error('Unexpected error:', error)
-                next(error)
-            }
+            next(error)
         }
     }

@@ -1,19 +1,13 @@
 import express, { Request } from 'express'
 import { validate } from '../middleware/zodValidate'
-import {
-    Device,
-    DeviceRegisterData,
-    DeviceRegisterSchema,
-    Username,
-    UsernameSchema,
-} from '../shared/types'
-import { getUser, getUserById } from '../db/userRepository'
+import { Device, DeviceRegisterData, DeviceRegisterSchema } from '../shared/types'
 import {
     getDevicesForUser,
     getDeviceWithPassword,
     registerDeviceForUser,
 } from '../db/deviceRepository'
 import bcrypt from 'bcrypt'
+import { BadRequestProblem } from '../util/errors'
 
 const router = express.Router()
 
@@ -24,21 +18,15 @@ router.post('/register', validate({ body: DeviceRegisterSchema }), async (req: R
     const device = await getDeviceWithPassword(data.identifier)
 
     if (!device) {
-        return res.status(400).json({
-            message: 'Incorrect identifier or password',
-        })
+        throw new BadRequestProblem('Incorrect identifier or password')
     }
     if (device.ownerId) {
-        return res.status(400).json({
-            message: 'Device already registered',
-        })
+        throw new BadRequestProblem('Device already registered')
     }
 
     const isPasswordCorrect = await bcrypt.compare(data.password, device.passwordHash)
     if (!isPasswordCorrect) {
-        return res.status(400).json({
-            message: 'Incorrect identifier or password',
-        })
+        throw new BadRequestProblem('Incorrect identifier or password')
     }
 
     await registerDeviceForUser(data.identifier, userId, data.nickname)

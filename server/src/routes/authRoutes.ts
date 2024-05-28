@@ -13,133 +13,94 @@ import bcrypt from 'bcrypt'
 import { createRefreshToken, createSecretToken, verifySecretToken } from '../util/jwtUtils'
 import { getRefreshToken, saveRefreshToken } from '../db/refreshTokenRepository'
 import { getDeviceWithSecret } from '../db/deviceRepository'
+import { BadRequestProblem } from '../util/errors'
 
 const router = express.Router()
 
 router.post('/sign-up', validate({ body: LoginSchema }), async (req, res) => {
     const data = req.body as LoginData
 
-    try {
-        const existingUser = await getUserWithPassword({ username: data.username })
-        if (existingUser) {
-            return res.status(400).json({
-                message: 'User already exists',
-            })
-        }
-
-        bcrypt.hash(data.password, 10, async function (err, hash) {
-            if (err) {
-                return res.status(400).json({
-                    message: 'Failed to hash password',
-                })
-            }
-
-            const user = await createUser({ username: data.username, passwordHash: hash })
-
-            const token = createSecretToken({ id: user.id, name: user.username, type: 'USER' })
-            const refreshToken = createRefreshToken()
-
-            await saveRefreshToken({ userId: user.id, token: refreshToken, isValid: true })
-
-            res.status(201).json({ user, token, refreshToken })
-        })
-    } catch (error) {
-        res.status(500).json({
-            error: error,
-            message: 'Sign-up failed',
-        })
+    const existingUser = await getUserWithPassword({ username: data.username })
+    if (existingUser) {
+        throw new BadRequestProblem('User already exists')
     }
-})
 
-router.post('/sign-in', validate({ body: LoginSchema }), async (req, res) => {
-    const data = req.body as LoginData
-
-    try {
-        const user = await getUserWithPassword({ username: data.username })
-        if (!user) {
-            return res.status(400).json({
-                message: 'Incorrect username or password',
-            })
+    bcrypt.hash(data.password, 10, async function (err, hash) {
+        if (err) {
+            throw new BadRequestProblem('Error while hashing password')
         }
 
-        const isPasswordCorrect = await bcrypt.compare(data.password, user.passwordHash)
-        if (!isPasswordCorrect) {
-            return res.status(400).json({
-                message: 'Incorrect username or password',
-            })
-        }
+        const user = await createUser({ username: data.username, passwordHash: hash })
 
         const token = createSecretToken({ id: user.id, name: user.username, type: 'USER' })
         const refreshToken = createRefreshToken()
 
         await saveRefreshToken({ userId: user.id, token: refreshToken, isValid: true })
 
-        res.status(200).json({ user, token, refreshToken })
-    } catch (error) {
-        res.status(500).json({
-            error: error,
-            message: 'Login failed',
-        })
+        res.status(201).json({ user, token, refreshToken })
+    })
+})
+
+router.post('/sign-in', validate({ body: LoginSchema }), async (req, res) => {
+    const data = req.body as LoginData
+
+    const user = await getUserWithPassword({ username: data.username })
+    if (!user) {
+        throw new BadRequestProblem('Incorrect username or password')
     }
+
+    const isPasswordCorrect = await bcrypt.compare(data.password, user.passwordHash)
+    if (!isPasswordCorrect) {
+        throw new BadRequestProblem('Incorrect username or password')
+    }
+
+    const token = createSecretToken({ id: user.id, name: user.username, type: 'USER' })
+    const refreshToken = createRefreshToken()
+
+    await saveRefreshToken({ userId: user.id, token: refreshToken, isValid: true })
+
+    res.status(200).json({ user, token, refreshToken })
 })
 
 router.post('/bell/sign-in', validate({ body: DeviceLoginSchema }), async (req, res) => {
     const data = req.body as DeviceLoginData
 
-    try {
-        const device = await getDeviceWithSecret({ identifier: data.identifier })
-        if (!device) {
-            return res.status(400).json({
-                message: 'Device not found',
-            })
-        }
-
-        const token = createSecretToken({
-            id: device.id,
-            name: device.nickname ?? device.id,
-            type: 'DEVICE',
-        })
-
-        const { secretHash, ...deviceWithoutSecret } = device
-
-        res.status(200).json({ device: deviceWithoutSecret, token })
-    } catch (error) {
-        res.status(500).json({
-            error: error,
-            message: 'Login failed',
-        })
+    const device = await getDeviceWithSecret({ identifier: data.identifier })
+    if (!device) {
+        throw new BadRequestProblem('Device not found')
     }
+
+    const token = createSecretToken({
+        id: device.id,
+        name: device.nickname ?? device.id,
+        type: 'DEVICE',
+    })
+
+    const { secretHash, ...deviceWithoutSecret } = device
+
+    res.status(200).json({ device: deviceWithoutSecret, token })
 })
 
 router.post('/refresh-token', validate({ body: RefreshTokenSchema }), async (req, res) => {
     const data = req.body as RefreshTokenData
 
-    try {
-        verifySecretToken(data.refreshToken)
+    verifySecretToken(data.refreshToken)
 
-        const refreshToken = await getRefreshToken(data)
-        if (!refreshToken || !refreshToken.isValid) {
-            return res.status(400).json({
-                message: "Refresh token and user don't match or refresh token is not valid",
-            })
-        }
-
-        const user = await getUserById(data.userId)
-        if (!user) {
-            return res.status(401).json({
-                message: 'User doesnt exist anymore',
-            })
-        }
-
-        const newToken = createSecretToken({ id: user.id, name: user.username, type: 'USER' })
-
-        res.status(200).json({ token: newToken })
-    } catch (error) {
-        res.status(400).json({
-            error: error,
-            message: 'Token refresh failed',
-        })
+    const refreshToken = await getRefreshToken(data)
+    if (!refreshToken || !refreshToken.isValid) {
+        throw new BadRequestProblem(
+            'Refresh token and user dont match or refresh token is not valid'
+        )
     }
+
+    const user = await getUserById(data.userId)
+    if (!user) {
+        throw new BadRequestProblem("User doesn't exist anymore")
+    }
+
+    const newToken = createSecretToken({ id: user.id, name: user.username, type: 'USER' })
+
+    res.status(200).json({ token: newToken })
 })
 
 export default router
