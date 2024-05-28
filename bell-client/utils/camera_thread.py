@@ -14,7 +14,10 @@ class CameraThread(QThread):
     def run(self):
         while self.isRunning():
             ret, frame = self.cap.read()
+            print("At least method works")
             if ret:
+                print("There is a frame")
+                print(frame)
                 # Convert BGR to RGB for PyQt
                 rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 height, width, channels = rgb_image.shape
