@@ -28,7 +28,7 @@ class MainWindow(QMainWindow):
         print(frame)
         if frame is not None:
             pixmap = QPixmap()
-            pixmap.loadFromData(frame)
+            pixmap.fromImage(frame)
             self.video_label.setPixmap(pixmap)
             self.video_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
