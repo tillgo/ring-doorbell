@@ -8,7 +8,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Raspberry Pi Camera Stream")
-        self.setGeometry(100, 100, 640, 480)
+        self.setGeometry(100, 100, 480, 250)
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -23,8 +23,8 @@ class MainWindow(QMainWindow):
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(50)  # Update every 50 milliseconds
 
-    def update_frame(self):
-        frame = self.camera_stream.recv()
+    async def update_frame(self):
+        frame = await self.camera_stream.recv()
         if frame is not None:
             pixmap = QPixmap()
             pixmap.loadFromData(frame)
