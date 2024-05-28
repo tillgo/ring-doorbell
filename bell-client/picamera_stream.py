@@ -1,4 +1,3 @@
-import fractions
 import time
 
 import cv2
@@ -6,6 +5,7 @@ from aiortc import VideoStreamTrack
 from av import VideoFrame
 from picamera2 import Picamera2, MappedArray
 import asyncio
+
 
 class PiCameraStream(VideoStreamTrack):
     def __init__(self):
