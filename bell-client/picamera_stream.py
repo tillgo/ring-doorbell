@@ -10,6 +10,7 @@ class PiCameraStream(VideoStreamTrack):
         self.camera = Picamera2()
         self.camera.configure(self.camera.create_preview_configuration(main={"format": "RGB888"}))
         self.camera.start()
+        print("Test2313213213")
         self.capture_frame()
 
     async def recv(self):
