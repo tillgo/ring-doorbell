@@ -63,7 +63,7 @@ app.use((req, res) => {
     if (req.url.startsWith('/api')) {
         return res.status(404).send({ message: 'Not found' })
     }
-    res.sendFile(path.join(__dirname, 'public', 'index.html'))
+    res.status(200).sendFile(path.join(__dirname, 'public', 'index.html'))
 })
 
 const port = getConfig().PORT
