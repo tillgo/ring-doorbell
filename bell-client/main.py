@@ -26,9 +26,7 @@ class MainWindow(QMainWindow):
     async def update_frame(self):
         frame = await self.camera_stream.recv()
         if frame is not None:
-            pixmap = QPixmap()
-            pixmap.loadFromData(frame)
-            self.video_label.setPixmap(pixmap)
+            self.video_label.setPixmap(QPixmap.fromImage(frame))
             self.video_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
 def main():
