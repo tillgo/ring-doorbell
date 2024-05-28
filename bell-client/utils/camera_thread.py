@@ -15,6 +15,7 @@ class CameraThread(QThread):
         while self.isRunning():
             ret, frame = self.cap.read()
             print("At least method works")
+            print(frame)
             if ret:
                 print("There is a frame")
                 print(frame)
