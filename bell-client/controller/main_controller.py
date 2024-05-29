@@ -2,9 +2,9 @@ import threading
 
 from PyQt6.QtWidgets import QMainWindow
 
-import main_window
 from controller.greeting_controller import GreetingController
 from controller.ring_controller import wait_for_nfc_id
+from view import main_window
 
 
 class MainController(QMainWindow):
