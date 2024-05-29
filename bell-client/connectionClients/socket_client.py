@@ -5,7 +5,7 @@ from connectionClients.http_client import HttpClient
 
 class SocketClient(object):
     _instance = None
-    url = "http://localhost:8080"
+    url = "http://192.168.22.36:8080"
     sio = None
 
     # Singleton

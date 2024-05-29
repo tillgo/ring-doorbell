@@ -7,7 +7,7 @@ from connectionClients.token_adapter import TokenAdapter
 
 class HttpClient(object):
     _instance = None
-    url = "http://localhost:8080/api"
+    url = "http://192.168.22.36:8080/api"
     # ToDo Identifier und Secret einlesen (evtl. aus File)
     secret: str = "XKm27vj1"
     identifier: str = "12-34-56-78"
