@@ -1,4 +1,4 @@
-import { Device, User } from '@/shared/types.ts'
+import { Device, HouseholdMember, User } from '@/shared/types.ts'
 
 // all the other api types can be reused from the @/shared/types backend types
 // These are modified with the DateAsString type to be able to use them in the frontend
@@ -19,3 +19,5 @@ type StringifyDates<T extends object> = {
 export type ApiUser = StringifyDates<User>
 
 export type ApiDevice = StringifyDates<Device>
+
+export type ApiHouseholdMember = StringifyDates<HouseholdMember>

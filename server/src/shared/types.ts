@@ -58,6 +58,9 @@ export type Device = z.infer<typeof DeviceSchema>
 export const DeviceIdentifierSchema = createSelectSchema(device).pick({ identifier: true })
 export type DeviceIdentifier = z.infer<typeof DeviceIdentifierSchema>
 
+export const DeviceIdSchema = createSelectSchema(device).pick({ id: true })
+export type DeviceId = z.infer<typeof DeviceIdSchema>
+
 export const RefreshTokenSchema = z.object({
     userId: z.string().uuid(),
     refreshToken: z.string().max(255),
@@ -73,3 +76,11 @@ export const AddHouseholdMemberSchema = z.object({
     nickname: z.string().optional(),
 })
 export type AddHouseholdMemberData = z.infer<typeof AddHouseholdMemberSchema>
+
+// handcrafted types ----------------------------------------------------------------------------
+export type HouseholdMember = {
+    userId: string
+    userNickname: string | null
+    deviceId: string
+    user: User
+}

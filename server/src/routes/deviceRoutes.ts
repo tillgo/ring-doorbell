@@ -1,13 +1,24 @@
 import express, { Request } from 'express'
 import { validate } from '../middleware/zodValidate'
-import { Device, DeviceRegisterData, DeviceRegisterSchema } from '../shared/types'
 import {
+    AddHouseholdMemberData,
+    AddHouseholdMemberSchema,
+    Device,
+    DeviceId,
+    DeviceIdSchema,
+    DeviceRegisterData,
+    DeviceRegisterSchema,
+    HouseholdMember,
+} from '../shared/types'
+import {
+    addHouseholdMember,
+    getDeviceById,
     getDevicesForUser,
     getDeviceWithPassword,
     registerDeviceForUser,
 } from '../db/deviceRepository'
 import bcrypt from 'bcrypt'
-import { BadRequestProblem } from '../util/errors'
+import { BadRequestProblem, ForbiddenProblem } from '../util/errors'
 
 const router = express.Router()
 
@@ -48,5 +59,53 @@ router.get('/me', async (req: Request, res) => {
 
     res.status(200).json(mapped)
 })
+
+router.get(
+    '/:id/household-members',
+    validate({ params: DeviceIdSchema }),
+    async (req: Request, res) => {
+        const data = req.params as DeviceId
+
+        const device = await getDeviceById(data.id)
+        if (!device) {
+            throw new BadRequestProblem('Device not found')
+        }
+
+        const userId = req.client!.id
+        if (device.ownerId !== userId) {
+            throw new ForbiddenProblem()
+        }
+
+        const householdMembers: HouseholdMember[] = device.users
+
+        res.status(200).json(householdMembers)
+    }
+)
+
+router.post(
+    '/household-members',
+    validate({ body: AddHouseholdMemberSchema }),
+    async (req: Request, res) => {
+        const data = req.body as AddHouseholdMemberData
+
+        const device = await getDeviceById(data.deviceId)
+        if (!device) {
+            throw new BadRequestProblem('Device not found')
+        }
+
+        const userId = req.client!.id
+        if (device.ownerId !== userId) {
+            throw new ForbiddenProblem('Device not owned by user')
+        }
+
+        if (device.users.some((user) => user.userId === data.userId)) {
+            throw new BadRequestProblem('User already added to device')
+        }
+
+        await addHouseholdMember(data.deviceId, data.userId, data.nickname)
+
+        res.status(200).json({ message: 'Added household member successfully' })
+    }
+)
 
 export default router

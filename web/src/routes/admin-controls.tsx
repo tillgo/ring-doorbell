@@ -15,6 +15,9 @@ import {
     AddHouseholdMemberDialog,
     HouseholdMemberData,
 } from '@/common/components/AddHouseholdMemberDialog.tsx'
+import { useFetchHouseholdMembers } from '@/base/api/hooks/useFetchHouseholdMembers.ts'
+import { useAddHouseholdMemberMutation } from '@/base/api/hooks/useAddHouseholdMemberMutation.ts'
+import { HouseholdMemberItem } from '@/common/components/HouseholdMemberItem.tsx'
 
 export const Route = createFileRoute('/admin-controls')({
     component: AdminControls,
@@ -23,6 +26,11 @@ export const Route = createFileRoute('/admin-controls')({
 function AdminControls() {
     const [selectedDevice, setSelectedDevice] = useState<string | undefined>(undefined)
     const { data: devices = [] } = useFetchMyDevicesQuery()
+    const { data: householdMembers = [] } = useFetchHouseholdMembers({ id: selectedDevice })
+
+    const { mutate: addHouseholdMember } = useAddHouseholdMemberMutation()
+
+    console.log(householdMembers)
 
     // automatically set the selected device if there is only one
     useEffect(() => {
@@ -32,7 +40,7 @@ function AdminControls() {
     }, [devices])
 
     const handleAddHouseholdMember = (value: HouseholdMemberData) => {
-        console.log(value)
+        addHouseholdMember({ ...value, deviceId: selectedDevice! })
     }
 
     const handleDeviceChange = (value: string) => {
@@ -60,12 +68,12 @@ function AdminControls() {
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
                             <AddHouseholdMemberDialog onChange={handleAddHouseholdMember} />
-                            {devices.map((device) => (
-                                <DeviceItem key={device.id} device={device} />
+                            {householdMembers.map((member) => (
+                                <HouseholdMemberItem key={member.user.id} member={member} />
                             ))}
                             {devices.length === 0 && (
                                 <span className="text-muted-foreground">
-                                    No connected devices found
+                                    No registered household members found
                                 </span>
                             )}
                         </CardContent>
