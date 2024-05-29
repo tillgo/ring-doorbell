@@ -3,6 +3,8 @@ import { device, refreshToken, user } from '../db/schema'
 import { z } from 'zod'
 import { JwtPayload } from 'jsonwebtoken'
 
+export type JWTPayload = JwtPayload & { id: string; name: string; type: 'USER' | 'DEVICE' }
+
 const UserSchema = createSelectSchema(user).omit({ passwordHash: true })
 export type User = z.infer<typeof UserSchema>
 
@@ -65,4 +67,9 @@ export type RefreshTokenData = z.infer<typeof RefreshTokenSchema>
 const SaveRefreshTokenSchema = createInsertSchema(refreshToken)
 export type SaveRefreshTokenData = z.infer<typeof SaveRefreshTokenSchema>
 
-export type JWTPayload = JwtPayload & { id: string; name: string; type: 'USER' | 'DEVICE' }
+export const AddHouseholdMemberSchema = z.object({
+    deviceId: z.string({ message: 'Device ID required' }).uuid(),
+    userId: z.string({ message: 'User ID required' }).min(1, 'User required'),
+    nickname: z.string().optional(),
+})
+export type AddHouseholdMemberData = z.infer<typeof AddHouseholdMemberSchema>
