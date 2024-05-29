@@ -66,10 +66,3 @@ const SaveRefreshTokenSchema = createInsertSchema(refreshToken)
 export type SaveRefreshTokenData = z.infer<typeof SaveRefreshTokenSchema>
 
 export type JWTPayload = JwtPayload & { id: string; name: string; type: 'USER' | 'DEVICE' }
-
-// handcrafted api types -------------------------------------------------------------------------------------
-export type Device = {
-    id: string
-    identifier: string
-    nickname: string
-}
