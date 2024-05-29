@@ -12,10 +12,10 @@ class MainController(QMainWindow):
         super().__init__()
 
         self.ui = main_window.Ui_MainWindow()
+        self.ui.setupUi(self)
 
         self.greetingController = GreetingController(self.ui)
 
-        self.ui.setupUi(self)
         self.ui.pushButton.clicked.connect(lambda: print("Button clicked"))
         self.show()
         # start waiting for nfc id in new thread
