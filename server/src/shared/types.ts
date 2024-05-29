@@ -30,9 +30,11 @@ export type CreateUserData = z.infer<typeof CreateUserSchema>
 export const UsernameSchema = createSelectSchema(user).pick({ username: true })
 export type Username = z.infer<typeof UsernameSchema>
 
-export const DeviceLoginSchema = createSelectSchema(device).pick({
-    identifier: true,
-    secretHash: true,
+export const DeviceLoginSchema = z.object({
+    identifier: z
+        .string({ message: 'Device identifier required' })
+        .min(1, 'Device identifier required'),
+    secret: z.string({ message: 'Device secret required' }).min(1, 'Device secret required'),
 })
 export type DeviceLoginData = z.infer<typeof DeviceLoginSchema>
 
@@ -44,6 +46,12 @@ export const DeviceRegisterSchema = z.object({
     nickname: z.string().optional(),
 })
 export type DeviceRegisterData = z.infer<typeof DeviceRegisterSchema>
+
+const DeviceSchema = createSelectSchema(device).omit({
+    secretHash: true,
+    passwordHash: true,
+})
+export type Device = z.infer<typeof DeviceSchema>
 
 export const DeviceIdentifierSchema = createSelectSchema(device).pick({ identifier: true })
 export type DeviceIdentifier = z.infer<typeof DeviceIdentifierSchema>
@@ -58,10 +66,3 @@ const SaveRefreshTokenSchema = createInsertSchema(refreshToken)
 export type SaveRefreshTokenData = z.infer<typeof SaveRefreshTokenSchema>
 
 export type JWTPayload = JwtPayload & { id: string; name: string; type: 'USER' | 'DEVICE' }
-
-// handcrafted api types -------------------------------------------------------------------------------------
-export type Device = {
-    id: string
-    identifier: string
-    nickname: string
-}

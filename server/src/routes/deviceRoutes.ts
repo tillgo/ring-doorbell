@@ -42,6 +42,8 @@ router.get('/me', async (req: Request, res) => {
         id: device.id,
         identifier: device.identifier,
         nickname: device.nickname ?? device.identifier,
+        createdAt: device.createdAt,
+        ownerId: device.ownerId,
     }))
 
     res.status(200).json(mapped)
