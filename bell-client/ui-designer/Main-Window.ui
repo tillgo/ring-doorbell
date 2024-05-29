@@ -45,9 +45,9 @@
      <item>
       <widget class="QStackedWidget" name="page_stacked_widget">
        <property name="currentIndex">
-        <number>1</number>
+        <number>2</number>
        </property>
-       <widget class="QWidget" name="ring_page">
+       <widget class="QWidget" name="greeting_page">
         <widget class="QLabel" name="uid_label">
          <property name="geometry">
           <rect>
@@ -103,7 +103,7 @@
          </property>
         </widget>
        </widget>
-       <widget class="QWidget" name="greeting_page">
+       <widget class="QWidget" name="ring_page">
         <widget class="QLabel" name="nfc_card_icon">
          <property name="geometry">
           <rect>
