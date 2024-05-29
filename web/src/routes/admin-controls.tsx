@@ -10,7 +10,6 @@ import {
     CardHeader,
     CardTitle,
 } from '@/lib/components/ui/card.tsx'
-import { DeviceItem } from '@/common/components/DeviceItem.tsx'
 import {
     AddHouseholdMemberDialog,
     HouseholdMemberData,
@@ -18,6 +17,8 @@ import {
 import { useFetchHouseholdMembers } from '@/base/api/hooks/useFetchHouseholdMembers.ts'
 import { useAddHouseholdMemberMutation } from '@/base/api/hooks/useAddHouseholdMemberMutation.ts'
 import { HouseholdMemberItem } from '@/common/components/HouseholdMemberItem.tsx'
+import { useFetchVisitorsQuery } from '@/base/api/hooks/useFetchVisitorsQuery.ts'
+import { VisitorItem } from '@/common/components/VisitorItem.tsx'
 
 export const Route = createFileRoute('/admin-controls')({
     component: AdminControls,
@@ -27,10 +28,9 @@ function AdminControls() {
     const [selectedDevice, setSelectedDevice] = useState<string | undefined>(undefined)
     const { data: devices = [] } = useFetchMyDevicesQuery()
     const { data: householdMembers = [] } = useFetchHouseholdMembers({ id: selectedDevice })
+    const { data: visitors = [] } = useFetchVisitorsQuery({ id: selectedDevice })
 
     const { mutate: addHouseholdMember } = useAddHouseholdMemberMutation()
-
-    console.log(householdMembers)
 
     // automatically set the selected device if there is only one
     useEffect(() => {
@@ -71,7 +71,7 @@ function AdminControls() {
                             {householdMembers.map((member) => (
                                 <HouseholdMemberItem key={member.user.id} member={member} />
                             ))}
-                            {devices.length === 0 && (
+                            {householdMembers.length === 0 && (
                                 <span className="text-muted-foreground">
                                     No registered household members found
                                 </span>
@@ -87,12 +87,12 @@ function AdminControls() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
-                            {devices.map((device) => (
-                                <DeviceItem key={device.id} device={device} />
+                            {visitors.map((visitor) => (
+                                <VisitorItem key={visitor.id} visitor={visitor} />
                             ))}
-                            {devices.length === 0 && (
+                            {visitors.length === 0 && (
                                 <span className="text-muted-foreground">
-                                    No connected devices found
+                                    No registered visitors found
                                 </span>
                             )}
                         </CardContent>

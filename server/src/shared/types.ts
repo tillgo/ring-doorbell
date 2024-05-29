@@ -1,5 +1,5 @@
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
-import { device, refreshToken, user } from '../db/schema'
+import { device, refreshToken, user, visitor } from '../db/schema'
 import { z } from 'zod'
 import { JwtPayload } from 'jsonwebtoken'
 
@@ -60,6 +60,9 @@ export type DeviceIdentifier = z.infer<typeof DeviceIdentifierSchema>
 
 export const DeviceIdSchema = createSelectSchema(device).pick({ id: true })
 export type DeviceId = z.infer<typeof DeviceIdSchema>
+
+const VisitorSchema = createSelectSchema(visitor)
+export type Visitor = z.infer<typeof VisitorSchema>
 
 export const RefreshTokenSchema = z.object({
     userId: z.string().uuid(),

@@ -9,6 +9,7 @@ import {
     DeviceRegisterData,
     DeviceRegisterSchema,
     HouseholdMember,
+    Visitor,
 } from '../shared/types'
 import {
     addHouseholdMember,
@@ -81,6 +82,24 @@ router.get(
         res.status(200).json(householdMembers)
     }
 )
+
+router.get('/:id/visitors', validate({ params: DeviceIdSchema }), async (req: Request, res) => {
+    const data = req.params as DeviceId
+
+    const device = await getDeviceById(data.id)
+    if (!device) {
+        throw new BadRequestProblem('Device not found')
+    }
+
+    const userId = req.client!.id
+    if (device.ownerId !== userId) {
+        throw new ForbiddenProblem()
+    }
+
+    const visitors: Visitor[] = device.visitors
+
+    res.status(200).json(visitors)
+})
 
 router.post(
     '/household-members',
