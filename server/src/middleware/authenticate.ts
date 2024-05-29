@@ -23,7 +23,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
         next(new UnauthorizedProblem('Unauthorized, clients ID or type not found in token'))
     } catch (error) {
         if (error instanceof TokenExpiredError) {
-            throw new BadRequestProblem('Token expired')
+            throw new UnauthorizedProblem('Unauthorized, token expired')
         }
 
         throw new UnauthorizedProblem('Unauthorized, invalid token')

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { Scanner } from '@yudiel/react-qr-scanner'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { DeviceRegisterData, DeviceRegisterSchema } from '@/shared/types.ts'
@@ -14,7 +14,7 @@ import {
 } from '@/lib/components/ui/form.tsx'
 import { Input } from '@/lib/components/ui/input.tsx'
 import { Button } from '@/lib/components/ui/button.tsx'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useRegisterDeviceMutation } from '@/base/api/hooks/useRegisterDeviceMutation.ts'
 import {
     Breadcrumb,
@@ -58,6 +58,8 @@ export const Route = createFileRoute('/settings/register-device')({
 function RegisterDevice() {
     const [isScanning, setIsScanning] = useState(true)
 
+    const navigate = useNavigate()
+
     const form = useForm<DeviceRegisterData>({
         mode: 'onSubmit',
         resolver: zodResolver(DeviceRegisterSchema),
@@ -67,24 +69,30 @@ function RegisterDevice() {
             password: '',
         },
     })
-    const { mutate: registerDevice } = useRegisterDeviceMutation()
+    const { mutateAsync: registerDevice, error } = useRegisterDeviceMutation()
 
     const onSubmit: SubmitHandler<DeviceRegisterData> = async (formData) => {
-        registerDevice({ ...formData, nickname: formData.nickname || undefined })
+        await registerDevice({
+            ...formData,
+            nickname: formData.nickname || undefined,
+        })
 
-        //TODO: redirect to settings page
+        navigate({ to: '/settings', params: {} })
     }
 
-    const handleScanQrCode = (text: string) => {
-        const value: QrData = JSON.parse(text)
+    const handleScanQrCode = useCallback(
+        (text: string) => {
+            const value: QrData = JSON.parse(text)
 
-        if (!value.identifier || !value.password) return
+            if (!value.identifier || !value.password) return
 
-        form.setValue('identifier', value.identifier)
-        form.setValue('password', value.password)
+            form.setValue('identifier', value.identifier)
+            form.setValue('password', value.password)
 
-        setIsScanning(false)
-    }
+            setIsScanning(false)
+        },
+        [form]
+    )
 
     return (
         <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
@@ -143,6 +151,12 @@ function RegisterDevice() {
                             </FormItem>
                         )}
                     />
+                    {error && (
+                        <p className={'text-sm font-medium text-destructive'}>
+                            {error.response?.data.message}
+                        </p>
+                    )}
+
                     <Button type="submit">Register Device</Button>
                 </form>
             </Form>

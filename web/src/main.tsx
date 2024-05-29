@@ -21,7 +21,7 @@ declare module '@tanstack/react-router' {
 
 declare module '@tanstack/react-query' {
     interface Register {
-        defaultError: AxiosError
+        defaultError: AxiosError<{ message: string }>
     }
 }
 
