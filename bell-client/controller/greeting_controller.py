@@ -7,4 +7,4 @@ class GreetingController:
 
     def open_greeting_page(self, username: str):
         self.ui.uid_label.setText(username)
-        self.ui.page_stacked_widget.setCurrentIndex(0)
+        self.ui.page_stacked_widget.setCurrentWidget(self.ui.greeting_page)
