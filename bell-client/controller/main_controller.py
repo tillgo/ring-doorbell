@@ -17,6 +17,7 @@ class MainController(QMainWindow):
         self.greetingController = GreetingController(self.ui)
 
         self.ui.pushButton.clicked.connect(lambda: print("Button clicked"))
+        self.ui.page_stacked_widget.setCurrentWidget(self.ui.ring_page)
         self.show()
         # start waiting for nfc id in new thread
         t1 = threading.Thread(target=self.start_app)
