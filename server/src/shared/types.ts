@@ -30,9 +30,10 @@ export type CreateUserData = z.infer<typeof CreateUserSchema>
 export const UsernameSchema = createSelectSchema(user).pick({ username: true })
 export type Username = z.infer<typeof UsernameSchema>
 
-export const DeviceLoginSchema = createSelectSchema(device).pick({
-    identifier: true,
-    secretHash: true,
+export const DeviceLoginSchema = z.object({
+    identifier: z.string({ message: 'Device identifier required' }),
+    secret: z.string({ message: 'Device secret required' }),
+
 })
 export type DeviceLoginData = z.infer<typeof DeviceLoginSchema>
 

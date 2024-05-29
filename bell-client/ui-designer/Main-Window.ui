@@ -74,6 +74,34 @@
           <string>Welcome User:</string>
          </property>
         </widget>
+        <widget class="QPushButton" name="call_user_btn">
+         <property name="geometry">
+          <rect>
+           <x>190</x>
+           <y>120</y>
+           <width>87</width>
+           <height>26</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Call User</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="call_page">
+        <widget class="QLabel" name="label">
+         <property name="geometry">
+          <rect>
+           <x>190</x>
+           <y>20</y>
+           <width>81</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Calling User</string>
+         </property>
+        </widget>
        </widget>
        <widget class="QWidget" name="greeting_page">
         <widget class="QLabel" name="nfc_card_icon">

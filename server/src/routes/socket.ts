@@ -40,6 +40,7 @@ export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typ
 
 
         socket.on('callClient', (data) => {
+            //ToDo check if client belongs to doorbell
             const clientToCall = data.to
             const clientToCallSocketId = clients.get(clientToCall)
             if (clientToCallSocketId) {
