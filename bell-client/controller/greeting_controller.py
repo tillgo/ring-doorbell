@@ -1,9 +1,13 @@
+from controller.call_user_controller import CallUserController
+
 
 class GreetingController:
 
     def __init__(self, ui):
         self.ui = ui
-        self.ui.call_user_btn.clicked.connect(lambda: print("Call User"))
+        self.call_user_controller = CallUserController(ui)
+        #UserId of user Till for testing (password testtest)
+        self.ui.call_user_btn.clicked.connect(self.call_user_controller.call_user("4dc66649-3b1d-426f-89f0-3df95fd02a3c"))
 
     def open_greeting_page(self, username: str):
         self.ui.uid_label.setText(username)
