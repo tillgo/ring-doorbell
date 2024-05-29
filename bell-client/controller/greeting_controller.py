@@ -3,8 +3,8 @@ from view import main_window
 
 class GreetingController:
 
-    def __init__(self):
-        self.ui = main_window.Ui_MainWindow()
+    def __init__(self, ui):
+        self.ui = ui
         self.ui.call_user_btn.clicked.connect(lambda: print("Call User"))
 
     def open_greeting_page(self, username: str):

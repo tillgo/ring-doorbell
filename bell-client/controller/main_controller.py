@@ -11,9 +11,10 @@ class MainController(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.greetingController = GreetingController()
-
         self.ui = main_window.Ui_MainWindow()
+
+        self.greetingController = GreetingController(self.ui)
+
         self.ui.setupUi(self)
         self.ui.pushButton.clicked.connect(lambda: print("Button clicked"))
         self.show()
