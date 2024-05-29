@@ -20,7 +20,7 @@ Ui Files should be saved in the ui directory under the root directory
 
 #### Convert UI File to Python File
 execute the following in the root directory 
-```pyuic6 -x ./ui/yourfile.ui -o ./yourfile.py```
+```pyuic6 -x ./ui-designer/yourfile.ui -o ./view/yourfile.py```
 
 
 ### Main Window Size

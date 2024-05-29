@@ -64,7 +64,6 @@ router.post('/sign-in', validate({ body: LoginSchema }), async (req, res) => {
 
 router.post('/bell/sign-in', validate({ body: DeviceLoginSchema }), async (req, res) => {
     const data = req.body as DeviceLoginData
-
     const device = await getDeviceWithSecret({ identifier: data.identifier })
     if (!device) {
         throw new BadRequestProblem('Incorrect identifier or secret')
@@ -73,6 +72,11 @@ router.post('/bell/sign-in', validate({ body: DeviceLoginSchema }), async (req, 
     const isSecretCorrect = await bcrypt.compare(data.secret, device.secretHash)
     if (!isSecretCorrect) {
         throw new BadRequestProblem('Incorrect identifier or secret')
+    }
+
+    const isSecretCorrect = await bcrypt.compare(data.secret, device.secretHash)
+    if(!isSecretCorrect) {
+        throw new BadRequestProblem('Incorrect device secret')
     }
 
     const token = createSecretToken({
