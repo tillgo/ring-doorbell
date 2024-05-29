@@ -59,7 +59,7 @@ export function UserComboboxField<
                 </PopoverTrigger>
                 <PopoverContent className="max-h-[--radix-popover-content-available-height] w-[--radix-popover-trigger-width] p-0">
                     <Command>
-                        <CommandInput placeholder="Search language..." />
+                        <CommandInput placeholder="Search users..." />
                         <CommandEmpty>No users found.</CommandEmpty>
                         <CommandGroup>
                             {users.map((user) => (

@@ -56,12 +56,12 @@ export const AddHouseholdMemberDialog = ({
             <DialogTrigger asChild>
                 <Button variant="secondary" className="w-full">
                     <Plus className="mr-2 h-4 w-4" />
-                    Register a new member
+                    Add a new member
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Add Member</DialogTitle>
+                    <DialogTitle>Add Household Member</DialogTitle>
                     <DialogDescription>
                         Add a new member to your household. They will be able to access your device.
                     </DialogDescription>
