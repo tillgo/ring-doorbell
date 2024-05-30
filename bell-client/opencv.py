@@ -1,4 +1,5 @@
 import cv2 as cv
+import numpy as np
 
 cap = cv.VideoCapture(0, cv.CAP_V4L2)
 if not cap.isOpened():
