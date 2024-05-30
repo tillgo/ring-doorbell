@@ -16,13 +16,13 @@ class CallUserController:
         self.peer = None
         self.signal_id = str(uuid.uuid4())
 
-    def call_user(self, user_id: str):
+    async def call_user(self, user_id: str):
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.call_page)
         self.socket_client.connect()
 
         options = PeerOptions()
         self.peer = Peer(id=self.signal_id, peer_options=options)
-        self.peer.start()
+        await self.peer.start()
 
         @self.peer.on(PeerEventType.Open)
         async def peer_open(signal_id):
