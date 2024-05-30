@@ -22,6 +22,13 @@ class CallUserController:
 
         options = PeerOptions()
         self.peer = Peer(id=self.signal_id, peer_options=options)
+
+        @self.peer.on(PeerEventType.Connection)
+        async def peer_connection(peerConnection):
+            print("Peer Connection")
+            print(peerConnection)
+            print("Peer Connection")
+
         print("Peer ID")
         print(self.peer.id)
         self.socket_client.callUser(user_id, self.peer.id, self.handle_call_accepted)
@@ -29,12 +36,3 @@ class CallUserController:
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
         print(data)
-
-    @peer.on(PeerEventType.Connection)
-    async def peer_connection(peerConnection):
-        print("Peer Connection")
-        print(peerConnection)
-        print("Peer Connection")
-
-
-
