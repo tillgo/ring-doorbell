@@ -20,7 +20,7 @@ class CallUserController:
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.call_page)
         self.socket_client.connect()
 
-        options = PeerOptions()
+        options = PeerOptions(secure=True)
         self.peer = Peer(id=self.signal_id, peer_options=options)
         await self.peer.start()
 
