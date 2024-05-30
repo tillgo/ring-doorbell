@@ -9,10 +9,10 @@ class HttpClient(object):
     _instance = None
     url = "http://192.168.22.36:8080/api"
     # ToDo Identifier und Secret einlesen (evtl. aus File)
-    secret: str = "XKm27vj1"
+    secret: str = "ce5e7168-ee9c-4075-9d2f-b8f6a03c3ca4"
     identifier: str = "12-34-56-78"
     session = None
-    token: str | None = None
+    token: str = None
 
     # Singleton
     def __new__(cls):
