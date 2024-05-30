@@ -20,6 +20,7 @@ export const ReceiveCallDialog = () => {
 
     useEffect(() => {
         socket?.on('callClient', (data) => {
+            console.log(data)
             dispatch({ type: 'updateReceivingCallRTCConn', payload: true })
             dispatch({ type: 'updateOppositeIdRTCConn', payload: data.from })
             dispatch({ type: 'updateCallerSignalRTCConn', payload: data.signal })

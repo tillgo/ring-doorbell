@@ -30,6 +30,7 @@ class SocketClient(object):
         self.sio = None
 
     def callUser(self, user_id: str, signal_data: str, handle_call_accepted: callable):
+        print("Call user")
         self.sio.emit('callClient', {'to': user_id, 'signalData': signal_data})
         self.sio.on('callAccepted', handle_call_accepted)
 

@@ -1,34 +1,31 @@
-import fractions
-import time
-
-import cv2
-from aiortc import VideoStreamTrack
-from av import VideoFrame
-from picamera2 import Picamera2, MappedArray
-import asyncio
+from PyQt6.QtWidgets import QApplication, QMainWindow
+from picamera2.previews.qt import QGlPicamera2
+from picamera2 import Picamera2
+import sys
 
 
-class PiCameraStream(VideoStreamTrack):
-    def __init__(self):
-        super().__init__()
-        self.camera = Picamera2()
-        self.camera.configure(self.camera.create_preview_configuration(main={"format": "RGB888"}))
-        self.camera.start()
+def main():
 
-    async def recv(self):
-        frame = await asyncio.get_event_loop().run_in_executor(None, self.capture_frame)
-        return frame
+    # Create the QApplication instance
+    app = QApplication(sys.argv)
+    window = QMainWindow()
+    window.show()
 
-    def capture_frame(self):
-        frame = self.camera.capture_array()
-        video_frame = VideoFrame.from_ndarray(frame, format="rgb24")
-        video_frame.pts = int(time.time() * 1000000)
-        video_frame.time_base = fractions.Fraction(1, 1000000)
-        return video_frame
+    # Initialize Picamera2
+    picam2 = Picamera2()
+    picam2.configure(picam2.create_preview_configuration())
+
+    # Create the QGlPicamera2 widget
+    qpicamera2 = QGlPicamera2(picam2, width=800, height=600, keep_ar=False)
+    qpicamera2.setWindowTitle("Qt Picamera2 App")
+
+    # Start the camera and show the widget
+    picam2.start()
+    qpicamera2.show()
+
+    # Execute the application
+    sys.exit(app.exec())
 
 
 if __name__ == "__main__":
-    cam = PiCameraStream()
-    while True:
-        print("Print Frame")
-        print(cam.capture_frame())
+    main()
