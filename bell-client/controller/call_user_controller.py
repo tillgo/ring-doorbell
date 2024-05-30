@@ -33,6 +33,7 @@ class CallUserController:
         print(self.peer.id)
         self.socket_client.callUser(user_id, self.peer.id, self.handle_call_accepted)
 
+
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
         print(data)
