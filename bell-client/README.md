@@ -1,7 +1,5 @@
 # Bell Client
 
-# Python Version 3.9 !!!!!
-
 ## Using QT-Designer
 
 ### Installing QT-Designer
@@ -29,14 +27,10 @@ To fit the touch screen, max size has to be 480px x 250px
 ## Other Requirements:
 
 ### peerjs
-```npm install peerjs```
-To install peerjs there are some dependencies.
+To install peerjs do the following on the pi.
+```cd /home/pi/programms/```
+```npm install  peerjs-1.5.1-py3-none-any.whl```
 
-#### Fedora
-1. Install opus-devel
-```sudo dnf install opus-devel```
-2. Install libvpx-devel
-```sudo dnf install libvpx-devel```
 
 ## Raspberry PI
 
