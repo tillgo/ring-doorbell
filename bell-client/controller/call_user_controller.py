@@ -22,8 +22,9 @@ class CallUserController:
 
         options = PeerOptions(secure=True)
         self.peer = Peer(id=self.signal_id, peer_options=options)
+        print("Test Peer before start")
         await self.peer.start()
-
+        print("Test Peer after start")
         @self.peer.on(PeerEventType.Open)
         async def peer_open(signal_id):
             print("Peer open")
