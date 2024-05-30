@@ -1,5 +1,5 @@
 from aiortc import RTCPeerConnection, MediaStreamTrack
-from peerjs.peer import Peer
+from peerjs.peer import Peer, PeerOptions
 
 from connectionClients.socket_client import SocketClient
 
@@ -14,7 +14,8 @@ class CallUserController:
     def call_user(self, user_id: str):
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.call_page)
         self.socket_client.connect()
-        self.peer = Peer()
+        peerOption = PeerOptions()
+        self.peer = Peer(peer_options=peerOption)
         print("Peer ID")
         print(self.peer.id)
         print(self.peer.id())
