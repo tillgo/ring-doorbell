@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { AddHouseholdMemberData } from '@/shared/types.ts'
+import { DeleteHouseholdMemberData } from '@/shared/types.ts'
 import { AxiosClient } from '@/base/api/AxiosClient.ts'
 
-export const useAddHouseholdMemberMutation = () => {
+export const useDeleteHouseholdMemberMutation = () => {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: ({ deviceId, ...data }: AddHouseholdMemberData & { deviceId: string }) =>
-            AxiosClient.post(`/devices/${deviceId}/household-members`, data),
+        mutationFn: (data: DeleteHouseholdMemberData) =>
+            AxiosClient.delete(`/devices/${data.deviceId}/household-members/${data.userId}`),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['household-members'] })
         },

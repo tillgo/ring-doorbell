@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { DeviceSelect } from '@/common/components/DeviceSelect.tsx'
 import { useFetchMyDevicesQuery } from '@/base/api/hooks/useFetchMyDevicesQuery.ts'
 import { useEffect, useState } from 'react'
@@ -102,7 +102,13 @@ function AdminControls() {
 
             {!selectedDevice && (
                 <p className={'text-sm text-muted-foreground'}>
-                    Select the device, you want to make changes to
+                    Select the device, you want to make changes to.
+                    <br />
+                    If you haven't registered your device yet, you can do that in the{' '}
+                    <Link to={'/settings'} className={'underline'}>
+                        Settings
+                    </Link>
+                    .
                 </p>
             )}
         </div>
