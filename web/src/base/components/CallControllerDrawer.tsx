@@ -35,8 +35,6 @@ export const CallControllerDrawer = (props: { userId: string }) => {
             })
 
             peer.onicecandidate = (event) => {
-                console.log('Ice candiate')
-                console.log(event)
                 if (event.candidate) {
                     socket?.emit('iceCandidate', {
                         candidate: event.candidate,
@@ -46,16 +44,12 @@ export const CallControllerDrawer = (props: { userId: string }) => {
             }
 
             peer.ontrack = (event) => {
-                console.log('Got Track Answer Side')
-                console.log(event)
                 event.streams[0].getTracks().forEach((track) => {
                     rtcData.oppositeStream.addTrack(track)
                 })
             }
 
             socket?.on('answerSignal', async (signal) => {
-                console.log('got answer signal')
-                console.log(signal)
                 await peer.setRemoteDescription(JSON.parse(signal))
             })
 
@@ -109,13 +103,9 @@ export const CallControllerDrawer = (props: { userId: string }) => {
         })
 
         socket?.on('callAccepted', (signal) => {
-            console.log('Call accepted')
-            console.log(signal)
             dispatch({ type: 'updateCallAcceptedRTCConn', payload: true })
 
             peer.onicecandidate = (event) => {
-                console.log('Ice candiate')
-                console.log(event)
                 if (event.candidate) {
                     socket?.emit('iceCandidate', {
                         candidate: event.candidate,
@@ -125,8 +115,6 @@ export const CallControllerDrawer = (props: { userId: string }) => {
             }
 
             peer.ontrack = (event) => {
-                console.log('Got Track Callerside')
-                console.log(event)
                 event.streams[0].getTracks().forEach((track) => {
                     rtcData.oppositeStream.addTrack(track)
                 })
