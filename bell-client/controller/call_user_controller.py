@@ -1,4 +1,4 @@
-from aiortc import RTCPeerConnection, MediaStreamTrack
+from aiortc import RTCPeerConnection, MediaStreamTrack, RTCConfiguration, RTCIceServer
 from peerjs.peer import Peer, PeerOptions
 
 from connectionClients.socket_client import SocketClient
@@ -14,7 +14,9 @@ class CallUserController:
     def call_user(self, user_id: str):
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.call_page)
         self.socket_client.connect()
-        peerOption = PeerOptions()
+        peerOption = PeerOptions(config=RTCConfiguration(
+            iceServers=[RTCIceServer("stun:stun.l.google.com:19302")]
+        ))
         self.peer = Peer(peer_options=peerOption)
         print("Peer ID")
         print(self.peer.id)
