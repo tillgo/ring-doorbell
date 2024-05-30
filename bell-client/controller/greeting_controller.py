@@ -13,5 +13,5 @@ class GreetingController:
         self.ui.uid_label.setText(username)
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.greeting_page)
 
-    def handle_call_user(self):
-        self.call_user_controller.call_user("4dc66649-3b1d-426f-89f0-3df95fd02a3c")
+    async def handle_call_user(self):
+        await self.call_user_controller.call_user("4dc66649-3b1d-426f-89f0-3df95fd02a3c")
