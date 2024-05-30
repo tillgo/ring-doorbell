@@ -14,10 +14,8 @@ class CallUserController:
     def call_user(self, user_id: str):
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.call_page)
         self.socket_client.connect()
-        peerOption = PeerOptions(config=RTCConfiguration(
-            iceServers=[RTCIceServer("stun:stun.l.google.com:19302")]
-        ))
-        self.peer = Peer(peer_options=peerOption)
+
+        self.peer = Peer()
         print("Peer ID")
         print(self.peer.id)
         print(self.peer.id())
