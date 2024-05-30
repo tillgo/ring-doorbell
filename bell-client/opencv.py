@@ -1,6 +1,6 @@
 import cv2 as cv
 
-cap = cv.VideoCapture(cv.CAP_V4L2)
+cap = cv.VideoCapture(0, cv.CAP_V4L2)
 if not cap.isOpened():
     print("Cannot open camera")
     exit()
@@ -12,10 +12,8 @@ while True:
     if not ret:
         print("Can't receive frame (stream end?). Exiting ...")
     break
-    # Our operations on the frame come here
-    gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
     # Display the resulting frame
-    cv.imshow('frame', gray)
+    cv.imshow('frame', frame)
     if cv.waitKey(1) == ord('q'):
         break
 
