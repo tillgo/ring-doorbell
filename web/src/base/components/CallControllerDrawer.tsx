@@ -31,6 +31,7 @@ export const CallControllerDrawer = (props: { userId: string }) => {
             })
 
             peer.on('call', (call) => {
+                console.log('Got a Peerjs call')
                 navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
                     dispatch({ type: 'updateMyStreamRTCConn', payload: stream })
                     call.answer(stream)

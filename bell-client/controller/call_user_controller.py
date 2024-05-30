@@ -23,6 +23,7 @@ class CallUserController:
 
         options = PeerOptions(secure=True)
         self.peer = Peer(id=self.signal_id, peer_options=options)
+        self.peer.on(PeerEventType.Open, lambda: print("Peer is open"))
 
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self.peer.start())
@@ -34,4 +35,5 @@ class CallUserController:
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
         print(data)
-        connection = self.peer.connect(data)
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.peer.connect(data))
