@@ -10,26 +10,43 @@ export const createUser = async (data: CreateUserData): Promise<User> => {
 }
 
 export const getUser = async (data: Username): Promise<User | undefined> => {
-    return await db.query.user.findFirst({
-        columns: {
-            passwordHash: false
-        },
-        where: (user, {eq}) => eq(user.username, data.username),
-    }).execute()
-
+    return await db.query.user
+        .findFirst({
+            columns: {
+                passwordHash: false,
+            },
+            where: (user, { eq }) => eq(user.username, data.username),
+        })
+        .execute()
 }
 
-export const getUserWithPassword = async (data: Username): Promise<UserWithPassword | undefined> => {
-    return await db.query.user.findFirst({
-        where: (user, {eq}) => eq(user.username, data.username),
-    }).execute()
+export const getUserWithPassword = async (
+    data: Username
+): Promise<UserWithPassword | undefined> => {
+    return await db.query.user
+        .findFirst({
+            where: (user, { eq }) => eq(user.username, data.username),
+        })
+        .execute()
 }
 
 export const getUserById = async (id: string): Promise<User | undefined> => {
-    return await db.query.user.findFirst({
-        columns: {
-            passwordHash: false
-        },
-        where: (user, {eq}) => eq(user.id, id),
-    }).execute()
+    return await db.query.user
+        .findFirst({
+            columns: {
+                passwordHash: false,
+            },
+            where: (user, { eq }) => eq(user.id, id),
+        })
+        .execute()
+}
+
+export const listUsers = async (): Promise<User[]> => {
+    return await db.query.user
+        .findMany({
+            columns: {
+                passwordHash: false,
+            },
+        })
+        .execute()
 }

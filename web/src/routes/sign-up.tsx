@@ -6,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { LoginData, LoginSchema } from '@/shared/types'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/lib/components/ui/form.tsx'
 import { useState } from 'react'
-import Loader from '@/common/components/Loader.tsx'
 import {
     Card,
     CardContent,
@@ -16,6 +15,7 @@ import {
 } from '@/lib/components/ui/card.tsx'
 import { signUp } from '@/base/api/queries/auth.ts'
 import { AxiosError } from 'axios'
+import { Loader2 } from 'lucide-react'
 
 export const Route = createFileRoute('/sign-up')({
     component: SignUp,
@@ -105,7 +105,11 @@ export function SignUp() {
                                 />
                                 {submitError && <FormMessage>{submitError}</FormMessage>}
                                 <Button type="submit" className="w-full" disabled={isLoading}>
-                                    {!isLoading ? 'Sign Up' : <Loader />}
+                                    {!isLoading ? (
+                                        'Sign Up'
+                                    ) : (
+                                        <Loader2 className={'animate-spin'} />
+                                    )}
                                 </Button>
                                 <div className="text-center text-sm">
                                     Have an account already?{' '}

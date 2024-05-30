@@ -1,10 +1,15 @@
 import express, { Request } from 'express'
 import { validate } from '../middleware/zodValidate'
 import { Username, UsernameSchema } from '../shared/types'
-import { getUser, getUserById } from '../db/userRepository'
+import { getUser, getUserById, listUsers } from '../db/userRepository'
 import { BadRequestProblem, ForbiddenProblem } from '../util/errors'
 
 const router = express.Router()
+
+router.get('/', async (req, res) => {
+    const users = await listUsers()
+    res.status(200).json(users)
+})
 
 router.get('/me', async (req: Request, res) => {
     const client = req.client!

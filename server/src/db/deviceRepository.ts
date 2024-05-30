@@ -1,6 +1,6 @@
 import { db } from '../index'
 import { DeviceIdentifier } from '../shared/types'
-import { device } from './schema'
+import { device, user_device } from './schema'
 import { eq } from 'drizzle-orm'
 
 export const getDevicesForUser = async (userId: string) => {
@@ -11,6 +11,35 @@ export const getDevicesForUser = async (userId: string) => {
                 secretHash: false,
             },
             where: eq(device.ownerId, userId),
+        })
+        .execute()
+}
+
+export const getDeviceById = async (deviceId: string) => {
+    return await db.query.device
+        .findFirst({
+            columns: {
+                passwordHash: false,
+                secretHash: false,
+            },
+            with: {
+                owner: {
+                    columns: {
+                        passwordHash: false,
+                    },
+                },
+                users: {
+                    with: {
+                        user: {
+                            columns: {
+                                passwordHash: false,
+                            },
+                        },
+                    },
+                },
+                visitors: true,
+            },
+            where: (device, { eq }) => eq(device.id, deviceId),
         })
         .execute()
 }
@@ -46,5 +75,16 @@ export const registerDeviceForUser = async (
         .update(device)
         .set({ ownerId: userId, nickname: nickname })
         .where(eq(device.identifier, identifier))
+        .execute()
+}
+
+export const addHouseholdMember = async (deviceId: string, userId: string, nickname?: string) => {
+    await db
+        .insert(user_device)
+        .values({
+            deviceId: deviceId,
+            userId: userId,
+            userNickname: nickname,
+        })
         .execute()
 }

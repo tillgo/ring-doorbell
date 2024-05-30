@@ -66,17 +66,17 @@ router.post('/bell/sign-in', validate({ body: DeviceLoginSchema }), async (req, 
     const data = req.body as DeviceLoginData
     const device = await getDeviceWithSecret({ identifier: data.identifier })
     if (!device) {
-        throw new BadRequestProblem('Device not found')
+        throw new BadRequestProblem('Incorrect identifier or secret')
     }
 
     const isSecretCorrect = await bcrypt.compare(data.secret, device.secretHash)
-    if(!isSecretCorrect) {
-        throw new BadRequestProblem('Incorrect device secret')
+    if (!isSecretCorrect) {
+        throw new BadRequestProblem('Incorrect identifier or secret')
     }
 
     const token = createSecretToken({
         id: device.id,
-        name: device.nickname ?? device.id,
+        name: device.nickname ?? device.identifier,
         type: 'DEVICE',
     })
 

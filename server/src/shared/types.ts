@@ -1,7 +1,9 @@
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
-import { device, refreshToken, user } from '../db/schema'
+import { device, refreshToken, user, visitor } from '../db/schema'
 import { z } from 'zod'
 import { JwtPayload } from 'jsonwebtoken'
+
+export type JWTPayload = JwtPayload & { id: string; name: string; type: 'USER' | 'DEVICE' }
 
 const UserSchema = createSelectSchema(user).omit({ passwordHash: true })
 export type User = z.infer<typeof UserSchema>
@@ -31,9 +33,10 @@ export const UsernameSchema = createSelectSchema(user).pick({ username: true })
 export type Username = z.infer<typeof UsernameSchema>
 
 export const DeviceLoginSchema = z.object({
-    identifier: z.string({ message: 'Device identifier required' }),
-    secret: z.string({ message: 'Device secret required' }),
-
+    identifier: z
+        .string({ message: 'Device identifier required' })
+        .min(1, 'Device identifier required'),
+    secret: z.string({ message: 'Device secret required' }).min(1, 'Device secret required'),
 })
 export type DeviceLoginData = z.infer<typeof DeviceLoginSchema>
 
@@ -46,8 +49,20 @@ export const DeviceRegisterSchema = z.object({
 })
 export type DeviceRegisterData = z.infer<typeof DeviceRegisterSchema>
 
+const DeviceSchema = createSelectSchema(device).omit({
+    secretHash: true,
+    passwordHash: true,
+})
+export type Device = z.infer<typeof DeviceSchema>
+
 export const DeviceIdentifierSchema = createSelectSchema(device).pick({ identifier: true })
 export type DeviceIdentifier = z.infer<typeof DeviceIdentifierSchema>
+
+export const DeviceIdSchema = createSelectSchema(device).pick({ id: true })
+export type DeviceId = z.infer<typeof DeviceIdSchema>
+
+const VisitorSchema = createSelectSchema(visitor)
+export type Visitor = z.infer<typeof VisitorSchema>
 
 export const RefreshTokenSchema = z.object({
     userId: z.string().uuid(),
@@ -58,11 +73,17 @@ export type RefreshTokenData = z.infer<typeof RefreshTokenSchema>
 const SaveRefreshTokenSchema = createInsertSchema(refreshToken)
 export type SaveRefreshTokenData = z.infer<typeof SaveRefreshTokenSchema>
 
-export type JWTPayload = JwtPayload & { id: string; name: string; type: 'USER' | 'DEVICE' }
+export const AddHouseholdMemberSchema = z.object({
+    deviceId: z.string({ message: 'Device ID required' }).uuid(),
+    userId: z.string({ message: 'User ID required' }).min(1, 'User required'),
+    nickname: z.string().optional(),
+})
+export type AddHouseholdMemberData = z.infer<typeof AddHouseholdMemberSchema>
 
-// handcrafted api types -------------------------------------------------------------------------------------
-export type Device = {
-    id: string
-    identifier: string
-    nickname: string
+// handcrafted types ----------------------------------------------------------------------------
+export type HouseholdMember = {
+    userId: string
+    userNickname: string | null
+    deviceId: string
+    user: User
 }

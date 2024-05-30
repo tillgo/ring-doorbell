@@ -13,13 +13,6 @@ export function useLocalStorage(key: string) {
     useEffect(() => {
         // Function to update state based on localStorage change
         const storageChangeHandler = (event: StorageEvent) => {
-            console.log(
-                '>>>>> storageChangeHandler',
-                event.storageArea,
-                event.key,
-                key,
-                event.newValue
-            )
             if (event.storageArea === localStorage && event.key === key) {
                 setValue(event.newValue)
             }

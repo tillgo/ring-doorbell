@@ -1,8 +1,8 @@
-import { Device } from '@/shared/types.ts'
 import { BellElectric } from 'lucide-react'
+import { ApiDevice } from '@/common/types/api-types.ts'
 
 type Props = {
-    device: Device
+    device: ApiDevice
 }
 
 export const DeviceItem = (props: Props) => (
