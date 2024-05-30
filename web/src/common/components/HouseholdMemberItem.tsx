@@ -41,7 +41,7 @@ export const HouseholdMemberItem = (props: Props) => {
                 onOpenChange={setOpen}
                 onDelete={handleDelete}
                 type={'household member'}
-                name={props.member.user.username}
+                name={props.member.userNickname ?? props.member.user.username}
             />
         </div>
     )
