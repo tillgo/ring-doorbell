@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication
 from picamera2.previews.qt import QGlPicamera2
 from picamera2 import Picamera2
 
