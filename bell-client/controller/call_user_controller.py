@@ -23,11 +23,10 @@ class CallUserController:
         options = PeerOptions()
         self.peer = Peer(id=self.signal_id, peer_options=options)
 
-        @self.peer.on(PeerEventType.Connection)
-        async def peer_connection(peerConnection):
-            print("Peer Connection")
-            print(peerConnection)
-            print("Peer Connection")
+        @self.peer.on(PeerEventType.Open)
+        async def peer_open(signal_id):
+            print("Peer open")
+            print(signal_id)
 
         print("Peer ID")
         print(self.peer.id)
