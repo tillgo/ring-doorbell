@@ -5,8 +5,8 @@ import {
     AddHouseholdMemberSchema,
     DeleteHouseholdMemberData,
     DeleteHouseholdMemberSchema,
-    DeleteVisitorData,
-    DeleteVisitorSchema,
+    SelectVisitorData,
+    SelectVisitorSchema,
     Device,
     DeviceId,
     DeviceIdSchema,
@@ -14,6 +14,8 @@ import {
     DeviceRegisterSchema,
     HouseholdMember,
     Visitor,
+    EditVisitorSchema,
+    EditVisitorData,
 } from '../shared/types'
 import {
     addHouseholdMember,
@@ -23,6 +25,7 @@ import {
     getDevicesForUser,
     getDeviceWithPassword,
     registerDeviceForUser,
+    updateVisitor,
 } from '../db/deviceRepository'
 import bcrypt from 'bcrypt'
 import { BadRequestProblem, ForbiddenProblem } from '../util/errors'
@@ -160,11 +163,38 @@ router.get('/:id/visitors', validate({ params: DeviceIdSchema }), async (req: Re
     res.status(200).json(visitors)
 })
 
+router.put(
+    '/:deviceId/visitors/:visitorId',
+    validate({ params: SelectVisitorSchema, body: EditVisitorSchema }),
+    async (req: Request, res) => {
+        const params = req.params as SelectVisitorData
+        const data = req.body as EditVisitorData
+
+        const device = await getDeviceById(params.deviceId)
+        if (!device) {
+            throw new BadRequestProblem('Device not found')
+        }
+
+        const userId = req.client!.id
+        if (device.ownerId !== userId) {
+            throw new ForbiddenProblem()
+        }
+
+        if (!device.visitors.some((visitor) => visitor.id === params.visitorId)) {
+            throw new BadRequestProblem('Not a registered visitor')
+        }
+
+        await updateVisitor(params.visitorId, data)
+
+        res.status(200).json({ message: 'Updated visitor successfully' })
+    }
+)
+
 router.delete(
     '/:deviceId/visitors/:visitorId',
-    validate({ params: DeleteVisitorSchema }),
+    validate({ params: SelectVisitorSchema }),
     async (req: Request, res) => {
-        const data = req.params as DeleteVisitorData
+        const data = req.params as SelectVisitorData
 
         const device = await getDeviceById(data.deviceId)
         if (!device) {
