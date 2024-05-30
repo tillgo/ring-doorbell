@@ -1,4 +1,8 @@
+import asyncio
+import uuid
+
 import socketio
+from peerjs.peer import PeerOptions, Peer, PeerConnectOption
 
 from connectionClients.http_client import HttpClient
 
@@ -30,13 +34,15 @@ class SocketClient(object):
         self.sio = None
 
     def callUser(self, user_id: str, signal_data: str, handle_call_accepted: callable):
-        print("Call user")
         self.sio.emit('callClient', {'to': user_id, 'signalData': signal_data})
         self.sio.on('callAccepted', handle_call_accepted)
 
 
+class Test:
+    def __init__(self, test):
+        self.test = test
+
 if __name__ == "__main__":
     client = SocketClient()
     client.connect()
-    client1 = SocketClient()
-    client1.connect()
+    client.callUser("4dc66649-3b1d-426f-89f0-3df95fd02a3c", "test", lambda: print("call accepted"))
