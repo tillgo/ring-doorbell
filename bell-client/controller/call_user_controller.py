@@ -15,7 +15,8 @@ class CallUserController:
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.call_page)
         self.socket_client.connect()
 
-        self.peer = Peer()
+        options = PeerOptions()
+        self.peer = Peer(peer_options=options)
         print("Peer ID")
         print(self.peer.id)
         print(self.peer.id())
