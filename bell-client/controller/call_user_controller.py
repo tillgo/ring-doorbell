@@ -35,5 +35,5 @@ class CallUserController:
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
         print(data)
-        loop = asyncio.get_event_loop()
+        loop = asyncio.new_event_loop()
         loop.run_until_complete(self.peer.connect(data))
