@@ -17,8 +17,10 @@ class CallUserController:
         self.signal_id = str(uuid.uuid4())
 
     async def call_user(self, user_id: str):
+        print("Test before ui change")
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.call_page)
         self.socket_client.connect()
+        print("Test after ui change")
 
         options = PeerOptions(secure=True)
         self.peer = Peer(id=self.signal_id, peer_options=options)
