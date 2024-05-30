@@ -1,3 +1,5 @@
+from aiortc import RTCPeerConnection, MediaStreamTrack
+
 from connectionClients.socket_client import SocketClient
 
 
@@ -15,3 +17,8 @@ class CallUserController:
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
         print(data)
+        pc = RTCPeerConnection()
+        video_track = MediaStreamTrack()
+        pc.addTrack(video_track)
+
+
