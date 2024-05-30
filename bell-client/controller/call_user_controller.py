@@ -1,3 +1,4 @@
+import asyncio
 import uuid
 
 from aiortc import RTCPeerConnection, MediaStreamTrack, RTCConfiguration, RTCIceServer
@@ -16,17 +17,17 @@ class CallUserController:
         self.peer = None
         self.signal_id = str(uuid.uuid4())
 
-    async def call_user(self, user_id: str):
-        print("Test before ui change")
+    def call_user(self, user_id: str):
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.call_page)
         self.socket_client.connect()
-        print("Test after ui change")
+
 
         options = PeerOptions(secure=True)
         self.peer = Peer(id=self.signal_id, peer_options=options)
-        print("Test Peer before start")
-        await self.peer.start()
-        print("Test Peer after start")
+
+        loop = asyncio.get_running_loop()
+        loop.run_until_complete(self.peer.start())
+
         @self.peer.on(PeerEventType.Open)
         async def peer_open(signal_id):
             print("Peer open")
