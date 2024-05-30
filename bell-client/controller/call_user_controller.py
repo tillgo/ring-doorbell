@@ -25,7 +25,7 @@ class CallUserController:
         options = PeerOptions(secure=True)
         self.peer = Peer(id=self.signal_id, peer_options=options)
 
-        loop = asyncio.get_running_loop()
+        loop = asyncio.get_event_loop()
         loop.run_until_complete(self.peer.start())
 
         @self.peer.on(PeerEventType.Open)
