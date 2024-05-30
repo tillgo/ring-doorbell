@@ -24,7 +24,7 @@ export const HouseholdMemberItem = (props: Props) => {
     }
 
     return (
-        <div className="flex items-center gap-4 rounded-md border p-3">
+        <div className="flex items-center gap-4 rounded-md border px-3 py-2">
             <User2 />
             <div className="flex flex-1 gap-1">
                 <p className="font-semibold">

@@ -5,6 +5,8 @@ import {
     AddHouseholdMemberSchema,
     DeleteHouseholdMemberData,
     DeleteHouseholdMemberSchema,
+    DeleteVisitorData,
+    DeleteVisitorSchema,
     Device,
     DeviceId,
     DeviceIdSchema,
@@ -16,6 +18,7 @@ import {
 import {
     addHouseholdMember,
     deleteHouseholdMember,
+    deleteVisitor,
     getDeviceById,
     getDevicesForUser,
     getDeviceWithPassword,
@@ -86,6 +89,33 @@ router.get(
     }
 )
 
+router.post(
+    '/:id/household-members',
+    validate({ body: AddHouseholdMemberSchema, params: DeviceIdSchema }),
+    async (req: Request, res) => {
+        const data = req.body as AddHouseholdMemberData
+        const params = req.params as DeviceId
+
+        const device = await getDeviceById(params.id)
+        if (!device) {
+            throw new BadRequestProblem('Device not found')
+        }
+
+        const userId = req.client!.id
+        if (device.ownerId !== userId) {
+            throw new ForbiddenProblem('Device not owned by user')
+        }
+
+        if (device.users.some((user) => user.userId === data.userId)) {
+            throw new BadRequestProblem('User already added to device')
+        }
+
+        await addHouseholdMember(params.id, data.userId, data.nickname)
+
+        res.status(200).json({ message: 'Added household member successfully' })
+    }
+)
+
 router.delete(
     '/:deviceId/household-members/:userId',
     validate({ params: DeleteHouseholdMemberSchema }),
@@ -130,30 +160,29 @@ router.get('/:id/visitors', validate({ params: DeviceIdSchema }), async (req: Re
     res.status(200).json(visitors)
 })
 
-router.post(
-    '/:id/household-members',
-    validate({ body: AddHouseholdMemberSchema, params: DeviceIdSchema }),
+router.delete(
+    '/:deviceId/visitors/:visitorId',
+    validate({ params: DeleteVisitorSchema }),
     async (req: Request, res) => {
-        const data = req.body as AddHouseholdMemberData
-        const params = req.params as DeviceId
+        const data = req.params as DeleteVisitorData
 
-        const device = await getDeviceById(params.id)
+        const device = await getDeviceById(data.deviceId)
         if (!device) {
             throw new BadRequestProblem('Device not found')
         }
 
         const userId = req.client!.id
         if (device.ownerId !== userId) {
-            throw new ForbiddenProblem('Device not owned by user')
+            throw new ForbiddenProblem()
         }
 
-        if (device.users.some((user) => user.userId === data.userId)) {
-            throw new BadRequestProblem('User already added to device')
+        if (!device.visitors.some((visitor) => visitor.id === data.visitorId)) {
+            throw new BadRequestProblem('Not a registered visitor')
         }
 
-        await addHouseholdMember(params.id, data.userId, data.nickname)
+        await deleteVisitor(data.visitorId)
 
-        res.status(200).json({ message: 'Added household member successfully' })
+        res.status(200).json({ message: 'Deleted visitor successfully' })
     }
 )
 

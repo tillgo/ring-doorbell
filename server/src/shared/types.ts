@@ -70,6 +70,12 @@ export type DeleteHouseholdMemberData = z.infer<typeof DeleteHouseholdMemberSche
 const VisitorSchema = createSelectSchema(visitor)
 export type Visitor = z.infer<typeof VisitorSchema>
 
+export const DeleteVisitorSchema = z.object({
+    deviceId: z.string({ message: 'Device ID required' }).uuid(),
+    visitorId: z.string({ message: 'Visitor ID required' }).uuid(),
+})
+export type DeleteVisitorData = z.infer<typeof DeleteVisitorSchema>
+
 export const RefreshTokenSchema = z.object({
     userId: z.string().uuid(),
     refreshToken: z.string().max(255),
