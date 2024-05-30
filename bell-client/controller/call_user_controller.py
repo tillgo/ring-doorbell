@@ -21,12 +21,12 @@ class CallUserController:
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.call_page)
         self.socket_client.connect()
 
-
         options = PeerOptions(secure=True)
         self.peer = Peer(id=self.signal_id, peer_options=options)
-
+        print("Test before loop")
         loop = asyncio.get_running_loop()
         loop.run_until_complete(self.peer.start())
+        print("Test after loop")
 
         @self.peer.on(PeerEventType.Open)
         async def peer_open(signal_id):
@@ -36,7 +36,6 @@ class CallUserController:
         print("Peer ID")
         print(self.peer.id)
         self.socket_client.callUser(user_id, self.peer.id, self.handle_call_accepted)
-
 
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
