@@ -17,8 +17,6 @@ class GreetingController:
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.greeting_page)
 
     def handle_call_user(self):
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(self.call_user_controller.call_user("4dc66649-3b1d-426f-89f0-3df95fd02a3c"))
-        loop.close()
+      self.call_user_controller.call_user("4dc66649-3b1d-426f-89f0-3df95fd02a3c")
+
 
