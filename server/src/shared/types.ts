@@ -61,6 +61,12 @@ export type DeviceIdentifier = z.infer<typeof DeviceIdentifierSchema>
 export const DeviceIdSchema = createSelectSchema(device).pick({ id: true })
 export type DeviceId = z.infer<typeof DeviceIdSchema>
 
+export const DeleteHouseholdMemberSchema = z.object({
+    userId: z.string({ message: 'userId required' }).uuid(),
+    deviceId: z.string({ message: 'deviceId required' }).uuid(),
+})
+export type DeleteHouseholdMemberData = z.infer<typeof DeleteHouseholdMemberSchema>
+
 const VisitorSchema = createSelectSchema(visitor)
 export type Visitor = z.infer<typeof VisitorSchema>
 
@@ -74,7 +80,6 @@ const SaveRefreshTokenSchema = createInsertSchema(refreshToken)
 export type SaveRefreshTokenData = z.infer<typeof SaveRefreshTokenSchema>
 
 export const AddHouseholdMemberSchema = z.object({
-    deviceId: z.string({ message: 'Device ID required' }).uuid(),
     userId: z.string({ message: 'User ID required' }).min(1, 'User required'),
     nickname: z.string().optional(),
 })

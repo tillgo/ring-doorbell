@@ -1,7 +1,7 @@
 import { db } from '../index'
 import { DeviceIdentifier } from '../shared/types'
 import { device, user_device } from './schema'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 
 export const getDevicesForUser = async (userId: string) => {
     return await db.query.device
@@ -86,5 +86,12 @@ export const addHouseholdMember = async (deviceId: string, userId: string, nickn
             userId: userId,
             userNickname: nickname,
         })
+        .execute()
+}
+
+export const deleteHouseholdMember = async (deviceId: string, userId: string) => {
+    await db
+        .delete(user_device)
+        .where(and(eq(user_device.deviceId, deviceId), eq(user_device.userId, userId)))
         .execute()
 }

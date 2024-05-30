@@ -34,7 +34,7 @@ export const AddHouseholdMemberDialog = ({
     const [open, setOpen] = useState(false)
     const form = useForm<HouseholdMemberData>({
         mode: 'onSubmit',
-        resolver: zodResolver(AddHouseholdMemberSchema.omit({ deviceId: true })),
+        resolver: zodResolver(AddHouseholdMemberSchema),
         defaultValues: {
             userId: '',
             nickname: '',
