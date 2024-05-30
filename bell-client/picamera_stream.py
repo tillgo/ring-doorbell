@@ -8,7 +8,7 @@ def main():
 
     # Create the QApplication instance
     app = QApplication(sys.argv)
-    window = QMainWindow()
+    window = MainWindow()
     window.show()
 
     # Initialize Picamera2
