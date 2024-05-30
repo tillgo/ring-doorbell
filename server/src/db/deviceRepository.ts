@@ -1,5 +1,5 @@
 import { db } from '../index'
-import { DeviceIdentifier } from '../shared/types'
+import { DeviceIdentifier, EditVisitorData } from '../shared/types'
 import { device, user_device, visitor } from './schema'
 import { and, eq } from 'drizzle-orm'
 
@@ -98,4 +98,8 @@ export const deleteHouseholdMember = async (deviceId: string, userId: string) =>
 
 export const deleteVisitor = async (visitorId: string) => {
     await db.delete(visitor).where(eq(visitor.id, visitorId)).execute()
+}
+
+export const updateVisitor = async (visitorId: string, data: EditVisitorData) => {
+    await db.update(visitor).set(data).where(eq(visitor.id, visitorId)).execute()
 }

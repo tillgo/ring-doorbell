@@ -70,11 +70,17 @@ export type DeleteHouseholdMemberData = z.infer<typeof DeleteHouseholdMemberSche
 const VisitorSchema = createSelectSchema(visitor)
 export type Visitor = z.infer<typeof VisitorSchema>
 
-export const DeleteVisitorSchema = z.object({
+export const SelectVisitorSchema = z.object({
     deviceId: z.string({ message: 'Device ID required' }).uuid(),
     visitorId: z.string({ message: 'Visitor ID required' }).uuid(),
 })
-export type DeleteVisitorData = z.infer<typeof DeleteVisitorSchema>
+export type SelectVisitorData = z.infer<typeof SelectVisitorSchema>
+
+export const EditVisitorSchema = z.object({
+    nickname: z.string({ message: 'Nickname required' }).min(1, 'Nickname required'),
+    isWhitelisted: z.boolean({ message: 'Whitelist status required' }),
+})
+export type EditVisitorData = z.infer<typeof EditVisitorSchema>
 
 export const RefreshTokenSchema = z.object({
     userId: z.string().uuid(),
