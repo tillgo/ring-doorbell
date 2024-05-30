@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication QMainWindow
+from PyQt6.QtWidgets import QApplication, QMainWindow
 from picamera2.previews.qt import QGlPicamera2
 from picamera2 import Picamera2
 import sys
@@ -8,7 +8,7 @@ def main():
 
     # Create the QApplication instance
     app = QApplication(sys.argv)
-    window = MainWindow()
+    window = QMainWindow()
     window.show()
 
     # Initialize Picamera2
