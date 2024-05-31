@@ -33,7 +33,7 @@ class CallUserController:
         peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
                                                               RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
-        peer.on('track', lambda event: print("Track received"))
+        peer.on('track', lambda event: print("Track received " + event.track))
 
         # add video
         camTrack = PiCameraTrack()
