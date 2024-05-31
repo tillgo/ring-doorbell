@@ -15,7 +15,7 @@ class CameraApp(QMainWindow):
 
         # Initialize Picamera2
         self.picam2 = Picamera2()
-        config = self.picam2.create_preview_configuration(main={"size": (800, 480)})
+        config = self.picam2.create_preview_configuration(main={"size": (800, 480), "format": "RGB888"})
         self.picam2.configure(config)
 
         # Enable autofocus
@@ -26,7 +26,7 @@ class CameraApp(QMainWindow):
 
         # Create a label to display the camera feed
         self.camera_label = QLabel(self)
-        self.camera_label.setGeometry(0, 0, 800, 480)
+        self.camera_label.setGeometry(0, 0, 480, 320)
 
         # Create a button to toggle the mirror effect
         self.toggle_button = QPushButton("Toggle Mirror Effect", self)
@@ -75,10 +75,13 @@ class CameraApp(QMainWindow):
     def update_camera_feed(self):
         frame = self.picam2.capture_array()
         if frame is not None:
-            # Convert the frame to QImage
+            # Convert frame from RGB to BGR (OpenCV format)
+            frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+
+            # Ensure frame is in RGB format and convert to QImage
             height, width, channel = frame.shape
             bytes_per_line = 3 * width
-            qimage = QImage(frame.data, width, height, bytes_per_line, QImage.Format.Format_RGB888)
+            qimage = QImage(frame_bgr.data, width, height, bytes_per_line, QImage.Format.Format_RGB888)
 
             # Convert QImage to QPixmap and display it
             pixmap = QPixmap.fromImage(qimage)

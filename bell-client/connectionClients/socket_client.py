@@ -37,9 +37,6 @@ class SocketClient(object):
         self.sio.emit('callClient', {'to': user_id, 'signalData': signal_data})
         self.sio.on('callAccepted', handle_call_accepted)
 
-    def sendIceCandidate(self, userId, iceCandidate):
-        self.sio.emit('iceCandidate', {'to': userId, 'candidate': iceCandidate})
-
     def sendRTCAnswer(self, userId, answer):
         self.sio.emit('answerSignal', {'to': userId, 'signal': {'type': answer.type,
                                                                 'sdp': answer.sdp}})
