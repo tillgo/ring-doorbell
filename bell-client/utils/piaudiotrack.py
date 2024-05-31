@@ -66,14 +66,22 @@ class PiAudioTrack(MediaStreamTrack):
 if __name__ == '__main__':
     # create the audio stream track
     audio_track = PiAudioTrack()
-
     # create the audio file
     recorder = MediaRecorder('test.wav')
     recorder.addTrack(audio_track)
-    recorder.start()
-    time = time.time()
-    end_time = time + 20
-    while time < end_time:
-        time = time.time()
 
-    recorder.stop()
+    loop = asyncio.new_event_loop()
+
+    async def record():
+        print("recording start now")
+        await recorder.start()
+        print("recording started")
+        time1 = time.time()
+        end_time = time1 + 20
+        while time1 < end_time:
+            time1 = time.time()
+
+        await recorder.stop()
+
+    loop.run_until_complete(record())
+    print("finished")
