@@ -10,12 +10,12 @@ from aiortc.contrib.media import MediaStreamTrack
 cam = Picamera2()
 output = FfmpegOutput('test.mp4', audio=True)
 cam.configure(cam.create_video_configuration())
-encoder = H264Encoder(1000000)
-ffmpeg = FfmpegOutput(audio=True)
-encoder.output = [ffmpeg]
-cam.encoders = encoder
+#encoder = H264Encoder(1000000)
+#ffmpeg = FfmpegOutput(audio=True)
+#encoder.output = [ffmpeg]
+#cam.encoders = encoder
 cam.start()
-cam.start_encoder()
+#cam.start_encoder()
 
 class PiCameraTrack(MediaStreamTrack):
     kind = "video"
