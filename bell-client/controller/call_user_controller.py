@@ -10,15 +10,6 @@ from connectionClients.socket_client import SocketClient
 from picam_controller import PiCameraTrack
 
 
-def getHandleIceCandidateEvent(socket, userId):
-    def handleIceCandidateEvent(event):
-        print("getHandleIceCandidate")
-        if event.candidate:
-            print("Ice Candidate event")
-            socket.sendIceCandidate(userId, event.candidate)
-
-    return handleIceCandidateEvent
-
 
 def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
     def handleRemoteCandidate(data):
@@ -65,7 +56,6 @@ class CallUserController:
         await peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
                                                                                  type=remote_offer['type']))
 
-        peer.on('icecandidate', getHandleIceCandidateEvent(self.socket_client, self.userId))
         peer.on('track', lambda event: print("Track received"))
         self.socket_client.sio.on('iceCandidate',
                                   getHandleRemoteIceCandidate(peer))
