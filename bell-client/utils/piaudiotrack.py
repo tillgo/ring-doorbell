@@ -1,7 +1,7 @@
 import wave
 
 import pyaudio
-from aiortc import MediaStreamTrack
+from aiortc import MediaStreamTrack, AudioStreamTrack
 
 # Dont worry about the many errors. This are now errors but just warnings. Everything is working fine.
 
@@ -21,7 +21,7 @@ dev_index = 3  # device index found by p.get_device_info_by_index(ii)
 wav_output_filename = 'test1.wav'  # name of .wav file
 
 
-class PiAudioTrack(MediaStreamTrack):
+class PiAudioTrack(AudioStreamTrack):
     kind = "audio"
 
     def __init__(self):
