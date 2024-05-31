@@ -4,7 +4,6 @@ from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QPixmap
 
 from controller.main_controller import MainController
-from picamera_stream import PiCameraStream
 
 
 class MainWindow(QMainWindow):
