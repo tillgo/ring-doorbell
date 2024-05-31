@@ -1,45 +1,36 @@
-"""
-Copy from the example in
-The Raspberry Pi official manual The Picamera2 Library (2023-11-27)
-Charpter 8.5 Using the camera in Qt applications
-"""
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QApplication, QWidget
-from picamera2.previews.qt import QGlPicamera2
-from picamera2 import Picamera2
+    import sys
+    from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget
+    from picamera2.previews.qt import QGlPicamera2
+    from picamera2 import Picamera2
 
+    class MainWindow(QMainWindow):
+        def __init__(self):
+            super().__init__()
+            self.setWindowTitle("Welcome Application")
+            self.setGeometry(100, 100, 480, 320)
 
-def on_button_clicked():
-    button.setEnabled(False)
-    cfg = picam2.create_still_configuration()
-    picam2.switch_mode_and_capture_file(cfg, "test.jpg", signal_function=qpicamera2.signal_done)
+            # Central widget
+            self.central_widget = QWidget()
+            self.setCentralWidget(self.central_widget)
 
+            # Layout
+            layout = QVBoxLayout(self.central_widget)
 
-def capture_done(job):
-    result = picam2.wait(job)
-    button.setEnabled(True)
+            # Welcome label
+            self.welcome_label = QLabel("Welcome to Raspberry Pi!")
+            self.welcome_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            layout.addWidget(self.welcome_label)
 
+            picam2 = Picamera2()
+            picam2.configure(picam2.create_preview_configuration())
+            picam2.start()
 
+            #Camera Preview
+            self.camera_preview = qpicamera2 = QGlPicamera2(picam2, width=800, height=600, keep_ar=False)
+            layout.addWidget(self.camera_preview)
 
-
-if __name__ == "__main__":
-    picam2 = Picamera2()
-    picam2.configure(picam2.create_preview_configuration())
-
-    app = QApplication([])
-    qpicamera2 = QGlPicamera2(picam2, width=800, height=600, keep_ar=False)
-    button = QPushButton("Click to capture JPEG")
-    window = QWidget()
-    qpicamera2.done_signal.connect(capture_done)
-    button.clicked.connect(on_button_clicked)
-
-    layout_v = QVBoxLayout()
-    layout_v.addWidget(qpicamera2)
-    layout_v.addWidget(button)
-    window.setWindowTitle("Qt Picamera2 App")
-    window.resize(640, 480)
-    window.setLayout(layout_v)
-
-    picam2.start()
-    window.show()
-    app.exec()
+    def main():
+        app = QApplication(sys.argv)
+        window = MainWindow()
+        window.show()
+        sys.exit(app.exec())
