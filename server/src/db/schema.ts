@@ -1,4 +1,13 @@
-import { pgTable, timestamp, uuid, varchar, boolean, index, primaryKey } from 'drizzle-orm/pg-core'
+import {
+    pgTable,
+    timestamp,
+    uuid,
+    varchar,
+    boolean,
+    index,
+    primaryKey,
+    jsonb,
+} from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
 export const user = pgTable('users', {
@@ -53,6 +62,7 @@ export const deviceRelations = relations(device, ({ one, many }) => ({
     owner: one(user, { fields: [device.ownerId], references: [user.id] }),
     users: many(user_device),
     visitors: many(visitor),
+    historyLogs: many(historyLog),
 }))
 
 export const visitor = pgTable('visitors', {
@@ -70,6 +80,19 @@ export const visitor = pgTable('visitors', {
 })
 export const visitorRelations = relations(visitor, ({ one }) => ({
     device: one(device, { fields: [visitor.deviceId], references: [device.id] }),
+}))
+
+export const historyLog = pgTable('historyLogs', {
+    id: uuid('id').defaultRandom().primaryKey(),
+    deviceId: uuid('deviceId')
+        .notNull()
+        .references(() => device.id),
+    type: varchar('type', { length: 100 }).notNull(),
+    timestamp: timestamp('timestamp').notNull().defaultNow(),
+    payload: jsonb('payload'),
+})
+export const historyLogRelations = relations(historyLog, ({ one }) => ({
+    device: one(device, { fields: [historyLog.deviceId], references: [device.id] }),
 }))
 
 export const refreshToken = pgTable(
