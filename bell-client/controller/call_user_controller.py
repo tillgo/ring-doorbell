@@ -10,21 +10,6 @@ from connectionClients.socket_client import SocketClient
 from picam_controller import PiCameraTrack
 
 
-def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
-    def handleRemoteCandidate(data):
-        candidateData = data['candidate']
-        candidate = candidateData['candidate']
-        # if empty candidate return
-        if candidate == '':
-            return
-        sdpMLineIndex = candidateData['sdpMLineIndex']
-        sdpMid = candidateData['sdpMid']
-        ice_candidate = candidate_from_sdp(candidate)
-        ice_candidate.sdpMLineIndex = sdpMLineIndex
-        ice_candidate.sdpMid = sdpMid
-        peer.addIceCandidate(ice_candidate)
-
-    return handleRemoteCandidate
 
 
 class CallUserController:
@@ -51,8 +36,22 @@ class CallUserController:
                                                               RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
         peer.on('track', lambda event: print("Track received"))
-        self.socket_client.sio.on('iceCandidate',
-                                  getHandleRemoteIceCandidate(peer))
+
+        @self.socket_client.sio.on('iceCandidate')
+        async def handleRemoteCandidate(data):
+            print("It works yayyyyy")
+            candidateData = data['candidate']
+            candidate = candidateData['candidate']
+            # if empty candidate return
+            if candidate == '':
+                return
+            sdpMLineIndex = candidateData['sdpMLineIndex']
+            sdpMid = candidateData['sdpMid']
+            ice_candidate = candidate_from_sdp(candidate)
+            ice_candidate.sdpMLineIndex = sdpMLineIndex
+            ice_candidate.sdpMid = sdpMid
+            await peer.addIceCandidate(ice_candidate)
+
         camTrack = PiCameraTrack()
         peer.addTrack(camTrack)
         print(peer.connectionState)
