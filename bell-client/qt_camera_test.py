@@ -73,8 +73,16 @@ class CameraApp(QMainWindow):
         QApplication.quit()  # Close the application
 
     def update_camera_feed(self):
-        image = self.picam2.capture_array()
-        self.camera_label.setPixmap(QPixmap.fromImage(image))
+        frame = self.picam2.capture_array()
+        if frame is not None:
+            # Convert the frame to QImage
+            height, width, channel = frame.shape
+            bytes_per_line = 3 * width
+            qimage = QImage(frame.data, width, height, bytes_per_line, QImage.Format.Format_RGB888)
+
+            # Convert QImage to QPixmap and display it
+            pixmap = QPixmap.fromImage(qimage)
+            self.camera_label.setPixmap(pixmap)
 
     def closeEvent(self, event):
         self.timer.stop()  # Stop the QTimer
