@@ -42,8 +42,7 @@ class SocketClient(object):
 
     def sendRTCAnswer(self, userId, answer):
         self.sio.emit('answerSignal', {'to': userId, 'signal': {'type': answer.type,
-                                                                'sdp': answer.sdp.replace("\r", "").replace("\n", "")
-                                                                }})
+                                                                'sdp': answer.sdp}})
 
 
 class Test:
