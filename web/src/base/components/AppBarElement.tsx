@@ -23,6 +23,7 @@ export const AppBarElement = (props: AppBarIconProps) => {
                     <Link
                         className="appbar-element"
                         to={route.route}
+                        search={{}}
                         activeProps={{
                             className: 'bg-accent',
                         }}

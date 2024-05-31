@@ -78,7 +78,9 @@ class CameraApp(QMainWindow):
             # Convert the frame to QImage
             height, width, channel = frame.shape
             bytes_per_line = 3 * width
-            qimage = QImage(frame.data, width, height, bytes_per_line, QImage.Format.Format_RGB888)
+            # Ensure the frame is in the correct color format
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            qimage = QImage(frame_rgb.data, width, height, bytes_per_line, QImage.Format.Format_RGB888)
 
             # Convert QImage to QPixmap and display it
             pixmap = QPixmap.fromImage(qimage)
