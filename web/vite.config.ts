@@ -26,7 +26,7 @@ export default defineConfig({
                 name: 'Ring Doorbell',
                 short_name: 'Ring Doorbell',
                 description: 'Ring Doorbell app',
-                theme_color: '???',
+                theme_color: '#131313',
                 icons: [
                     {
                         src: 'icon-192.png',
