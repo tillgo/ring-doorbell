@@ -84,7 +84,7 @@ export function useCallClient() {
 
         socket?.on('answerSignal', async (signal) => {
             console.log(signal)
-            await peer.setRemoteDescription(JSON.parse(signal))
+            await peer.setRemoteDescription(signal)
         })
 
         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
