@@ -63,4 +63,4 @@ class CallUserController:
         peer.addTrack(camTrack)
         answer = await peer.createAnswer()
         await peer.setLocalDescription(answer)
-        self.socket_client.sendRTCAnswer(self.userId, answer)
+        self.socket_client.sendRTCAnswer(self.userId, peer.localDescription)
