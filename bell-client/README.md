@@ -26,10 +26,11 @@ To fit the touch screen, max size has to be 480px x 250px
 
 ## Other Requirements:
 
-### peerjs
-To install peerjs do the following on the pi.
-```cd /home/pi/programms/```
-```npm install  peerjs-1.5.1-py3-none-any.whl```
+### pyaudio
+
+```Debian: sudo apt install portaudio19-dev```
+```Fedora: sudo dnf install portaudio-devel redhat-rpm-config```
+```pip install pyaudio```
 
 
 ## Raspberry PI

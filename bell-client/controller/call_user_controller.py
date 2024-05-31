@@ -1,13 +1,10 @@
 import asyncio
 import json
-import uuid
 
-from aiortc import RTCPeerConnection, MediaStreamTrack, RTCConfiguration, RTCIceServer, RTCSessionDescription, \
-    RTCIceCandidate
-from aiortc.sdp import candidate_from_sdp
+from aiortc import RTCPeerConnection, RTCConfiguration, RTCIceServer, RTCSessionDescription
 
 from connectionClients.socket_client import SocketClient
-from picam_controller import PiCameraTrack
+from utils.picameratrack import PiCameraTrack
 
 
 class CallUserController:
