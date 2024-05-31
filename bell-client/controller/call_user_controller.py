@@ -24,7 +24,6 @@ def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
         ice_candidate.sdpMid = sdpMid
         peer.addIceCandidate(ice_candidate)
 
-
     return handleRemoteCandidate
 
 
@@ -51,19 +50,23 @@ class CallUserController:
         peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
                                                               RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
-        remote_offer = json.loads(data)
-        await peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
-                                                                                 type=remote_offer['type']))
-
         peer.on('track', lambda event: print("Track received"))
         self.socket_client.sio.on('iceCandidate',
                                   getHandleRemoteIceCandidate(peer))
         camTrack = PiCameraTrack()
         peer.addTrack(camTrack)
         print(peer.connectionState)
-        peer.on('connectionstatechange', lambda : print("State: " + peer.connectionState))
+        peer.on('connectionstatechange', lambda: print("State: " + peer.connectionState))
+
+        remote_offer = json.loads(data)
+        await peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
+                                                                                 type=remote_offer['type']))
+        while True:
+            if peer.iceGatheringState == "complete":
+                print("gathered all ices")
+                break
+
         answer = await peer.createAnswer()
         await peer.setLocalDescription(answer)
         # has to use localdescription, as here the ice candidates are set
         self.socket_client.sendRTCAnswer(self.userId, peer.localDescription)
-
