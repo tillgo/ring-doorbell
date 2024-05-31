@@ -26,7 +26,7 @@ class CameraApp(QMainWindow):
 
         # Create a label to display the camera feed
         self.camera_label = QLabel(self)
-        self.camera_label.setGeometry(0, 0, 800, 480)
+        self.camera_label.setGeometry(0, 0, 480, 320)
 
         # Create a button to toggle the mirror effect
         self.toggle_button = QPushButton("Toggle Mirror Effect", self)
@@ -80,7 +80,7 @@ class CameraApp(QMainWindow):
 
             # Ensure frame is in RGB format and convert to QImage
             height, width, channel = frame.shape
-            bytes_per_line = 1 * width
+            bytes_per_line = 3 * width
             qimage = QImage(frame_bgr.data, width, height, bytes_per_line, QImage.Format.Format_RGB888)
 
             # Convert QImage to QPixmap and display it
