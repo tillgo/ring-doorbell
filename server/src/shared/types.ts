@@ -106,9 +106,32 @@ export type HouseholdMember = {
 }
 
 export type DeviceWithStatus = Device & { onlineStatus: boolean }
-export type HistoryEntry = unknown
 
 export type DashboardData = {
     devices: DeviceWithStatus[]
-    history: HistoryEntry[]
+    history: HistoryLog[]
 }
+
+type HistoryLogBase = {
+    id: string
+    device: Device
+    timestamp: Date
+}
+export type HistoryLog = HistoryLogBase &
+    (
+        | {
+              type: 'BELL_RING'
+              payload: {
+                  visitorId: string
+                  visitorNickname: string
+              }
+          }
+        | {
+              type: 'CALL_START' | 'CALL_END'
+              payload: {
+                  userId: string
+                  userNickname: string
+              }
+          }
+    )
+export type HistoryLogType = HistoryLog['type']
