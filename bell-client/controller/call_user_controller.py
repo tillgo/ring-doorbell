@@ -26,7 +26,7 @@ def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
         print(candidateData)
         candidate = candidateData['candidate']
         sdpMLineIndex = candidateData['sdpMLineIndex']
-        sdpMid = data['sdpMid']
+        sdpMid = candidateData['sdpMid']
         ice_candidate = candidate_from_sdp(candidate)
         ice_candidate.sdpMLineIndex = sdpMLineIndex
         ice_candidate.sdpMid = sdpMid
