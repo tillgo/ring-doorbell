@@ -65,6 +65,8 @@
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
     "vite-plugin-pwa": "^0.20.0",
-    "vite-tsconfig-paths": "^4.3.2"
+    "vite-tsconfig-paths": "^4.3.2",
+    "workbox-core": "^7.1.0",
+    "workbox-precaching": "^7.1.0"
   }
 }
