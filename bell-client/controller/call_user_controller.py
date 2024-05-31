@@ -25,7 +25,7 @@ class CallUserController:
 
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
-        loop = asyncio.new_event_loop()
+        loop = asyncio.get_event_loop()
         loop.create_task(self.create_WebRTC_Connection(data, loop))
         loop.run_forever()
 

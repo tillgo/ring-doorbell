@@ -1,7 +1,9 @@
+import asyncio
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QPixmap
+from qasync import QEventLoop
 
 from controller.main_controller import MainController
 
@@ -36,5 +38,12 @@ def mainTestPiCam():
 
 if __name__ == "__main__":
     app = QApplication([])
+    event_loop = QEventLoop(app)
+    asyncio.set_event_loop(event_loop)
+
+    app_close_event = asyncio.Event()
+    app.aboutToQuit.connect(lambda: app_close_event.set())
+
     window = MainController()
-    sys.exit(app.exec())
+    with event_loop:
+        event_loop.run_until_complete(app_close_event.wait())
