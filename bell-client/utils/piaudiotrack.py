@@ -1,9 +1,9 @@
 import time
 import wave
 from fractions import Fraction
-import numpy as np
 
 import av
+import numpy as np
 import pyaudio
 from aiortc import MediaStreamTrack, AudioStreamTrack
 
@@ -25,10 +25,10 @@ dev_index = 3  # device index found by p.get_device_info_by_index(ii)
 wav_output_filename = 'test1.wav'  # name of .wav file
 
 
-class PiAudioTrack(MediaStreamTrack):
+class CustomAudioTrack(MediaStreamTrack):
     kind = "audio"
 
-    def __init__(self, rate=48000, channels=1):
+    def __init__(self, rate=48000, channels=2):
         super().__init__()
         self.rate = rate
         self.channels = channels
@@ -37,7 +37,7 @@ class PiAudioTrack(MediaStreamTrack):
         # Initialiser PyAudio
         self.pa = pyaudio.PyAudio()
         self.stream = self.pa.open(format=pyaudio.paInt16,
-                                   channels=self.channels,
+                                   channels=2,
                                    rate=48000,
                                    input=True,
                                    frames_per_buffer=960)
@@ -45,6 +45,7 @@ class PiAudioTrack(MediaStreamTrack):
     async def recv(self):
         frames_per_buffer = 960
 
+        # Lire les données du stream PyAudio
         data = np.frombuffer(self.stream.read(
             frames_per_buffer), dtype=np.int16)
         data = data.reshape(-1, 1)
@@ -52,8 +53,12 @@ class PiAudioTrack(MediaStreamTrack):
         self._timestamp += frames_per_buffer
         pts = self._timestamp
         time_base = Fraction(1, self.rate)
+        # Préparation des données pour PyAV
         audio_frame = av.AudioFrame.from_ndarray(
             data.T, format='s16', layout='stereo')
         audio_frame.sample_rate = self.rate
         audio_frame.pts = pts
         audio_frame.time_base = time_base
+
+        return audio_frame
+
