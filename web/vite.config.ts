@@ -19,8 +19,6 @@ export default defineConfig({
             srcDir: 'src',
             filename: 'notifications-sw.ts',
 
-            devOptions: { enabled: true },
-
             injectManifest: {
                 minify: false,
                 enableWorkboxModulesLogs: true,
