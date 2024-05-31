@@ -1,6 +1,7 @@
 import time
 import wave
 from fractions import Fraction
+import numpy as np
 
 import av
 import pyaudio
@@ -24,21 +25,35 @@ dev_index = 3  # device index found by p.get_device_info_by_index(ii)
 wav_output_filename = 'test1.wav'  # name of .wav file
 
 
-class PiAudioTrack(AudioStreamTrack):
+class PiAudioTrack(MediaStreamTrack):
     kind = "audio"
 
-    def __init__(self):
+    def __init__(self, rate=48000, channels=2):
         super().__init__()
-        self.audio = pyaudio.PyAudio()
-        self.stream = self.audio.open(format=form_1, rate=samp_rate, channels=chans,
-                                      input=True, frames_per_buffer=chunk)
+        self.rate = rate
+        self.channels = channels
+        self._timestamp = 0
+
+        # Initialiser PyAudio
+        self.pa = pyaudio.PyAudio()
+        self.stream = self.pa.open(format=pyaudio.paInt16,
+                                   channels=2,
+                                   rate=48000,
+                                   input=True,
+                                   frames_per_buffer=960)
 
     async def recv(self):
-        data = self.stream.read(chunk)
+        frames_per_buffer = 960
 
-        pts = time.time() * 1000000
-        new_frame = av.AudioFrame.from_ndarray(data, format='s16')
-        new_frame.pts = int(pts)
-        new_frame.time_base = Fraction(1, 1000000)
-        return new_frame
+        data = np.frombuffer(self.stream.read(
+            frames_per_buffer), dtype=np.int16)
+        data = data.reshape(-1, 1)
 
+        self._timestamp += frames_per_buffer
+        pts = self._timestamp
+        time_base = Fraction(1, self.rate)
+        audio_frame = av.AudioFrame.from_ndarray(
+            data.T, format='s16', layout='stereo')
+        audio_frame.sample_rate = self.rate
+        audio_frame.pts = pts
+        audio_frame.time_base = time_base
