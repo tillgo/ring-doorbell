@@ -27,17 +27,18 @@ class CallUserController:
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
         loop = asyncio.new_event_loop()
-        loop.create_task(self.create_WebRTC_Connection(data))
+        loop.create_task(self.create_WebRTC_Connection(data, loop))
         loop.run_forever()
 
-    async def create_WebRTC_Connection(self, data):
+    async def create_WebRTC_Connection(self, data, loop):
         peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
                                                               RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
         peer.on('track', lambda event: print("Track received"))
 
         self.socket_client.sio.on('iceCandidate',
-                                  lambda dataICE: asyncio.new_event_loop().run_until_complete(handleRemoteCandidate(dataICE)))
+                                  lambda dataICE: loop.create_task(
+                                      handleRemoteCandidate(dataICE)))
 
         async def handleRemoteCandidate(data):
             print("It works yayyyyy")
