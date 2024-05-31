@@ -3,6 +3,7 @@ import wave
 import pyaudio
 from aiortc import MediaStreamTrack
 
+
 # Device Index of USB-Mic: hw: 2.0
 # If not found run the following and look for USB PnP Sound Device in the output:
 # >>> import pyaudio
@@ -32,8 +33,8 @@ if __name__ == '__main__':
     audio = pyaudio.PyAudio()  # create pyaudio instantiation
 
     # create pyaudio stream
-    stream = audio.open(format=form_1, rate=samp_rate, channels=chans, \
-                        input_device_index=dev_index, input=True, \
+    stream = audio.open(format=form_1, rate=samp_rate, channels=chans,
+                        input_device_index=dev_index, input=True,
                         frames_per_buffer=chunk)
     print("recording")
     frames = []
