@@ -61,6 +61,7 @@ class CallUserController:
         await peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
                                                                                  type=remote_offer['type']))
         while True:
+            print("endless loop")
             if peer.iceGatheringState == "complete":
                 print("gathered all ices")
                 break
