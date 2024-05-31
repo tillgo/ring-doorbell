@@ -61,9 +61,9 @@ class CallUserController:
         camTrack = PiCameraTrack()
         peer.addTrack(camTrack)
         print(peer.connectionState)
+        peer.on('connectionstatechange', lambda : print("State: " + peer.connectionState))
         answer = await peer.createAnswer()
         await peer.setLocalDescription(answer)
         # has to use localdescription, as here the ice candidates are set
         self.socket_client.sendRTCAnswer(self.userId, peer.localDescription)
 
-        peer.on('connectionstatechange', lambda : print("State: " + peer.connectionState))
