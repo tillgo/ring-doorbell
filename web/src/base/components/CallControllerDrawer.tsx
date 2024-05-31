@@ -5,148 +5,70 @@ import { useContext, useEffect, useRef } from 'react'
 import { VideoComponent } from '@/base/components/VideoComponent.tsx'
 import { X } from 'lucide-react'
 import { SocketContext } from '@/common/provider/SocketProvider.tsx'
-
-const servers = {
-    iceServers: [
-        {
-            urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'],
-        },
-    ],
-    iceCandidatePoolSize: 10,
-}
+import { useRTCPeer } from '@/common/hooks/useRTCPeer.ts'
 
 export const CallControllerDrawer = (props: { userId: string }) => {
     const { userId } = props
-
     const socket = useContext(SocketContext)
     const dispatch = useAppDispatch()
     const callControllerState = useAppSelector((s) => s.callController)
     const rtcData = useAppSelector((s) => s.rtcConnection)
 
+    const { answerCall, answerConnectionInfo, callClient, callConnectionInfo } = useRTCPeer()
+
     const connectionRef = useRef<RTCPeerConnection>()
+
+    socket?.on('callFailed', (message) => {
+        //ToDo handle failed call
+        console.log(message)
+    })
+
+    socket?.on('callOver', () => {
+        dispatch({ type: 'updateCallEndedRTCConn:', payload: true })
+        dispatch({ type: 'updateCallAcceptedRTCConn', payload: false })
+        connectionRef.current && connectionRef.current?.close()
+    })
 
     useEffect(() => {
         if (callControllerState.isAnswerCall) {
             dispatch({ type: 'updateIsAnswerCall', payload: false })
-
-            const peer = new RTCPeerConnection(servers)
-            socket?.on('iceCandidate', async (data) => {
-                await peer.addIceCandidate(new RTCIceCandidate(data.candidate))
-            })
-
-            peer.onicecandidate = (event) => {
-                if (event.candidate) {
-                    socket?.emit('iceCandidate', {
-                        candidate: event.candidate,
-                        to: rtcData.oppositeId,
-                    })
-                }
-            }
-
-            peer.ontrack = (event) => {
-                event.streams[0].getTracks().forEach((track) => {
-                    rtcData.oppositeStream.addTrack(track)
-                })
-            }
-
-            socket?.on('answerSignal', async (signal) => {
-                await peer.setRemoteDescription(JSON.parse(signal))
-            })
-
-            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-                dispatch({ type: 'updateMyStreamRTCConn', payload: stream })
-                console.log(stream)
-
-                //Set stream before creatig offer
-                stream.getTracks().forEach((track) => {
-                    peer.addTrack(track, stream)
-                })
-
-                peer.createOffer().then(async (offer) => {
-                    await peer.setLocalDescription(offer)
-                    socket?.emit('answerCall', {
-                        signal: JSON.stringify(offer),
-                        to: rtcData.oppositeId,
-                    })
-                })
-            })
-
-            connectionRef.current = peer
+            answerCall(rtcData.oppositeId)
         }
+    }, [answerCall, callControllerState.isAnswerCall, dispatch, rtcData.oppositeId])
+
+    // ToDo kein useEffect nehmen
+    useEffect(() => {
+        connectionRef.current = answerConnectionInfo.rtcPeer
+        dispatch({ type: 'updateMyStreamRTCConn', payload: answerConnectionInfo.ownStream })
+        dispatch({
+            type: 'updateOppositeStreamRTCConn',
+            payload: answerConnectionInfo.oppositeStream,
+        })
     }, [
-        callControllerState.isAnswerCall,
+        answerConnectionInfo.oppositeStream,
+        answerConnectionInfo.ownStream,
+        answerConnectionInfo.rtcPeer,
         dispatch,
-        rtcData.oppositeId,
-        rtcData.oppositeStream,
-        socket,
     ])
 
+    // ToDo kein useEffect nehmen
     useEffect(() => {
-        socket?.on('callFailed', (message) => {
-            //ToDo handle failed call
-            console.log(message)
+        connectionRef.current = callConnectionInfo.rtcPeer
+        dispatch({ type: 'updateMyStreamRTCConn', payload: callConnectionInfo.ownStream })
+        dispatch({
+            type: 'updateOppositeStreamRTCConn',
+            payload: callConnectionInfo.oppositeStream,
         })
-
-        socket?.on('callOver', () => {
-            dispatch({ type: 'updateCallEndedRTCConn:', payload: true })
-            dispatch({ type: 'updateCallAcceptedRTCConn', payload: false })
-            connectionRef.current && connectionRef.current?.close()
-        })
-    }, [dispatch, socket])
+    }, [
+        callConnectionInfo.oppositeStream,
+        callConnectionInfo.ownStream,
+        callConnectionInfo.rtcPeer,
+        dispatch,
+    ])
 
     const callUser = (id: string) => {
-        const peer = new RTCPeerConnection(servers)
         dispatch({ type: 'updateOppositeIdRTCConn', payload: id })
-
-        socket?.emit('callClient', {
-            to: id,
-        })
-
-        socket?.on('callAccepted', (signal) => {
-            dispatch({ type: 'updateCallAcceptedRTCConn', payload: true })
-
-            peer.onicecandidate = (event) => {
-                if (event.candidate) {
-                    socket?.emit('iceCandidate', {
-                        candidate: event.candidate,
-                        to: id,
-                    })
-                }
-            }
-
-            peer.ontrack = (event) => {
-                event.streams[0].getTracks().forEach((track) => {
-                    rtcData.oppositeStream.addTrack(track)
-                })
-            }
-
-            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-                dispatch({ type: 'updateMyStreamRTCConn', payload: stream })
-
-                //Set stream before creating offer
-                stream.getTracks().forEach((track) => {
-                    peer.addTrack(track, stream)
-                })
-
-                peer.setRemoteDescription(JSON.parse(signal)).then(() => {
-                    peer.createAnswer().then(async (answer) => {
-                        await peer.setLocalDescription(answer)
-                        socket?.emit('answerSignal', {
-                            signal: JSON.stringify(answer),
-                            to: id,
-                        })
-                    })
-                })
-            })
-        })
-
-        socket?.on('callDenied', () => {
-            //ToDo just for testing purposes, in reality the webclient doesnt make calls, so cant get denied
-            console.log('Call Denied')
-            connectionRef.current && connectionRef.current?.close()
-        })
-
-        connectionRef.current = peer
+        callClient(id, () => dispatch({ type: 'updateCallAcceptedRTCConn', payload: true }))
     }
 
     const leaveCall = () => {
