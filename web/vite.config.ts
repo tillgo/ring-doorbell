@@ -13,10 +13,18 @@ export default defineConfig({
             loose: true,
         }),
         VitePWA({
-            injectRegister: 'inline',
-            srcDir: 'src',
-            filename: 'sw.ts',
+            injectRegister: 'auto',
+            strategies: 'injectManifest',
             base: '/',
+            srcDir: 'src',
+            filename: 'notifications-sw.ts',
+
+            devOptions: { enabled: true },
+
+            injectManifest: {
+                minify: false,
+                enableWorkboxModulesLogs: true,
+            },
 
             registerType: 'autoUpdate',
             includeAssets: [
