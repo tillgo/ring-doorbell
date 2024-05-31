@@ -10,8 +10,6 @@ from connectionClients.socket_client import SocketClient
 from picam_controller import PiCameraTrack
 
 
-
-
 class CallUserController:
 
     def __init__(self, ui):
@@ -38,7 +36,9 @@ class CallUserController:
 
         peer.on('track', lambda event: print("Track received"))
 
-        @self.socket_client.sio.on('iceCandidate')
+        self.socket_client.sio.on('iceCandidate',
+                                  lambda dataICE: asyncio.new_event_loop().run_until_complete(handleRemoteCandidate(dataICE)))
+
         async def handleRemoteCandidate(data):
             print("It works yayyyyy")
             candidateData = data['candidate']
