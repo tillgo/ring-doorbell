@@ -1,7 +1,7 @@
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter } from '@/lib/components/ui/drawer.tsx'
 import { Button } from '@/lib/components/ui/button.tsx'
 import { useAppDispatch, useAppSelector } from '@/base/appContext.tsx'
-import { useContext, useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { VideoComponent } from '@/base/components/VideoComponent.tsx'
 import { X } from 'lucide-react'
 import { SocketContext } from '@/common/provider/SocketProvider.tsx'
@@ -13,6 +13,7 @@ export const CallControllerDrawer = (props: { userId: string }) => {
     const dispatch = useAppDispatch()
     const callControllerState = useAppSelector((s) => s.callController)
     const rtcData = useAppSelector((s) => s.rtcConnection)
+    const [connectState, setConnectState] = useState<string | undefined>('nada')
 
     const { answerCall, answerConnectionInfo, callClient, callConnectionInfo } = useCallClient()
 
@@ -98,7 +99,10 @@ export const CallControllerDrawer = (props: { userId: string }) => {
             <DrawerContent className={'h-full'}>
                 <div className={'mt-2 flex h-full items-center justify-center'}>
                     <div>Connection state</div>
-                    <div>{connectionRef.current?.connectionState}</div>
+                    <button onClick={() => setConnectState(connectionRef.current?.connectionState)}>
+                        get new state
+                    </button>
+                    <div>{connectState}</div>
                     <VideoComponent
                         isCallRunning={rtcData.callAccepted && !rtcData.callEnded}
                         myVideoStream={rtcData.myStream}

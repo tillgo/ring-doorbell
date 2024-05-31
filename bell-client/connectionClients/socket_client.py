@@ -2,7 +2,6 @@ import asyncio
 import uuid
 
 import socketio
-from peerjs.peer import PeerOptions, Peer, PeerConnectOption
 
 from connectionClients.http_client import HttpClient
 
