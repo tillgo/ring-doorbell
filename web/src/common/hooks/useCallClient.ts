@@ -28,24 +28,15 @@ export function useCallClient() {
     const [callConnectionInfo, setCallConnectionInfo] =
         useState<RTCConnectionInfo>(initialRTConnectionInfo)
 
-    // const handleNewIceCandidate = (userId: string) => (event: RTCPeerConnectionIceEvent) => {
-    //     if (event.candidate) {
-    //         console.log(event.candidate)
-    //         socket?.emit('iceCandidate', {
-    //             candidate: event.candidate,
-    //             to: userId,
-    //         })
-    //     }
-    // }
-
-    const getHandleIceGatheringStateChange =
-        (onComplete: (offer: RTCSessionDescription) => void) => (event: Event) => {
-            const connection = event.target as RTCPeerConnection | undefined
-
-            if (connection && connection.iceGatheringState === 'complete') {
-                onComplete(connection.localDescription!)
-            }
+    const handleNewIceCandidate = (userId: string) => (event: RTCPeerConnectionIceEvent) => {
+        if (event.candidate) {
+            console.log(event.candidate)
+            socket?.emit('iceCandidate', {
+                candidate: event.candidate,
+                to: userId,
+            })
         }
+    }
 
     const handleNewTrack = (clientStream: MediaStream) => (event: RTCTrackEvent) => {
         event.streams[0].getTracks().forEach((track) => {
@@ -59,25 +50,7 @@ export function useCallClient() {
             await peer.addIceCandidate(new RTCIceCandidate(data.candidate))
         })
 
-        const handleIceGatheringComplete = (offer: RTCSessionDescription) => {
-            console.log(offer)
-            socket?.emit('answerCall', {
-                signal: JSON.stringify(offer),
-                to: clientId,
-            })
-
-            // Making info accessible to users of hook
-            setAnswerConnectionInfo((state) => {
-                return {
-                    ...state,
-                    oppositeStream: clientStream,
-                    rtcPeer: peer,
-                }
-            })
-        }
-        peer.onicegatheringstatechange = getHandleIceGatheringStateChange(
-            handleIceGatheringComplete
-        )
+        peer.onicecandidate = handleNewIceCandidate(clientId)
 
         const clientStream = new MediaStream()
         peer.ontrack = handleNewTrack(clientStream)
@@ -92,14 +65,20 @@ export function useCallClient() {
             stream.getTracks().forEach((track) => {
                 peer.addTrack(track, stream)
             })
-            setAnswerConnectionInfo((state) => {
-                return {
-                    ...state,
-                    ownStream: stream,
-                }
-            })
+
             peer.createOffer().then(async (offer) => {
                 await peer.setLocalDescription(offer)
+                socket?.emit('answerCall', {
+                    signal: JSON.stringify(offer),
+                    to: clientId,
+                })
+            })
+
+            // Making info accessible to users of hook
+            setAnswerConnectionInfo({
+                ownStream: stream,
+                oppositeStream: clientStream,
+                rtcPeer: peer,
             })
         })
     }
