@@ -66,4 +66,4 @@ class CallUserController:
         # has to use localdescription, as here the ice candidates are set
         self.socket_client.sendRTCAnswer(self.userId, peer.localDescription)
 
-        peer.on('connectionstatechange', lambda : print(peer.connectionState))
+        peer.on('connectionstatechange', lambda : print("State: " + peer.connectionState))
