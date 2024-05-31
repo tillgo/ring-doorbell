@@ -41,6 +41,9 @@ class CallUserController:
                                                               RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
         remote_offer = json.loads(data)
+        print(remote_offer)
+        print("teeeeeeeeeeeeeeeeeeeeeeeeeest-----------------------------------------\n"
+              "--------------------------------------------------------------------------------")
         await peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
                                                                                  type=remote_offer['type']))
 
