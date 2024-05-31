@@ -29,8 +29,8 @@ class CallUserController:
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
         loop = asyncio.new_event_loop()
+        loop.create_task(self.create_WebRTC_Connection(data))
         loop.run_forever()
-        loop.run_until_complete(self.create_WebRTC_Connection(data))
 
     async def create_WebRTC_Connection(self, data):
         peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
