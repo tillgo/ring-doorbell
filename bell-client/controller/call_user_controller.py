@@ -36,24 +36,6 @@ class CallUserController:
 
         peer.on('track', lambda event: print("Track received"))
 
-        self.socket_client.sio.on('iceCandidate',
-                                  lambda dataICE: loop.create_task(
-                                      handleRemoteCandidate(dataICE)))
-
-        async def handleRemoteCandidate(data):
-            print("It works yayyyyy")
-            candidateData = data['candidate']
-            candidate = candidateData['candidate']
-            # if empty candidate return
-            if candidate == '':
-                return
-            sdpMLineIndex = candidateData['sdpMLineIndex']
-            sdpMid = candidateData['sdpMid']
-            ice_candidate = candidate_from_sdp(candidate)
-            ice_candidate.sdpMLineIndex = sdpMLineIndex
-            ice_candidate.sdpMid = sdpMid
-            await peer.addIceCandidate(ice_candidate)
-
         camTrack = PiCameraTrack()
         peer.addTrack(camTrack)
         print(peer.connectionState)

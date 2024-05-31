@@ -38,6 +38,15 @@ export function useCallClient() {
         }
     }
 
+    const getHandleIceGatheringStateChange =
+        (onComplete: (offer: RTCSessionDescription) => void) => (event: Event) => {
+            const connection = event.target as RTCPeerConnection | undefined
+
+            if (connection && connection.iceGatheringState === 'complete') {
+                onComplete(connection.localDescription!)
+            }
+        }
+
     const handleNewTrack = (clientStream: MediaStream) => (event: RTCTrackEvent) => {
         event.streams[0].getTracks().forEach((track) => {
             clientStream.addTrack(track)
@@ -50,14 +59,32 @@ export function useCallClient() {
             await peer.addIceCandidate(new RTCIceCandidate(data.candidate))
         })
 
-        peer.onicecandidate = handleNewIceCandidate(clientId)
+        const handleIceGatheringComplete = (offer: RTCSessionDescription) => {
+            console.log(offer)
+            socket?.emit('answerCall', {
+                signal: JSON.stringify(offer),
+                to: clientId,
+            })
+
+            // Making info accessible to users of hook
+            setAnswerConnectionInfo((state) => {
+                return {
+                    ...state,
+                    oppositeStream: clientStream,
+                    rtcPeer: peer,
+                }
+            })
+        }
+        peer.onicegatheringstatechange = getHandleIceGatheringStateChange(
+            handleIceGatheringComplete
+        )
 
         const clientStream = new MediaStream()
         peer.ontrack = handleNewTrack(clientStream)
 
         socket?.on('answerSignal', async (signal) => {
             console.log(signal)
-            await peer.setRemoteDescription(signal)
+            await peer.setRemoteDescription(JSON.parse(signal))
         })
 
         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
@@ -65,20 +92,14 @@ export function useCallClient() {
             stream.getTracks().forEach((track) => {
                 peer.addTrack(track, stream)
             })
-
+            setAnswerConnectionInfo((state) => {
+                return {
+                    ...state,
+                    ownStream: stream,
+                }
+            })
             peer.createOffer().then(async (offer) => {
                 await peer.setLocalDescription(offer)
-                socket?.emit('answerCall', {
-                    signal: JSON.stringify(offer),
-                    to: clientId,
-                })
-            })
-
-            // Making info accessible to users of hook
-            setAnswerConnectionInfo({
-                ownStream: stream,
-                oppositeStream: clientStream,
-                rtcPeer: peer,
             })
         })
     }
