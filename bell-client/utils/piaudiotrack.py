@@ -53,7 +53,7 @@ class PiAudioTrack(MediaStreamTrack):
         time_base = Fraction(1, self.rate)
         # Préparation des données pour PyAV
         audio_frame = av.AudioFrame.from_ndarray(
-            data.T, format='s16', layout='stereo')
+            data.T, format='s16', layout='mono')
         audio_frame.sample_rate = self.rate
         audio_frame.pts = pts
         audio_frame.time_base = time_base
