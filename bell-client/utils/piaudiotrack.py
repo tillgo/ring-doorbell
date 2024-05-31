@@ -28,7 +28,7 @@ wav_output_filename = 'test1.wav'  # name of .wav file
 class PiAudioTrack(MediaStreamTrack):
     kind = "audio"
 
-    def __init__(self, rate=48000, channels=2):
+    def __init__(self, rate=48000, channels=1):
         super().__init__()
         self.rate = rate
         self.channels = channels
@@ -37,7 +37,7 @@ class PiAudioTrack(MediaStreamTrack):
         # Initialiser PyAudio
         self.pa = pyaudio.PyAudio()
         self.stream = self.pa.open(format=pyaudio.paInt16,
-                                   channels=2,
+                                   channels=self.channels,
                                    rate=48000,
                                    input=True,
                                    frames_per_buffer=960)
