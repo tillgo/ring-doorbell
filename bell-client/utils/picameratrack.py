@@ -28,8 +28,8 @@ class PiCameraTrack(MediaStreamTrack):
     async def recv(self):
         img = cam.capture_array()
 
-        pts = time.time() * 100000
+        pts = time.time() * 50000
         new_frame = av.VideoFrame.from_ndarray(img, format='rgba')
         new_frame.pts = int(pts)
-        new_frame.time_base = Fraction(1, 100000)
+        new_frame.time_base = Fraction(1, 50000)
         return new_frame
