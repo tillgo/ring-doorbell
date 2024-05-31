@@ -25,7 +25,7 @@ dev_index = 3  # device index found by p.get_device_info_by_index(ii)
 wav_output_filename = 'test1.wav'  # name of .wav file
 
 
-class CustomAudioTrack(MediaStreamTrack):
+class PiAudioTrack(MediaStreamTrack):
     kind = "audio"
 
     def __init__(self, rate=48000, channels=2):
