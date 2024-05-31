@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     # create pyaudio stream
     stream = audio.open(format=form_1, rate=samp_rate, channels=chans,
-                        input_device_index=dev_index, input=True,
+                        input=True,
                         frames_per_buffer=chunk)
     print("recording")
     frames = []
