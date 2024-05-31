@@ -1,5 +1,8 @@
+import time
 import wave
+from fractions import Fraction
 
+import av
 import pyaudio
 from aiortc import MediaStreamTrack, AudioStreamTrack
 
@@ -31,4 +34,11 @@ class PiAudioTrack(AudioStreamTrack):
                                       input=True, frames_per_buffer=chunk)
 
     async def recv(self):
-        return self.stream.read(chunk)
+        data = self.stream.read(chunk)
+
+        pts = time.time() * 1000000
+        new_frame = av.AudioFrame.from_ndarray(data, format='s16')
+        new_frame.pts = int(pts)
+        new_frame.time_base = Fraction(1, 1000000)
+        return new_frame
+
