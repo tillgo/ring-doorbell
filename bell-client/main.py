@@ -42,7 +42,7 @@ if __name__ == "__main__":
     asyncio.set_event_loop(event_loop)
 
     app_close_event = asyncio.Event()
-    app.aboutToQuit.connect(lambda: app_close_event.set())
+    app.aboutToQuit.connect(lambda: app_close_event.set)
 
     window = MainController()
     with event_loop:
