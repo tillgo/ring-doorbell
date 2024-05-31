@@ -2,6 +2,7 @@ import asyncio
 import json
 
 from aiortc import RTCPeerConnection, RTCConfiguration, RTCIceServer, RTCSessionDescription
+from aiortc.contrib.media import MediaPlayer
 
 from connectionClients.socket_client import SocketClient
 from utils.piaudiotrack import PiAudioTrack
@@ -39,8 +40,8 @@ class CallUserController:
         peer.addTrack(camTrack)
 
         # add audio
-        audioTrack = PiAudioTrack()
-        peer.addTrack(audioTrack)
+        audioTrack = MediaPlayer("default", format="pulse")
+        peer.addTrack(audioTrack.audio)
 
         peer.on('connectionstatechange', lambda: print("State: " + peer.connectionState))
 
