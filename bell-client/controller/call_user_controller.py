@@ -29,6 +29,7 @@ class CallUserController:
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
         loop = asyncio.new_event_loop()
+        loop.run_forever()
         loop.run_until_complete(self.create_WebRTC_Connection(data))
 
     async def create_WebRTC_Connection(self, data):
@@ -60,11 +61,6 @@ class CallUserController:
         remote_offer = json.loads(data)
         await peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
                                                                                  type=remote_offer['type']))
-        while True:
-            print("endless loop")
-            if peer.iceGatheringState == "complete":
-                print("gathered all ices")
-                break
 
         answer = await peer.createAnswer()
         await peer.setLocalDescription(answer)
