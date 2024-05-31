@@ -1,45 +1,112 @@
-"""
-Copy from the example in
-The Raspberry Pi official manual The Picamera2 Library (2023-11-27)
-Charpter 8.5 Using the camera in Qt applications
-"""
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QApplication, QWidget
-from picamera2.previews.qt import QGlPicamera2
+import sys
+import cv2
+import numpy as np
+from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QPushButton, QGraphicsOpacityEffect
+from PyQt6.QtGui import QImage, QPixmap
+from PyQt6.QtCore import Qt, QTimer
 from picamera2 import Picamera2
+from libcamera import controls
+import io
 
 
-def on_button_clicked():
-    button.setEnabled(False)
-    cfg = picam2.create_still_configuration()
-    picam2.switch_mode_and_capture_file(cfg, "test.jpg", signal_function=qpicamera2.signal_done)
+class CameraApp(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        # Initialize Picamera2
+        self.picam2 = Picamera2()
+        config = self.picam2.create_preview_configuration(main={"size": (800, 480)})
+        self.picam2.configure(config)
+
+        # Enable autofocus
+        self.picam2.set_controls({"AfMode": controls.AfModeEnum.Continuous})
+
+        # Start the camera
+        self.picam2.start()
+
+        # Create a label to display the camera feed
+        self.camera_label = QLabel(self)
+        self.camera_label.setGeometry(0, 0, 800, 480)
+
+        # Create a button to toggle the mirror effect
+        self.toggle_button = QPushButton("Toggle Mirror Effect", self)
+        self.toggle_button.setGeometry(600, 430, 200, 50)
+        self.toggle_button.setStyleSheet("background-color: white; color: black; font-size: 18px;")
+
+        # Create a close button
+        self.close_button = QPushButton("Close", self)
+        self.close_button.setGeometry(700, 10, 90, 40)
+        self.close_button.setStyleSheet("background-color: red; color: white; font-size: 18px;")
+
+        # Create opacity effect for toggle button
+        toggle_opacity_effect = QGraphicsOpacityEffect(self.toggle_button)
+        toggle_opacity_effect.setOpacity(0.7)
+        self.toggle_button.setGraphicsEffect(toggle_opacity_effect)
+
+        # Connect the button to the toggle function
+        self.toggle_button.clicked.connect(self.toggle_mirror_effect)
+        self.close_button.clicked.connect(self.close_application)
+
+        # Flag to keep track of the mirror effect state
+        self.mirror_effect = False
+
+        # Create a QTimer to update the camera feed
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_camera_feed)
+        self.timer.start(30)  # Update the feed every 30 ms
+
+        # Set full screen
+        self.showFullScreen()
+
+    def toggle_mirror_effect(self):
+        """
+        Toggle the mirror effect on or off.
+        """
+        self.mirror_effect = not self.mirror_effect
+
+    def close_application(self):
+        """
+        Close the application.
+        """
+        self.timer.stop()  # Stop the QTimer
+        self.picam2.stop()  # Stop the camera
+        QApplication.quit()  # Close the application
+
+    def update_camera_feed(self):
+        """
+        Update the camera label with the live feed from the camera, applying the mirror effect if needed.
+        """
+        # Capture the frame from the camera
+        stream = io.BytesIO()
+        self.picam2.capture_file(stream, format='jpeg')  # Specify the format explicitly
+        stream.seek(0)
+        frame = cv2.imdecode(np.frombuffer(stream.getvalue(), np.uint8), 1)
+
+        # Convert color space from BGR to RGB
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+        if self.mirror_effect:
+            # Apply the mirror effect
+            mid_x = frame.shape[1] // 2
+            left_half = frame[:, :mid_x]
+            right_half = cv2.flip(left_half, 1)
+            frame = np.concatenate((left_half, right_half), axis=1)
+
+        # Convert the frame to QImage and display it on the QLabel
+        height, width, channel = frame.shape
+        bytes_per_line = 3 * width
+        q_image = QImage(frame.data, width, height, bytes_per_line, QImage.Format_RGB888)
+        self.camera_label.setPixmap(QPixmap.fromImage(q_image))
+
+    def closeEvent(self, event):
+        self.timer.stop()  # Stop the QTimer
+        self.picam2.stop()  # Stop the camera
+        event.accept()
 
 
-def capture_done(job):
-    result = picam2.wait(job)
-    button.setEnabled(True)
-
-
-
-
+# Run the application
 if __name__ == "__main__":
-    picam2 = Picamera2()
-    picam2.configure(picam2.create_preview_configuration())
-
-    app = QApplication([])
-    qpicamera2 = QGlPicamera2(picam2, width=800, height=600, keep_ar=False)
-    button = QPushButton("Click to capture JPEG")
-    window = QWidget()
-    qpicamera2.done_signal.connect(capture_done)
-    button.clicked.connect(on_button_clicked)
-
-    layout_v = QVBoxLayout()
-    layout_v.addWidget(qpicamera2)
-    layout_v.addWidget(button)
-    window.setWindowTitle("Qt Picamera2 App")
-    window.resize(640, 480)
-    window.setLayout(layout_v)
-
-    picam2.start()
+    app = QApplication(sys.argv)
+    window = CameraApp()
     window.show()
-    app.exec()
+    sys.exit(app.exec_())
