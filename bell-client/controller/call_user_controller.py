@@ -4,6 +4,7 @@ import json
 from aiortc import RTCPeerConnection, RTCConfiguration, RTCIceServer, RTCSessionDescription
 
 from connectionClients.socket_client import SocketClient
+from utils.piaudiotrack import PiAudioTrack
 from utils.picameratrack import PiCameraTrack
 
 
@@ -33,9 +34,14 @@ class CallUserController:
 
         peer.on('track', lambda event: print("Track received"))
 
+        # add video
         camTrack = PiCameraTrack()
         peer.addTrack(camTrack)
-        print(peer.connectionState)
+
+        # add audio
+        audioTrack = PiAudioTrack()
+        peer.addTrack(audioTrack)
+
         peer.on('connectionstatechange', lambda: print("State: " + peer.connectionState))
 
         remote_offer = json.loads(data)
