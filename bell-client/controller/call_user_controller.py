@@ -10,7 +10,6 @@ from connectionClients.socket_client import SocketClient
 from picam_controller import PiCameraTrack
 
 
-
 def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
     def handleRemoteCandidate(data):
         candidateData = data['candidate']
@@ -23,8 +22,8 @@ def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
         ice_candidate = candidate_from_sdp(candidate)
         ice_candidate.sdpMLineIndex = sdpMLineIndex
         ice_candidate.sdpMid = sdpMid
-        print(ice_candidate)
         peer.addIceCandidate(ice_candidate)
+
 
     return handleRemoteCandidate
 
@@ -63,4 +62,5 @@ class CallUserController:
         peer.addTrack(camTrack)
         answer = await peer.createAnswer()
         await peer.setLocalDescription(answer)
+        # has to use localdescription, as here the ice candidates are set
         self.socket_client.sendRTCAnswer(self.userId, peer.localDescription)
