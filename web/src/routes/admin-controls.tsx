@@ -1,7 +1,7 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { DeviceSelect } from '@/common/components/DeviceSelect.tsx'
 import { useFetchMyDevicesQuery } from '@/base/api/hooks/useFetchMyDevicesQuery.ts'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Label } from '@/lib/components/ui/label.tsx'
 import {
     Card,
@@ -19,32 +19,41 @@ import { useAddHouseholdMemberMutation } from '@/base/api/hooks/useAddHouseholdM
 import { HouseholdMemberItem } from '@/common/components/HouseholdMemberItem.tsx'
 import { useFetchVisitorsQuery } from '@/base/api/hooks/useFetchVisitorsQuery.ts'
 import { VisitorItem } from '@/common/components/VisitorItem.tsx'
+import { z } from 'zod'
+
+const querySchema = z.object({
+    selectedDevice: z.string().optional(),
+})
 
 export const Route = createFileRoute('/admin-controls')({
     component: AdminControls,
+    validateSearch: (search) => querySchema.parse(search),
 })
 
 function AdminControls() {
-    const [selectedDevice, setSelectedDevice] = useState<string | undefined>(undefined)
+    const { selectedDevice } = Route.useSearch()
+
     const { data: devices = [] } = useFetchMyDevicesQuery()
     const { data: householdMembers = [] } = useFetchHouseholdMembers({ id: selectedDevice })
     const { data: visitors = [] } = useFetchVisitorsQuery({ id: selectedDevice })
 
     const { mutate: addHouseholdMember } = useAddHouseholdMemberMutation()
 
+    const navigate = useNavigate()
+
     // automatically set the selected device if there is only one
     useEffect(() => {
         if (devices.length === 1) {
-            setSelectedDevice(devices[0].id)
+            navigate({ search: { selectedDevice: devices[0].id } })
         }
-    }, [devices])
+    }, [devices, navigate])
 
     const handleAddHouseholdMember = (value: HouseholdMemberData) => {
         addHouseholdMember({ ...value, deviceId: selectedDevice! })
     }
 
     const handleDeviceChange = (value: string) => {
-        setSelectedDevice(value)
+        navigate({ search: { selectedDevice: value } })
     }
 
     return (
