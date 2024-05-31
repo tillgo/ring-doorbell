@@ -17,6 +17,7 @@ import { JWTPayload } from './shared/types'
 import deviceRoutes from './routes/deviceRoutes'
 import path from 'node:path'
 import { errorHandler } from './middleware/errorHandler'
+import dashboardRoutes from './routes/dashboardRoutes'
 
 declare module 'express' {
     // @ts-ignore
@@ -57,6 +58,7 @@ app.use(cookieParser())
 app.use(cors({ origin: getConfig().NODE_ENV !== 'production' ? '*' : undefined }))
 app.use('/api/users', authenticate, userRoutes)
 app.use('/api/devices', authenticate, deviceRoutes)
+app.use('/api/dashboard', authenticate, dashboardRoutes)
 app.use('/api/auth', authRoutes)
 
 // error handling middleware

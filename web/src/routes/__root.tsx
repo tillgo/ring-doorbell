@@ -2,10 +2,10 @@ import { createRootRoute, Outlet, useMatchRoute, useNavigate } from '@tanstack/r
 import { AppBar, Routes } from '@/base/components/AppBar.tsx'
 import { CallControllerDrawer } from '@/app/general/components/CallControllerDrawer.tsx'
 import useAuth from '@/common/hooks/useAuth.ts'
-import { clsx } from 'clsx'
 import { useEffect } from 'react'
 import { LayoutDashboard, Shield, Settings } from 'lucide-react'
 import { ReceiveCallDialog } from '@/base/components/ReceiveCallDialog.tsx'
+import { cn } from '@/lib/utils.ts'
 
 const routes: Routes = [
     {
@@ -47,7 +47,7 @@ function Main() {
     return (
         <>
             <main
-                className={clsx('min-h-dvh w-full bg-muted/40 p-4 md:p-8', {
+                className={cn('min-h-dvh w-full bg-muted/40 p-4 md:p-8', {
                     'pb-20 md:pb-8 md:pl-24': isAuthenticated,
                 })}
             >
