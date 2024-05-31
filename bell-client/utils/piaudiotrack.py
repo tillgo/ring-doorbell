@@ -32,7 +32,6 @@ class PiAudioTrack(MediaStreamTrack):
         super().__init__()
         self.rate = rate
         self.channels = channels
-        self._timestamp = 0
 
         # Initialiser PyAudio
         self.pa = pyaudio.PyAudio()
@@ -50,8 +49,7 @@ class PiAudioTrack(MediaStreamTrack):
             frames_per_buffer), dtype=np.int16)
         data = data.reshape(-1, 1)
 
-        self._timestamp += frames_per_buffer
-        pts = self._timestamp
+        pts = time.time() * 1000000
         time_base = Fraction(1, self.rate)
         # Préparation des données pour PyAV
         audio_frame = av.AudioFrame.from_ndarray(
@@ -61,4 +59,3 @@ class PiAudioTrack(MediaStreamTrack):
         audio_frame.time_base = time_base
 
         return audio_frame
-
