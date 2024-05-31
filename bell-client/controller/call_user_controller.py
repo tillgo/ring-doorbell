@@ -31,7 +31,6 @@ class CallUserController:
 
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
-        print(data)
         loop = asyncio.new_event_loop()
         loop.run_until_complete(self.create_WebRTC_Connection(data))
 
@@ -39,7 +38,8 @@ class CallUserController:
         peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
                                                               RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
-        remote_offer = json.load(data)
+        remote_offer = json.loads(data)
+        print(remote_offer)
         await peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
                                                                            type=remote_offer['type']))
 
