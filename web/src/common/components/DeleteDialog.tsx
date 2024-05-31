@@ -1,15 +1,15 @@
 import { Button } from '@/lib/components/ui/button'
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/lib/components/ui/dialog'
 import { Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/lib/components/ui/alert-dialog.tsx'
 
 type Props = {
     onDelete: () => void
@@ -26,29 +26,29 @@ export function DeleteDialog(props: Props) {
     }
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
+        <AlertDialog open={open} onOpenChange={setOpen}>
+            <AlertDialogTrigger asChild>
                 <Button variant={'ghost'} size={'icon'} onClick={() => setOpen(true)}>
                     <Trash2 />
                 </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                    <DialogTitle>Confirm delete</DialogTitle>
-                    <DialogDescription>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="sm:max-w-[425px]">
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Confirm delete</AlertDialogTitle>
+                    <AlertDialogDescription>
                         Are you sure you want to delete{` ${props.type} `}
                         <span className={'font-semibold'}>{props.name}</span>?
-                    </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
                     <Button variant="outline" onClick={() => setOpen(false)}>
                         Cancel
                     </Button>
                     <Button variant={'destructive'} onClick={handleDelete}>
                         Delete
                     </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     )
 }
