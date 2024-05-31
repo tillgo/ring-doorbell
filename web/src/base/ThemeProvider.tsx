@@ -40,6 +40,9 @@ export function ThemeProvider({
                 ? 'dark'
                 : 'light'
 
+            document
+                .querySelector("meta[name='theme-color']")!
+                .setAttribute('content', systemTheme === 'dark' ? 'rgba(0,0,0,0.99)' : '#ffffff')
             root.classList.add(systemTheme)
             return
         }
