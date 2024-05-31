@@ -28,15 +28,15 @@ export function useCallClient() {
     const [callConnectionInfo, setCallConnectionInfo] =
         useState<RTCConnectionInfo>(initialRTConnectionInfo)
 
-    const handleNewIceCandidate = (userId: string) => (event: RTCPeerConnectionIceEvent) => {
-        if (event.candidate) {
-            console.log(event.candidate)
-            socket?.emit('iceCandidate', {
-                candidate: event.candidate,
-                to: userId,
-            })
-        }
-    }
+    // const handleNewIceCandidate = (userId: string) => (event: RTCPeerConnectionIceEvent) => {
+    //     if (event.candidate) {
+    //         console.log(event.candidate)
+    //         socket?.emit('iceCandidate', {
+    //             candidate: event.candidate,
+    //             to: userId,
+    //         })
+    //     }
+    // }
 
     const getHandleIceGatheringStateChange =
         (onComplete: (offer: RTCSessionDescription) => void) => (event: Event) => {
@@ -84,7 +84,7 @@ export function useCallClient() {
 
         socket?.on('answerSignal', async (signal) => {
             console.log(signal)
-            await peer.setRemoteDescription(JSON.parse(signal))
+            await peer.setRemoteDescription(signal)
         })
 
         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
