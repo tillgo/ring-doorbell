@@ -99,7 +99,10 @@ export const CallControllerDrawer = (props: { userId: string }) => {
             <DrawerContent className={'h-full'}>
                 <div className={'mt-2 flex h-full items-center justify-center'}>
                     <div>Connection state</div>
-                    <button onClick={() => setConnectState(connectionRef.current?.connectionState)}>
+                    <button
+                        className={'bg-red-800'}
+                        onClick={() => setConnectState(connectionRef.current?.connectionState)}
+                    >
                         get new state
                     </button>
                     <div>{connectState}</div>
