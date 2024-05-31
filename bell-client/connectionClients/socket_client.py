@@ -1,4 +1,5 @@
 import asyncio
+import json
 import uuid
 
 import socketio
@@ -41,7 +42,7 @@ class SocketClient(object):
         self.sio.emit('iceCandidate', {'to': userId, 'candidate': iceCandidate})
 
     def sendRTCAnswer(self, userId, answer):
-        self.sio.emit('answerSignal', {'to': userId, 'signal': {'type': answer.type, 'sdp': answer.sdp}})
+        self.sio.emit('answerSignal', {'to': userId, 'signal': json.dumps(answer)})
 
 
 class Test:
