@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useAppDispatch } from '@/base/appContext.tsx'
 import { Button } from '@/lib/components/ui/button.tsx'
 import { DeviceStatus } from '@/common/components/DeviceStatus.tsx'
@@ -28,6 +28,7 @@ function Index() {
     return (
         <div className="flex flex-col gap-6">
             <h1 className="text-3xl font-semibold">Dashboard</h1>
+
             <Button onClick={onOpenDrawer}>Open Drawer</Button>
 
             {isLoading && (
@@ -36,7 +37,7 @@ function Index() {
                 </div>
             )}
 
-            {dashboardData && (
+            {dashboardData && dashboardData.devices.length >= 1 && (
                 <>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
                         {dashboardData.devices.map((device) => (
@@ -54,6 +55,18 @@ function Index() {
                         <CardContent className="flex flex-col gap-4"></CardContent>
                     </Card>
                 </>
+            )}
+
+            {dashboardData && dashboardData.devices.length === 0 && (
+                <p className={'text-sm text-muted-foreground'}>
+                    No devices found. If you haven't registered your device yet, you can do that in
+                    the{' '}
+                    <Link to={'/settings'} className={'underline'}>
+                        Settings
+                    </Link>
+                    . If the device is owned by someone else, they can add you as a household member
+                    to give you access.
+                </p>
             )}
         </div>
     )

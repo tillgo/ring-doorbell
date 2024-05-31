@@ -14,8 +14,6 @@ export const DeviceStatus = (props: Props) => {
 
     const navigate = useNavigate()
 
-    console.log(isOwner)
-
     const handleClick = () => {
         if (isOwner) {
             navigate({ to: '/admin-controls', search: { selectedDevice: props.device.id } })
