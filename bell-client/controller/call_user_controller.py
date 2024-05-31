@@ -60,6 +60,7 @@ class CallUserController:
                                   getHandleRemoteIceCandidate(peer))
         camTrack = PiCameraTrack()
         peer.addTrack(camTrack)
+        print(peer.connectionState)
         answer = await peer.createAnswer()
         await peer.setLocalDescription(answer)
         # has to use localdescription, as here the ice candidates are set
