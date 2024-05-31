@@ -75,12 +75,13 @@ class CameraApp(QMainWindow):
     def update_camera_feed(self):
         frame = self.picam2.capture_array()
         if frame is not None:
-            # Convert the frame to QImage
-            height, width, channel = frame.shape
+            # Convert frame from RGB to BGR (OpenCV format)
+            frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+
+            # Convert frame to QImage
+            height, width, channel = frame_bgr.shape
             bytes_per_line = 3 * width
-            # Ensure the frame is in the correct color format
-            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            qimage = QImage(frame_rgb.data, width, height, bytes_per_line, QImage.Format.Format_RGB888)
+            qimage = QImage(frame_bgr.data, width, height, bytes_per_line, QImage.Format.Format_RGB888)
 
             # Convert QImage to QPixmap and display it
             pixmap = QPixmap.fromImage(qimage)
