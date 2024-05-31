@@ -21,7 +21,7 @@ def getHandleIceCandidateEvent(socket, userId):
 
 
 def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
-    def handleRemoteCandidate(data):
+    async def handleRemoteCandidate(data):
         candidateData = data['candidate']
         candidate = candidateData['candidate']
         # if empty candidate return
@@ -33,7 +33,7 @@ def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
         ice_candidate.sdpMLineIndex = sdpMLineIndex
         ice_candidate.sdpMid = sdpMid
         print(ice_candidate)
-        peer.addIceCandidate(ice_candidate)
+        await peer.addIceCandidate(ice_candidate)
 
     return handleRemoteCandidate
 
@@ -68,7 +68,7 @@ class CallUserController:
         peer.on('icecandidate', getHandleIceCandidateEvent(self.socket_client, self.userId))
         peer.on('track', lambda event: print("Track received"))
         self.socket_client.sio.on('iceCandidate',
-                                 getHandleRemoteIceCandidate(peer))
+                                  getHandleRemoteIceCandidate(peer))
         camTrack = PiCameraTrack()
         peer.addTrack(camTrack)
         answer = await peer.createAnswer()
