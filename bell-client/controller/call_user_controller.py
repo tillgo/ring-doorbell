@@ -12,11 +12,13 @@ from picam_controller import PiCameraTrack
 
 def getHandleIceCandidateEvent(socket, userId):
     def handleIceCandidateEvent(event):
+        print("getHandleIceCandidate")
         if event.candidate:
             print("Ice Candidate event")
             socket.sendIceCandidate(userId, event.candidate)
 
     return handleIceCandidateEvent
+
 
 def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
     def handleRemoteCandidate(data):
@@ -30,6 +32,7 @@ def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
         peer.addIceCandidate(ice_candidate)
 
     return handleRemoteCandidate
+
 
 class CallUserController:
 
@@ -55,14 +58,13 @@ class CallUserController:
                                                               RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
         remote_offer = json.loads(data)
-        print(remote_offer)
         await peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
                                                                                  type=remote_offer['type']))
 
         peer.on('icecandidate', getHandleIceCandidateEvent(self.socket_client, self.userId))
-        peer.on('track', lambda event: print(event))
+        peer.on('track', lambda event: getHandleRemoteIceCandidate(peer))
         self.socket_client.sio.on('iceCandidate',
-                                  lambda iceData: getHandleRemoteIceCandidate(peer))
+                                  lambda iceData: print(iceData))
         camTrack = PiCameraTrack()
         peer.addTrack(camTrack)
         answer = await peer.createAnswer()
