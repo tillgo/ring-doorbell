@@ -9,7 +9,7 @@ from connectionClients.http_client import HttpClient
 
 class SocketClient(object):
     _instance = None
-    url = "http://192.168.22.36:8080"
+    url = "https://ring-doorbell-45675126bb6e.herokuapp.com/"
     sio = None
 
     # Singleton
