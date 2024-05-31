@@ -11,8 +11,8 @@ from picam_controller import PiCameraTrack
 
 
 def getHandleIceCandidateEvent(socket, userId):
-    print("getHandleIceCandidate")
     def handleIceCandidateEvent(event):
+        print("getHandleIceCandidate")
         if event.candidate:
             print("Ice Candidate event")
             socket.sendIceCandidate(userId, event.candidate)
