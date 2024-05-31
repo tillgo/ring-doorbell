@@ -3,14 +3,19 @@ import { Server } from 'socket.io'
 import { verifySecretToken } from '../util/jwtUtils'
 import { getConfig } from '../util/EnvManager'
 
-export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>) => {
+// Map of clients <clientId, socketId> which are currently online
+// client id can either be userId or deviceId
+export const clients: Map<string, string> = new Map()
+
+export const setupSocket = (
+    server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>
+) => {
     const io = new Server(server, {
         cors: {
             origin: getConfig().NODE_ENV !== 'production' ? '*' : undefined,
             methods: ['GET', 'POST', 'PUT', 'DELETE'],
         },
     })
-
 
     // Auth Handler
     io.use((socket, next) => {
@@ -24,20 +29,13 @@ export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typ
             return next(new Error('Unauthorized'))
         }
 
-
         next()
     })
 
-    // Map of clients <clientId, socketId> which are currently online
-    // client id can either be userId or deviceId
-    const clients: Map<string, string> = new Map()
-
     io.on('connection', (socket) => {
-        console.log('A user connected')
-        console.log(socket.data.authClient)
+        console.log('A user connected', socket.data.authClient)
         // Set or update client (client is online)
         clients.set(socket.data.authClient.id, socket.id)
-
 
         socket.on('callClient', (data) => {
             //ToDo check if client belongs to doorbell
@@ -52,7 +50,6 @@ export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typ
             } else {
                 io.to(socket.id).emit('callFailed', 'Client is not online')
             }
-
         })
         socket.on('answerCall', (data) => {
             const clientToCall = data.to
@@ -62,7 +59,6 @@ export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typ
             } else {
                 io.to(socket.id).emit('callFailed', 'Client is not online')
             }
-
         })
 
         socket.on('answerSignal', (data) => {
@@ -75,7 +71,7 @@ export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typ
             }
         })
 
-        socket.on('leaveCall', (data)=> {
+        socket.on('leaveCall', (data) => {
             const clientToCall = data.to
             const clientToCallSocketId = clients.get(clientToCall)
             if (clientToCallSocketId) {
@@ -88,19 +84,17 @@ export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typ
         socket.on('denyCall', (data) => {
             const clientToCall = data.to
             const clientToCallSocketId = clients.get(clientToCall)
-            if(clientToCallSocketId) {
+            if (clientToCallSocketId) {
                 io.to(clientToCallSocketId).emit('callDenied')
-            } else  {
+            } else {
                 io.to(socket.id).emit('callFailed', 'Client is not online')
             }
         })
 
         // On disconnect remove client from clients map
-        socket.on('disconnect', function() {
-            console.log('Got disconnect!')
-            clients.delete(socket.data.authId)
-
-
+        socket.on('disconnect', function () {
+            console.log('Got disconnect!', socket.data.authClient.id)
+            clients.delete(socket.data.authClient.id)
         })
 
         socket.on('iceCandidate', (data) => {
@@ -113,8 +107,10 @@ export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typ
             } else {
                 io.to(socket.id).emit('callFailed', 'Client is not online')
             }
-
+        })
     })
-})
+}
 
+export const isClientOnline = (clientId: string) => {
+    return clients.has(clientId)
 }

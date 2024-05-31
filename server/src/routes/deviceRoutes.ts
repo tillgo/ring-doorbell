@@ -22,7 +22,7 @@ import {
     deleteHouseholdMember,
     deleteVisitor,
     getDeviceById,
-    getDevicesForUser,
+    getDevicesForOwner,
     getDeviceWithPassword,
     registerDeviceForUser,
     updateVisitor,
@@ -58,7 +58,7 @@ router.post('/register', validate({ body: DeviceRegisterSchema }), async (req: R
 router.get('/me', async (req: Request, res) => {
     const userId = req.client!.id
 
-    const devices = await getDevicesForUser(userId)
+    const devices = await getDevicesForOwner(userId)
     const mapped: Device[] = devices.map((device) => ({
         id: device.id,
         identifier: device.identifier,
