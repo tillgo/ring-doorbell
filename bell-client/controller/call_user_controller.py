@@ -64,7 +64,7 @@ class CallUserController:
         peer.on('icecandidate', getHandleIceCandidateEvent(self.socket_client, self.userId))
         peer.on('track', lambda event: print(event))
         self.socket_client.sio.on('iceCandidate',
-                                  lambda iceData: getHandleRemoteIceCandidate(peer))
+                                  lambda iceData: print(iceData))
         camTrack = PiCameraTrack()
         peer.addTrack(camTrack)
         answer = await peer.createAnswer()
