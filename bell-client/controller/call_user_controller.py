@@ -23,9 +23,10 @@ def getHandleIceCandidateEvent(socket, userId):
 def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
     def handleRemoteCandidate(data):
         candidateData = data['candidate']
-        print(candidateData)
         candidate = candidateData['candidate']
-        print(candidate)
+        # if empty candidate return
+        if candidate == '':
+            return
         sdpMLineIndex = candidateData['sdpMLineIndex']
         sdpMid = candidateData['sdpMid']
         ice_candidate = candidate_from_sdp(candidate)
