@@ -1,3 +1,4 @@
+import asyncio
 import time
 import wave
 from fractions import Fraction
@@ -6,6 +7,7 @@ import av
 import numpy as np
 import pyaudio
 from aiortc import MediaStreamTrack, AudioStreamTrack
+from aiortc.contrib.media import MediaRecorder
 
 # Dont worry about the many errors. This are now errors but just warnings. Everything is working fine.
 
@@ -59,3 +61,19 @@ class PiAudioTrack(MediaStreamTrack):
         audio_frame.time_base = time_base
 
         return audio_frame
+
+
+if __name__ == '__main__':
+    # create the audio stream track
+    audio_track = PiAudioTrack()
+
+    # create the audio file
+    recorder = MediaRecorder('test.wav')
+    recorder.addTrack(audio_track)
+    recorder.start()
+    time = time.time()
+    end_time = time + 20
+    while time < end_time:
+        time = time.time()
+
+    recorder.stop()
