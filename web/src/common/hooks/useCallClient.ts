@@ -30,7 +30,6 @@ export function useCallClient() {
 
     const handleNewIceCandidate = (userId: string) => (event: RTCPeerConnectionIceEvent) => {
         if (event.candidate) {
-            console.log(event.candidate)
             socket?.emit('iceCandidate', {
                 candidate: event.candidate,
                 to: userId,
@@ -39,6 +38,7 @@ export function useCallClient() {
     }
 
     const handleNewTrack = (clientStream: MediaStream) => (event: RTCTrackEvent) => {
+        console.log(event)
         event.streams[0].getTracks().forEach((track) => {
             clientStream.addTrack(track)
         })
@@ -56,7 +56,6 @@ export function useCallClient() {
         peer.ontrack = handleNewTrack(clientStream)
 
         socket?.on('answerSignal', async (signal) => {
-            console.log(signal)
             await peer.setRemoteDescription(signal)
         })
 
