@@ -19,7 +19,7 @@ class CameraApp(QMainWindow):
         self.picam2.configure(config)
 
         # Enable autofocus
-        self.picam2.set_controls({"AfMode": controls.AfModeEnum.Continuous})
+        #self.picam2.set_controls({"AfMode": controls.AfModeEnum.Continuous})
 
         # Start the camera
         self.picam2.start()
@@ -73,30 +73,8 @@ class CameraApp(QMainWindow):
         QApplication.quit()  # Close the application
 
     def update_camera_feed(self):
-        """
-        Update the camera label with the live feed from the camera, applying the mirror effect if needed.
-        """
-        # Capture the frame from the camera
-        stream = io.BytesIO()
-        self.picam2.capture_file(stream, format='jpeg')  # Specify the format explicitly
-        stream.seek(0)
-        frame = cv2.imdecode(np.frombuffer(stream.getvalue(), np.uint8), 1)
-
-        # Convert color space from BGR to RGB
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
-        if self.mirror_effect:
-            # Apply the mirror effect
-            mid_x = frame.shape[1] // 2
-            left_half = frame[:, :mid_x]
-            right_half = cv2.flip(left_half, 1)
-            frame = np.concatenate((left_half, right_half), axis=1)
-
-        # Convert the frame to QImage and display it on the QLabel
-        height, width, channel = frame.shape
-        bytes_per_line = 3 * width
-        q_image = QImage(frame.data, width, height, bytes_per_line, QImage.Format_RGB888)
-        self.camera_label.setPixmap(QPixmap.fromImage(q_image))
+        image = self.picam2.capture_array()
+        self.camera_label.setPixmap(QPixmap.fromImage(image))
 
     def closeEvent(self, event):
         self.timer.stop()  # Stop the QTimer
@@ -109,4 +87,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = CameraApp()
     window.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
