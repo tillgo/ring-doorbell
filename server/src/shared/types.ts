@@ -104,3 +104,11 @@ export type HouseholdMember = {
     deviceId: string
     user: User
 }
+
+export type DeviceWithStatus = Device & { onlineStatus: boolean }
+export type HistoryEntry = unknown
+
+export type DashboardData = {
+    devices: DeviceWithStatus[]
+    history: HistoryEntry[]
+}

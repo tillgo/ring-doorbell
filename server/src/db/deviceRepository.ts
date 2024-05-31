@@ -1,7 +1,20 @@
 import { db } from '../index'
 import { DeviceIdentifier, EditVisitorData } from '../shared/types'
 import { device, user_device, visitor } from './schema'
-import { and, eq } from 'drizzle-orm'
+import { and, eq, or } from 'drizzle-orm'
+import { inArray } from 'drizzle-orm/sql/expressions/conditions'
+
+export const getDevicesForOwner = async (userId: string) => {
+    return await db.query.device
+        .findMany({
+            columns: {
+                passwordHash: false,
+                secretHash: false,
+            },
+            where: eq(device.ownerId, userId),
+        })
+        .execute()
+}
 
 export const getDevicesForUser = async (userId: string) => {
     return await db.query.device
@@ -10,7 +23,16 @@ export const getDevicesForUser = async (userId: string) => {
                 passwordHash: false,
                 secretHash: false,
             },
-            where: eq(device.ownerId, userId),
+            where: or(
+                eq(device.ownerId, userId),
+                inArray(
+                    device.id,
+                    db
+                        .select({ id: user_device.deviceId })
+                        .from(user_device)
+                        .where(eq(user_device.userId, userId))
+                )
+            ),
         })
         .execute()
 }
