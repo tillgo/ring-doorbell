@@ -10,24 +10,6 @@ from connectionClients.socket_client import SocketClient
 from picam_controller import PiCameraTrack
 
 
-def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
-    def handleRemoteCandidate(data):
-        candidateData = data['candidate']
-        candidate = candidateData['candidate']
-        # if empty candidate return
-        if candidate == '':
-            return
-        sdpMLineIndex = candidateData['sdpMLineIndex']
-        sdpMid = candidateData['sdpMid']
-        ice_candidate = candidate_from_sdp(candidate)
-        ice_candidate.sdpMLineIndex = sdpMLineIndex
-        ice_candidate.sdpMid = sdpMid
-        peer.addIceCandidate(ice_candidate)
-
-
-    return handleRemoteCandidate
-
-
 class CallUserController:
 
     def __init__(self, ui):
@@ -45,21 +27,42 @@ class CallUserController:
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
         loop = asyncio.new_event_loop()
-        loop.run_until_complete(self.create_WebRTC_Connection(data))
+        loop.create_task(self.create_WebRTC_Connection(data, loop))
+        loop.run_forever()
 
-    async def create_WebRTC_Connection(self, data):
+    async def create_WebRTC_Connection(self, data, loop):
         peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
                                                               RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
+
+        peer.on('track', lambda event: print("Track received"))
+
+        self.socket_client.sio.on('iceCandidate',
+                                  lambda dataICE: loop.create_task(
+                                      handleRemoteCandidate(dataICE)))
+
+        async def handleRemoteCandidate(data):
+            print("It works yayyyyy")
+            candidateData = data['candidate']
+            candidate = candidateData['candidate']
+            # if empty candidate return
+            if candidate == '':
+                return
+            sdpMLineIndex = candidateData['sdpMLineIndex']
+            sdpMid = candidateData['sdpMid']
+            ice_candidate = candidate_from_sdp(candidate)
+            ice_candidate.sdpMLineIndex = sdpMLineIndex
+            ice_candidate.sdpMid = sdpMid
+            await peer.addIceCandidate(ice_candidate)
+
+        camTrack = PiCameraTrack()
+        peer.addTrack(camTrack)
+        print(peer.connectionState)
+        peer.on('connectionstatechange', lambda: print("State: " + peer.connectionState))
 
         remote_offer = json.loads(data)
         await peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
                                                                                  type=remote_offer['type']))
 
-        peer.on('track', lambda event: print("Track received"))
-        self.socket_client.sio.on('iceCandidate',
-                                  getHandleRemoteIceCandidate(peer))
-        camTrack = PiCameraTrack()
-        peer.addTrack(camTrack)
         answer = await peer.createAnswer()
         await peer.setLocalDescription(answer)
         # has to use localdescription, as here the ice candidates are set
