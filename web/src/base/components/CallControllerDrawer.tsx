@@ -5,7 +5,7 @@ import { useContext, useEffect, useRef } from 'react'
 import { VideoComponent } from '@/base/components/VideoComponent.tsx'
 import { X } from 'lucide-react'
 import { SocketContext } from '@/common/provider/SocketProvider.tsx'
-import { useRTCPeer } from '@/common/hooks/useRTCPeer.ts'
+import { useCallClient } from '@/common/hooks/useCallClient.ts'
 
 export const CallControllerDrawer = (props: { userId: string }) => {
     const { userId } = props
@@ -14,7 +14,7 @@ export const CallControllerDrawer = (props: { userId: string }) => {
     const callControllerState = useAppSelector((s) => s.callController)
     const rtcData = useAppSelector((s) => s.rtcConnection)
 
-    const { answerCall, answerConnectionInfo, callClient, callConnectionInfo } = useRTCPeer()
+    const { answerCall, answerConnectionInfo, callClient, callConnectionInfo } = useCallClient()
 
     const connectionRef = useRef<RTCPeerConnection>()
 

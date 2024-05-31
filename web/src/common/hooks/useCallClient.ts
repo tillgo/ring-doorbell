@@ -21,7 +21,7 @@ const initialRTConnectionInfo: RTCConnectionInfo = {
     oppositeStream: new MediaStream(),
     rtcPeer: undefined,
 }
-export function useRTCPeer() {
+export function useCallClient() {
     const socket = useContext(SocketContext)
     const [answerConnectionInfo, setAnswerConnectionInfo] =
         useState<RTCConnectionInfo>(initialRTConnectionInfo)
