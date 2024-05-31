@@ -21,7 +21,7 @@ def getHandleIceCandidateEvent(socket, userId):
 
 
 def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
-    async def handleRemoteCandidate(data):
+    def handleRemoteCandidate(data):
         candidateData = data['candidate']
         candidate = candidateData['candidate']
         # if empty candidate return
@@ -33,7 +33,7 @@ def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
         ice_candidate.sdpMLineIndex = sdpMLineIndex
         ice_candidate.sdpMid = sdpMid
         print(ice_candidate)
-        await peer.addIceCandidate(ice_candidate)
+        peer.addIceCandidate(ice_candidate)
 
     return handleRemoteCandidate
 
