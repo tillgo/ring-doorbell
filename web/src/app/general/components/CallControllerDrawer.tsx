@@ -97,6 +97,7 @@ export const CallControllerDrawer = (props: { userId: string }) => {
         <Drawer onClose={onDrawerClose} open={callControllerState.open}>
             <DrawerContent className={'h-full'}>
                 <div className={'mt-2 flex h-full items-center justify-center'}>
+                    <div>Connection state</div>
                     <div>{connectionRef.current?.connectionState}</div>
                     <VideoComponent
                         isCallRunning={rtcData.callAccepted && !rtcData.callEnded}
