@@ -36,6 +36,7 @@ class MainWindow(QMainWindow):
         print("widget added")
 
 def main():
+    print("start app")
     app = QApplication(sys.argv)
     print("QApp built")
     window = MainWindow()
