@@ -14,8 +14,6 @@ def getHandleIceCandiateEvent(socket, userId):
             print("Ice Candidate event")
             socket.sendIceCandidate(userId, event.candidate)
 
-    return handleIceCandidateEvent
-
 
 class CallUserController:
 
@@ -42,10 +40,8 @@ class CallUserController:
 
         remote_offer = json.loads(data)
         print(remote_offer)
-        print("teeeeeeeeeeeeeeeeeeeeeeeeeest-----------------------------------------\n"
-              "--------------------------------------------------------------------------------")
         await peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
-                                                                                 type=remote_offer['type']))
+                                                                           type=remote_offer['type']))
 
         peer.on('icecandidate', getHandleIceCandiateEvent(self.socket_client, self.userId))
         peer.on('track', lambda event: print(event))
