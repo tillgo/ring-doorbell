@@ -18,7 +18,6 @@ class MainWindow(QMainWindow):
 
         # Welcome label
         self.welcome_label = QLabel("Welcome to Raspberry Pi!")
-        self.welcome_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.welcome_label)
         print("Welcome label built")
 
@@ -26,14 +25,15 @@ class MainWindow(QMainWindow):
         print("picam initialized")
         picam2.configure(picam2.create_preview_configuration())
         print("picam configured")
-        picam2.start()
-        print("picam started")
 
         #Camera Preview
         self.camera_preview = qpicamera2 = QGlPicamera2(picam2, width=800, height=600, keep_ar=False)
         print("widget built")
         layout.addWidget(self.camera_preview)
         print("widget added")
+
+        picam2.start()
+        print("picam started")
 
 def main():
     print("start app")
