@@ -4,10 +4,9 @@ import { AppContextState } from '@/base/appContext.tsx'
 export type RTCConnectionState = {
     rtcConnection: {
         myStream: MediaStream | undefined
-        oppositeStream: MediaStream | undefined
+        oppositeStream: MediaStream
         receivingCall: boolean
         oppositeId: string
-        callerSignal: string | undefined
         callAccepted: boolean
         idToCall: string
         callEnded: boolean
@@ -17,11 +16,10 @@ export type RTCConnectionState = {
 export const initialStateRTCConnection: RTCConnectionState = {
     rtcConnection: {
         myStream: undefined,
-        oppositeStream: undefined,
+        oppositeStream: new MediaStream(),
         receivingCall: false,
         oppositeId: '',
         //ToDo check do I really need that?
-        callerSignal: undefined,
         callAccepted: false,
         idToCall: '',
         callEnded: false,
@@ -39,7 +37,7 @@ export const rtcConnectionReducers: AnyCaseReducers<AppContextState> = {
             },
         }
     },
-    updateOppositeStreamRTCConn: (state, action: PayloadAction<MediaStream | undefined>) => {
+    updateOppositeStreamRTCConn: (state, action: PayloadAction<MediaStream>) => {
         const stream = action.payload
         return {
             ...state,
@@ -66,16 +64,6 @@ export const rtcConnectionReducers: AnyCaseReducers<AppContextState> = {
             rtcConnection: {
                 ...state.rtcConnection,
                 oppositeId: caller,
-            },
-        }
-    },
-    updateCallerSignalRTCConn: (state, action: PayloadAction<string | undefined>) => {
-        const callerSignal = action.payload
-        return {
-            ...state,
-            rtcConnection: {
-                ...state.rtcConnection,
-                callerSignal: callerSignal,
             },
         }
     },

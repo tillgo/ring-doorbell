@@ -29,6 +29,7 @@ export const VideoComponent = (props: VideoComponentProps & CallControllerContro
     return (
         <div className={'relative mb-2 flex flex-col items-center justify-center p-2'}>
             {isCallRunning ? (
+                //ToDo might change this, as user stream is always there
                 userVideoStream ? (
                     <>
                         <div className={'group relative h-full w-full'}>

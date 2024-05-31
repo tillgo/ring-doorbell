@@ -57,7 +57,6 @@ export const deviceRelations = relations(device, ({ one, many }) => ({
 
 export const visitor = pgTable('visitors', {
     id: uuid('id').defaultRandom().primaryKey(),
-    name: varchar('name', { length: 50 }).notNull(),
     nickname: varchar('nickname', { length: 50 }),
 
     nfcCardId: varchar('nfcCardId', { length: 255 }).unique().notNull(),

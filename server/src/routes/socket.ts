@@ -45,7 +45,6 @@ export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typ
             const clientToCallSocketId = clients.get(clientToCall)
             if (clientToCallSocketId) {
                 io.to(clientToCallSocketId).emit('callClient', {
-                    signal: data.signalData,
                     from: socket.data.authClient.id,
                     name: socket.data.authClient.name,
                 })
@@ -64,6 +63,16 @@ export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typ
                 io.to(socket.id).emit('callFailed', 'Client is not online')
             }
 
+        })
+
+        socket.on('answerSignal', (data) => {
+            const clientToCall = data.to
+            const clientToCallSocketId = clients.get(clientToCall)
+            if (clientToCallSocketId) {
+                io.to(clientToCallSocketId).emit('answerSignal', data.signal)
+            } else {
+                io.to(socket.id).emit('callFailed', 'Client is not online')
+            }
         })
 
         socket.on('leaveCall', (data)=> {
@@ -93,5 +102,19 @@ export const setupSocket = (server: http.Server<typeof http.IncomingMessage, typ
 
 
         })
+
+        socket.on('iceCandidate', (data) => {
+            const clientToCall = data.to
+            const clientToCallSocketId = clients.get(clientToCall)
+            if (clientToCallSocketId) {
+                io.to(clientToCallSocketId).emit('iceCandidate', {
+                    candidate: data.candidate,
+                })
+            } else {
+                io.to(socket.id).emit('callFailed', 'Client is not online')
+            }
+
     })
+})
+
 }

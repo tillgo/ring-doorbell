@@ -2,101 +2,80 @@ import { Drawer, DrawerClose, DrawerContent, DrawerFooter } from '@/lib/componen
 import { Button } from '@/lib/components/ui/button.tsx'
 import { useAppDispatch, useAppSelector } from '@/base/appContext.tsx'
 import { useContext, useEffect, useRef } from 'react'
-import Peer, { MediaConnection } from 'peerjs'
 import { VideoComponent } from '@/base/components/VideoComponent.tsx'
 import { X } from 'lucide-react'
 import { SocketContext } from '@/common/provider/SocketProvider.tsx'
+import { useCallClient } from '@/common/hooks/useCallClient.ts'
 
 export const CallControllerDrawer = (props: { userId: string }) => {
-    // ToDo socket connects itself two times. What is the problem? (Maybe component gets completly rerendered)
-    const socket = useContext(SocketContext)
     const { userId } = props
+    const socket = useContext(SocketContext)
     const dispatch = useAppDispatch()
     const callControllerState = useAppSelector((s) => s.callController)
     const rtcData = useAppSelector((s) => s.rtcConnection)
 
-    const connectionRef = useRef<Peer>()
-    const callRef = useRef<MediaConnection>()
+    const { answerCall, answerConnectionInfo, callClient, callConnectionInfo } = useCallClient()
+
+    const connectionRef = useRef<RTCPeerConnection>()
+
+    socket?.on('callFailed', (message) => {
+        //ToDo handle failed call
+        console.log(message)
+    })
+
+    socket?.on('callOver', () => {
+        dispatch({ type: 'updateCallEndedRTCConn:', payload: true })
+        dispatch({ type: 'updateCallAcceptedRTCConn', payload: false })
+        connectionRef.current && connectionRef.current?.close()
+    })
 
     useEffect(() => {
         if (callControllerState.isAnswerCall) {
             dispatch({ type: 'updateIsAnswerCall', payload: false })
-            const peer = new Peer()
-
-            peer.on('open', (id) => {
-                socket?.emit('answerCall', {
-                    signal: id,
-                    to: rtcData.oppositeId,
-                })
-            })
-
-            peer.on('call', (call) => {
-                console.log('Got a Peerjs call')
-                navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-                    dispatch({ type: 'updateMyStreamRTCConn', payload: stream })
-                    call.answer(stream)
-                })
-
-                call.on('stream', (remoteStream) => {
-                    dispatch({ type: 'updateOppositeStreamRTCConn', payload: remoteStream })
-                })
-                callRef.current = call
-            })
-
-            connectionRef.current = peer
+            answerCall(rtcData.oppositeId)
         }
-    }, [callControllerState.isAnswerCall, dispatch, rtcData.oppositeId, socket])
+    }, [answerCall, callControllerState.isAnswerCall, dispatch, rtcData.oppositeId])
 
+    // ToDo kein useEffect nehmen
     useEffect(() => {
-        socket?.on('callFailed', (message) => {
-            //ToDo handle failed call
-            console.log(message)
+        connectionRef.current = answerConnectionInfo.rtcPeer
+        dispatch({ type: 'updateMyStreamRTCConn', payload: answerConnectionInfo.ownStream })
+        dispatch({
+            type: 'updateOppositeStreamRTCConn',
+            payload: answerConnectionInfo.oppositeStream,
         })
+    }, [
+        answerConnectionInfo.oppositeStream,
+        answerConnectionInfo.ownStream,
+        answerConnectionInfo.rtcPeer,
+        dispatch,
+    ])
 
-        socket?.on('callOver', () => {
-            dispatch({ type: 'updateCallEndedRTCConn:', payload: true })
-            dispatch({ type: 'updateCallAcceptedRTCConn', payload: false })
-            connectionRef.current && connectionRef.current.destroy()
+    // ToDo kein useEffect nehmen
+    useEffect(() => {
+        connectionRef.current = callConnectionInfo.rtcPeer
+        dispatch({ type: 'updateMyStreamRTCConn', payload: callConnectionInfo.ownStream })
+        dispatch({
+            type: 'updateOppositeStreamRTCConn',
+            payload: callConnectionInfo.oppositeStream,
         })
-    }, [dispatch, socket])
+    }, [
+        callConnectionInfo.oppositeStream,
+        callConnectionInfo.ownStream,
+        callConnectionInfo.rtcPeer,
+        dispatch,
+    ])
 
     const callUser = (id: string) => {
-        const peer = new Peer()
         dispatch({ type: 'updateOppositeIdRTCConn', payload: id })
-        peer.on('open', (rtcId) => {
-            socket?.emit('callClient', {
-                to: id,
-                signalData: rtcId,
-            })
-        })
-
-        socket?.on('callAccepted', (signal) => {
-            dispatch({ type: 'updateCallAcceptedRTCConn', payload: true })
-
-            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-                dispatch({ type: 'updateMyStreamRTCConn', payload: stream })
-                callRef.current = peer.call(signal, stream)
-            })
-
-            callRef.current?.on('stream', (remoteStream) => {
-                dispatch({ type: 'updateOppositeStreamRTCConn', payload: remoteStream })
-            })
-        })
-
-        socket?.on('callDenied', () => {
-            //ToDo just for testing purposes, in reality the webclient doesnt make calls, so cant get denied
-            console.log('Call Denied')
-            connectionRef.current && connectionRef.current.destroy()
-        })
-
-        connectionRef.current = peer
+        callClient(id, () => dispatch({ type: 'updateCallAcceptedRTCConn', payload: true }))
     }
 
     const leaveCall = () => {
         dispatch({ type: 'updateCallEndedRTCConn:', payload: true })
         dispatch({ type: 'updateCallAcceptedRTCConn', payload: false })
         socket?.emit('leaveCall', { to: rtcData.oppositeId })
-        connectionRef.current && connectionRef.current.destroy()
+        connectionRef.current && connectionRef.current?.close()
     }
 
     const enableVideo = () => {
