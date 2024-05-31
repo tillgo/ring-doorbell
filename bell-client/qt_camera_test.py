@@ -73,7 +73,7 @@ class CameraApp(QMainWindow):
         QApplication.quit()  # Close the application
 
     def update_camera_feed(self):
-        image = self.picam2.capture_image()
+        image = self.picam2.capture_array()
         self.camera_label.setPixmap(QPixmap.fromImage(image))
 
     def closeEvent(self, event):
