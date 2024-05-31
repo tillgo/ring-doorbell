@@ -38,6 +38,7 @@ export function useCallClient() {
     }
 
     const handleNewTrack = (clientStream: MediaStream) => (event: RTCTrackEvent) => {
+        console.log(event)
         event.streams[0].getTracks().forEach((track) => {
             clientStream.addTrack(track)
         })
