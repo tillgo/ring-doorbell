@@ -15,7 +15,7 @@ class CameraApp(QMainWindow):
 
         # Initialize Picamera2
         self.picam2 = Picamera2()
-        config = self.picam2.create_preview_configuration(main={"size": (800, 480)})
+        config = self.picam2.create_preview_configuration(main={"size": (800, 480), "format": "RGB888"})
         self.picam2.configure(config)
 
         # Enable autofocus
@@ -78,10 +78,10 @@ class CameraApp(QMainWindow):
             # Convert frame from RGB to BGR (OpenCV format)
             frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
-            # Convert frame to QImage
-            height, width, channel = frame_bgr.shape
+            # Ensure frame is in RGB format and convert to QImage
+            height, width, channel = frame.shape
             bytes_per_line = 3 * width
-            qimage = QImage(frame_bgr.data, width, height, bytes_per_line, QImage.Format.Format_RGB888)
+            qimage = QImage(frame.data, width, height, bytes_per_line, QImage.Format.Format_RGB888)
 
             # Convert QImage to QPixmap and display it
             pixmap = QPixmap.fromImage(qimage)
