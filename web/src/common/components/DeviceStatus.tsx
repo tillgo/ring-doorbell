@@ -1,7 +1,8 @@
 import { BellElectric, Wifi, WifiOff } from 'lucide-react'
 import { ApiDeviceWithStatus } from '@/common/types/api-types.ts'
-import { clsx } from 'clsx'
 import { useMyUserQuery } from '@/base/api/hooks/useMyUserQuery.ts'
+import { useNavigate } from '@tanstack/react-router'
+import { cn } from '@/lib/utils.ts'
 
 type Props = {
     device: ApiDeviceWithStatus
@@ -11,16 +12,20 @@ export const DeviceStatus = (props: Props) => {
     const { data: user } = useMyUserQuery()
     const isOwner = props.device.ownerId === user?.id
 
+    const navigate = useNavigate()
+
+    console.log(isOwner)
+
     const handleClick = () => {
         if (isOwner) {
-            //TODO: open admin page for that device
+            navigate({ to: '/admin-controls', search: { selectedDevice: props.device.id } })
         }
     }
 
     return (
         <div
-            className={clsx('flex flex-wrap items-center gap-4 rounded-md border bg-muted p-4', {
-                'pointer bg-background': isOwner,
+            className={cn('flex flex-wrap items-center gap-4 rounded-md border bg-muted p-4', {
+                'cursor-pointer bg-background hover:bg-muted/20': isOwner,
             })}
             onClick={handleClick}
         >
