@@ -57,8 +57,6 @@ function Index() {
                 </>
             )}
 
-            <div>test test test</div>
-
             {dashboardData && dashboardData.devices.length === 0 && (
                 <p className={'text-sm text-muted-foreground'}>
                     No devices found. If you haven't registered your device yet, you can do that in
