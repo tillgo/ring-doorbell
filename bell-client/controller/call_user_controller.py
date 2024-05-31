@@ -2,18 +2,34 @@ import asyncio
 import json
 import uuid
 
-from aiortc import RTCPeerConnection, MediaStreamTrack, RTCConfiguration, RTCIceServer, RTCSessionDescription
+from aiortc import RTCPeerConnection, MediaStreamTrack, RTCConfiguration, RTCIceServer, RTCSessionDescription, \
+    RTCIceCandidate
+from aiortc.sdp import candidate_from_sdp
 
 from connectionClients.socket_client import SocketClient
 from picam_controller import PiCameraTrack
 
 
-def getHandleIceCandiateEvent(socket, userId):
+def getHandleIceCandidateEvent(socket, userId):
     def handleIceCandidateEvent(event):
         if event.candidate:
             print("Ice Candidate event")
             socket.sendIceCandidate(userId, event.candidate)
 
+    return handleIceCandidateEvent
+
+def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
+    def handleRemoteCandidate(data):
+        print(data)
+        candidate = data['candidate']
+        sdpMLineIndex = data['sdpMLineIndex']
+        sdpMid = data['sdpMid']
+        ice_candidate = candidate_from_sdp(candidate)
+        ice_candidate.sdpMLineIndex = sdpMLineIndex
+        ice_candidate.sdpMid = sdpMid
+        peer.addIceCandidate(ice_candidate)
+
+    return handleRemoteCandidate
 
 class CallUserController:
 
@@ -41,10 +57,12 @@ class CallUserController:
         remote_offer = json.loads(data)
         print(remote_offer)
         await peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
-                                                                           type=remote_offer['type']))
+                                                                                 type=remote_offer['type']))
 
-        peer.on('icecandidate', getHandleIceCandiateEvent(self.socket_client, self.userId))
+        peer.on('icecandidate', getHandleIceCandidateEvent(self.socket_client, self.userId))
         peer.on('track', lambda event: print(event))
+        self.socket_client.sio.on('iceCandidate',
+                                  lambda iceData: peer.addIceCandidate(RTCIceCandidate(iceData['candidate'])))
         camTrack = PiCameraTrack()
         peer.addTrack(camTrack)
         answer = await peer.createAnswer()
