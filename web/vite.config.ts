@@ -13,8 +13,12 @@ export default defineConfig({
             loose: true,
         }),
         VitePWA({
+            injectRegister: 'inline',
+            srcDir: 'src',
+            filename: 'sw.ts',
+            base: '/',
+
             registerType: 'autoUpdate',
-            devOptions: { enabled: true },
             includeAssets: [
                 'icon.svg',
                 'icon-32.png',
