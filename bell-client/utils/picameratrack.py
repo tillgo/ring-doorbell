@@ -15,6 +15,8 @@ cam.configure(cam.create_video_configuration())
 #encoder.output = [ffmpeg]
 #cam.encoders = encoder
 cam.start()
+
+
 #cam.start_encoder()
 
 class PiCameraTrack(MediaStreamTrack):
@@ -29,5 +31,5 @@ class PiCameraTrack(MediaStreamTrack):
         pts = time.time() * 1000000
         new_frame = av.VideoFrame.from_ndarray(img, format='rgba')
         new_frame.pts = int(pts)
-        new_frame.time_base = Fraction(1,1000000)
+        new_frame.time_base = Fraction(1, 1000000)
         return new_frame
