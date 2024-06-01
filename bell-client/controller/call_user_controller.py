@@ -1,5 +1,6 @@
 import asyncio
 import json
+from multiprocessing import Process
 
 from aiortc import RTCPeerConnection, RTCConfiguration, RTCIceServer, RTCSessionDescription
 from aiortc.contrib.media import MediaPlayer
@@ -26,7 +27,8 @@ class CallUserController:
 
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
-        asyncio.run(self.create_WebRTC_Connection(data))
+        process = Process(target=self.create_WebRTC_Connection, args=(data,))
+        process.start()
 
     async def create_WebRTC_Connection(self, data):
         self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
