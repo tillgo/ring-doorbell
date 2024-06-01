@@ -23,12 +23,12 @@ class PiCameraTrack(MediaStreamTrack):
 
     def __init__(self):
         super().__init__()
-        self.cam = Picamera2()
-        self.cam.configure(self.cam.create_video_configuration())
-        self.cam.start()
 
     async def recv(self):
-        img = self.cam.capture_array()
+        cam = Picamera2()
+        cam.configure(cam.create_video_configuration())
+        cam.start()
+        img = cam.capture_array()
         pts = time.time() * 60
         new_frame = av.VideoFrame.from_ndarray(img, format='rgba')
         new_frame.pts = int(pts)
