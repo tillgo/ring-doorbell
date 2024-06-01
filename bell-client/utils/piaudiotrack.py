@@ -1,3 +1,4 @@
+import asyncio
 import time
 import wave
 from fractions import Fraction
@@ -6,6 +7,7 @@ import av
 import numpy as np
 import pyaudio
 from aiortc import MediaStreamTrack, AudioStreamTrack
+from aiortc.contrib.media import MediaRecorder
 
 # Dont worry about the many errors. This are now errors but just warnings. Everything is working fine.
 
@@ -34,28 +36,42 @@ class PiAudioTrack(MediaStreamTrack):
         self.channels = channels
 
         # Initialiser PyAudio
-        self.pa = pyaudio.PyAudio()
-        self.stream = self.pa.open(format=pyaudio.paInt16,
-                                   channels=self.channels,
-                                   rate=48000,
-                                   input=True,
-                                   frames_per_buffer=960)
+        self.audio = pyaudio.PyAudio()
+        self.stream = self.audio.open(format=form_1, rate=samp_rate, channels=chans, \
+                                      input_device_index=dev_index, input=True, \
+                                      frames_per_buffer=chunk)
 
     async def recv(self):
-        frames_per_buffer = 960
-
-        # Lire les données du stream PyAudio
-        data = np.frombuffer(self.stream.read(
-            frames_per_buffer), dtype=np.int16)
-        data = data.reshape(-1, 1)
-
-        pts = time.time() * self.rate
-        time_base = Fraction(1, self.rate)
-        # Préparation des données pour PyAV
-        audio_frame = av.AudioFrame.from_ndarray(
-            data.T, format='s16', layout='stereo')
-        audio_frame.sample_rate = self.rate
-        audio_frame.pts = pts
-        audio_frame.time_base = time_base
-
+        frame = self.stream.read(chunk)
+        pts = time.time() * samp_rate
+        audio_frame = (av.AudioFrame.
+                       from_ndarray(np.frombuffer(frame, np.int16), format='s16', layout='mono'))
+        audio_frame.pts = int(pts)
+        audio_frame.time_base = Fraction(1, samp_rate)
         return audio_frame
+
+
+if __name__ == '__main__':
+    # create the audio stream track
+    audio_track = PiAudioTrack()
+    # create the audio file
+    recorder = MediaRecorder('test.wav')
+    recorder.addTrack(audio_track)
+
+    loop = asyncio.new_event_loop()
+
+
+    async def record():
+        print("recording start now")
+        await recorder.start()
+        print("recording started")
+        time1 = time.time()
+        end_time = time1 + 20
+        while time1 < end_time:
+            time1 = time.time()
+
+        await recorder.stop()
+
+
+    loop.run_until_complete(record())
+    print("finished")

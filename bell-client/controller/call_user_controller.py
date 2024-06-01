@@ -2,6 +2,7 @@ import asyncio
 import json
 
 from aiortc import RTCPeerConnection, RTCConfiguration, RTCIceServer, RTCSessionDescription
+from aiortc.contrib.media import MediaPlayer
 
 from connectionClients.socket_client import SocketClient
 from utils.piaudiotrack import PiAudioTrack
@@ -14,6 +15,7 @@ class CallUserController:
         self.ui = ui
         self.socket_client = SocketClient()
         self.userId = ''
+        self.peer = None
 
     def call_user(self, user_id: str):
         self.userId = user_id
@@ -24,31 +26,36 @@ class CallUserController:
 
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
-        loop = asyncio.new_event_loop()
-        loop.create_task(self.create_WebRTC_Connection(data, loop))
-        loop.run_forever()
+        asyncio.run(self.create_WebRTC_Connection(data))
 
-    async def create_WebRTC_Connection(self, data, loop):
-        peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
+    async def create_WebRTC_Connection(self, data):
+        self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
                                                               RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
-        peer.on('track', lambda event: print("Track received"))
+        self.peer.on('track', lambda event: print("Track received "))
 
         # add video
         camTrack = PiCameraTrack()
-        peer.addTrack(camTrack)
+        self.peer.addTrack(camTrack)
 
         # add audio
         audioTrack = PiAudioTrack()
-        peer.addTrack(audioTrack)
+        self.peer.addTrack(audioTrack)
 
-        peer.on('connectionstatechange', lambda: print("State: " + peer.connectionState))
+        self.peer.on('connectionstatechange', lambda: print("State: " + self.peer.connectionState))
 
         remote_offer = json.loads(data)
-        await peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
+        await self.peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
                                                                                  type=remote_offer['type']))
 
-        answer = await peer.createAnswer()
-        await peer.setLocalDescription(answer)
+        answer = await self.peer.createAnswer()
+        await self.peer.setLocalDescription(answer)
         # has to use localdescription, as here the ice candidates are set
-        self.socket_client.sendRTCAnswer(self.userId, peer.localDescription)
+        self.socket_client.sendRTCAnswer(self.userId, self.peer.localDescription)
+
+        while True:
+            await asyncio.sleep(10)
+            print("State: " + self.peer.connectionState)
+            if (self.peer.connectionState == "failed" or self.peer.connectionState == "disconnected"
+                    or self.peer.connectionState == "closed"):
+                break

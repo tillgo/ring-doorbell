@@ -9,7 +9,7 @@ from aiortc.contrib.media import MediaStreamTrack
 
 cam = Picamera2()
 output = FfmpegOutput('test.mp4', audio=True)
-cam.configure(cam.create_video_configuration())
+#cam.configure(cam.create_video_configuration())
 #encoder = H264Encoder(1000000)
 #ffmpeg = FfmpegOutput(audio=True)
 #encoder.output = [ffmpeg]
@@ -24,12 +24,14 @@ class PiCameraTrack(MediaStreamTrack):
 
     def __init__(self):
         super().__init__()
+        self.index = 0
 
     async def recv(self):
         img = cam.capture_array()
-
-        pts = time.time() * 1000000
+        print("Test Img" + str(self.index))
+        self.index += 1
+        pts = time.time() * 60
         new_frame = av.VideoFrame.from_ndarray(img, format='rgba')
         new_frame.pts = int(pts)
-        new_frame.time_base = Fraction(1, 1000000)
+        new_frame.time_base = Fraction(1, 60)
         return new_frame
