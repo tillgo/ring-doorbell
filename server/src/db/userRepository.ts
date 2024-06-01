@@ -1,7 +1,8 @@
 import { Username, User, CreateUserData, UserWithPassword } from '../shared/types'
 import { db } from '../index'
-import { user } from './schema'
-import { eq, getTableColumns } from 'drizzle-orm'
+import { device, user, user_device } from './schema'
+import { eq, getTableColumns, or } from 'drizzle-orm'
+import { inArray } from 'drizzle-orm/sql/expressions/conditions'
 
 export const createUser = async (data: CreateUserData): Promise<User> => {
     const { passwordHash, ...rest } = getTableColumns(user)
@@ -47,6 +48,29 @@ export const listUsers = async (): Promise<User[]> => {
             columns: {
                 passwordHash: false,
             },
+        })
+        .execute()
+}
+
+export const getUsersForDevice = async (deviceId: string): Promise<User[]> => {
+    return await db.query.user
+        .findMany({
+            columns: {
+                passwordHash: false,
+            },
+            where: or(
+                eq(
+                    user.id,
+                    db.select({ id: device.ownerId }).from(device).where(eq(device.id, deviceId))
+                ),
+                inArray(
+                    user.id,
+                    db
+                        .select({ id: user_device.userId })
+                        .from(user_device)
+                        .where(eq(user_device.deviceId, deviceId))
+                )
+            ),
         })
         .execute()
 }
