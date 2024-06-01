@@ -28,9 +28,9 @@ class CallUserController:
         print("Call was accepted yayyyyy")
         asyncio.run(self.create_WebRTC_Connection(data))
 
-    async def create_WebRTC_Connection(self, data):
+    async def create_WebRTC_Connection(self, data, psutil=None):
         self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
-                                                              RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
+                                                                   RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
         self.peer.on('track', lambda event: print("Track received "))
 
@@ -46,7 +46,7 @@ class CallUserController:
 
         remote_offer = json.loads(data)
         await self.peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
-                                                                                 type=remote_offer['type']))
+                                                                                      type=remote_offer['type']))
 
         answer = await self.peer.createAnswer()
         await self.peer.setLocalDescription(answer)
@@ -58,5 +58,6 @@ class CallUserController:
             print("State: " + self.peer.connectionState)
             if (self.peer.connectionState == "failed" or self.peer.connectionState == "disconnected"
                     or self.peer.connectionState == "closed"):
+                print("CPU %" + psutil.cpu_percent())
                 print("Exiting now")
                 break
