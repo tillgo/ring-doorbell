@@ -6,7 +6,6 @@ from aiortc.contrib.media import MediaPlayer
 
 from connectionClients.socket_client import SocketClient
 from utils.piaudiotrack import PiAudioTrack
-from utils.picameratrack import PiCameraTrack
 
 
 class CallUserController:
