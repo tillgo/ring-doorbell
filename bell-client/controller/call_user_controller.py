@@ -35,8 +35,8 @@ class CallUserController:
         self.peer.on('track', lambda event: print("Track received "))
 
         # add video
-        camTrack = MediaPlayer('/dev/video0')
-        self.peer.addTrack(camTrack.video)
+        camTrack = PiCameraTrack()
+        self.peer.addTrack(camTrack)
 
         # add audio
         audioTrack = PiAudioTrack()
