@@ -24,7 +24,8 @@ class PiCameraTrack(MediaStreamTrack):
     def __init__(self):
         super().__init__()
         self.cam = Picamera2()
-        self.cam.video_configuration.controls.FraneRate = 20.0
+        self.cam.resolution = (480, 320)
+        self.cam.frames = 20
         configuration = self.cam.create_video_configuration()
         self.cam.configure(configuration)
         self.cam.start()
