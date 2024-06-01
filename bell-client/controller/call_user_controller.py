@@ -55,9 +55,9 @@ class CallUserController:
         self.socket_client.sendRTCAnswer(self.userId, self.peer.localDescription)
 
         while True:
-            await asyncio.sleep(10)
+            await asyncio.sleep(3)
             print("State: " + self.peer.connectionState)
-            print("CPU %" + psutil.cpu_percent())
+            print("CPU %" + str(psutil.cpu_percent()))
             if (self.peer.connectionState == "failed" or self.peer.connectionState == "disconnected"
                     or self.peer.connectionState == "closed"):
                 print("Exiting now")
