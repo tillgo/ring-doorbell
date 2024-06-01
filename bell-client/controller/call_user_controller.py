@@ -54,6 +54,8 @@ class CallUserController:
         self.socket_client.sendRTCAnswer(self.userId, self.peer.localDescription)
 
         while True:
-            await asyncio.sleep(1)
-            if self.peer.connectionState == "connected":
+            await asyncio.sleep(10)
+            print("State: " + self.peer.connectionState)
+            if (self.peer.connectionState == "failed" or self.peer.connectionState == "disconnected"
+                    or self.peer.connectionState == "closed"):
                 break
