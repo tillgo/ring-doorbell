@@ -58,6 +58,7 @@ class CallUserController:
             await asyncio.sleep(3)
             print("State: " + self.peer.connectionState)
             print("CPU %" + str(psutil.cpu_percent()))
+            print("MEMORY" + str(psutil.virtual_memory().percent) + "%")
             if (self.peer.connectionState == "failed" or self.peer.connectionState == "disconnected"
                     or self.peer.connectionState == "closed"):
                 print("Exiting now")
