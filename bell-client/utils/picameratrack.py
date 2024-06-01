@@ -25,10 +25,10 @@ class PiCameraTrack(MediaStreamTrack):
         configuration = self.cam.create_video_configuration({"size": (240, 160)}, lores={"size": (240, 160)},
                                                             controls={"FrameRate": 30.0}, buffer_count=2)
         self.cam.configure(configuration)
-        self.cam.start_preview(Preview.NULL)
+        self.cam.start()
 
     async def recv(self):
-        img = self.cam.capture_array()
+        img = self.cam.capture_image()
         self.cam.drop_frames_()
         pts = time.time() * 1000000
         new_frame = av.VideoFrame.from_ndarray(img, format='rgba')
