@@ -61,7 +61,7 @@ class CallUserController:
         self.peer.addTrack(camTrack)
 
         # add audio
-        audioTrack = MediaPlayer("hw:2,0", format="alsa", options={'channels': '1', 'sample_rate': '16000',
+        audioTrack = MediaPlayer("hw:2,0", format="alsa", options={'channels': '1', 'sample_rate': '8000',
                                                                    'sample_fmt': 's16'})
         self.peer.addTrack(audioTrack.audio)
 
