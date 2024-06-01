@@ -5,7 +5,8 @@ from aiortc import RTCPeerConnection, RTCConfiguration, RTCIceServer, RTCSession
 from aiortc.contrib.media import MediaPlayer
 
 from connectionClients.socket_client import SocketClient
-
+from utils.piaudiotrack import PiAudioTrack
+from utils.picameratrack import PiCameraTrack
 
 
 class CallUserController:
@@ -33,14 +34,13 @@ class CallUserController:
 
         self.peer.on('track', lambda event: print("Track received "))
 
-        oprtions = {"framerate": "30", "video_size": "640x480"}
         # add video
-        camTrack = MediaPlayer("/dev/video0", format="v4l2", options=oprtions)
-        self.peer.addTrack(camTrack.video)
+        camTrack = PiCameraTrack()
+        self.peer.addTrack(camTrack)
 
         # add audio
-        #audioTrack = PiAudioTrack()
-        #self.peer.addTrack(audioTrack)
+        audioTrack = PiAudioTrack()
+        self.peer.addTrack(audioTrack)
 
         self.peer.on('connectionstatechange', lambda: print("State: " + self.peer.connectionState))
 
