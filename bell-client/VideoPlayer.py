@@ -19,13 +19,13 @@ class VideoStreamDisplay:
         self.label = label
         self.video_track = video_track
 
-        # Initialize QTimer for periodic frame updates
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.update_frame)
-        self.timer.start(update_interval)  # Update every 30 milliseconds
+    async def show_video(self):
+        while self.video_track.readyState != 'ended':
+            await self.update_frame()
 
-    def update_frame(self):
-        frame = asyncio.run(self.video_track.recv())
+    async def update_frame(self):
+        print("Updating frame")
+        frame = await self.video_track.recv()
         if frame is not None:
             img = frame.to_ndarray(format="rgb24")
 

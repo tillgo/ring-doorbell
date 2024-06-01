@@ -46,6 +46,7 @@ class CallUserController:
         if track.kind == 'video':
             print("Video track")
             self.videoDisplay = VideoStreamDisplay(self.ui.video_label, track)
+            asyncio.get_running_loop().create_task(self.videoDisplay.show_video())
 
     def call_user(self, user_id: str):
         self.userId = user_id
