@@ -7,7 +7,7 @@ from picamera2.outputs import FfmpegOutput
 
 from aiortc.contrib.media import MediaStreamTrack
 
-output = FfmpegOutput('test.mp4', audio=True)
+#output = FfmpegOutput('test.mp4', audio=True)
 
 
 # encoder = H264Encoder(1000000)
@@ -25,7 +25,7 @@ class PiCameraTrack(MediaStreamTrack):
         super().__init__()
         self.cam = Picamera2()
         configuration = self.cam.create_video_configuration({"size": (240, 160)}, lores={"size": (240, 160)},
-                                                            controls={"FrameRate": 10.0}, buffer_count=2)
+                                                            controls={"FrameRate": 24.0}, buffer_count=2)
         self.cam.configure(configuration)
         self.cam.start()
 
@@ -34,5 +34,5 @@ class PiCameraTrack(MediaStreamTrack):
         pts = time.time() * 1000000
         new_frame = av.VideoFrame.from_ndarray(img, format='rgba')
         new_frame.pts = int(pts)
-        new_frame.time_base = Fraction(1,1000000)
+        new_frame.time_base = Fraction(1, 1000000)
         return new_frame
