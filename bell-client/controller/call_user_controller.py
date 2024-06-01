@@ -1,6 +1,7 @@
 import asyncio
 import json
 
+import psutil
 from aiortc import RTCPeerConnection, RTCConfiguration, RTCIceServer, RTCSessionDescription
 from aiortc.contrib.media import MediaPlayer
 
@@ -28,7 +29,7 @@ class CallUserController:
         print("Call was accepted yayyyyy")
         asyncio.run(self.create_WebRTC_Connection(data))
 
-    async def create_WebRTC_Connection(self, data, psutil=None):
+    async def create_WebRTC_Connection(self, data):
         self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
                                                                    RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
