@@ -46,6 +46,7 @@ class PiCameraTrack(MediaStreamTrack):
 
     async def recv(self):
         while True:
+            print("try to get frame")
             if len(frames) > 0:
                 new_frame = frames.pop()
                 print("returning frane")
