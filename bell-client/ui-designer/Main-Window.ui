@@ -45,7 +45,7 @@
      <item>
       <widget class="QStackedWidget" name="page_stacked_widget">
        <property name="currentIndex">
-        <number>2</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="greeting_page">
         <widget class="QLabel" name="uid_label">
@@ -100,6 +100,19 @@
          </property>
          <property name="text">
           <string>Calling User</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="video_label">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>50</y>
+           <width>301</width>
+           <height>171</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>No stream yet</string>
          </property>
         </widget>
        </widget>
