@@ -33,11 +33,7 @@ async def saveTrack(track):
     print("received track")
     print(track)
     print(track.kind)
-    recorder = MediaRecorder("test_track" + str(uuid.uuid4()) + ".mp4")
-    recorder.addTrack(track)
-    await recorder.start()
-    await asyncio.sleep(30)
-    await recorder.stop()
+
 
 
 class CallUserController:
