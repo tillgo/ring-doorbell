@@ -15,6 +15,7 @@ class CallUserController:
         self.ui = ui
         self.socket_client = SocketClient()
         self.userId = ''
+        self.peer = None
 
     def call_user(self, user_id: str):
         self.userId = user_id
@@ -28,26 +29,26 @@ class CallUserController:
         asyncio.run(self.create_WebRTC_Connection(data))
 
     async def create_WebRTC_Connection(self, data):
-        peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
+        self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
                                                               RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
-        peer.on('track', lambda event: print("Track received "))
+        self.peer.on('track', lambda event: print("Track received "))
 
         # add video
         camTrack = PiCameraTrack()
-        peer.addTrack(camTrack)
+        self.peer.addTrack(camTrack)
 
         # add audio
         audioTrack = PiAudioTrack()
-        peer.addTrack(audioTrack)
+        self.peer.addTrack(audioTrack)
 
-        peer.on('connectionstatechange', lambda: print("State: " + peer.connectionState))
+        self.peer.on('connectionstatechange', lambda: print("State: " + self.peer.connectionState))
 
         remote_offer = json.loads(data)
-        await peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
+        await self.peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
                                                                                  type=remote_offer['type']))
 
-        answer = await peer.createAnswer()
-        await peer.setLocalDescription(answer)
+        answer = await self.peer.createAnswer()
+        await self.peer.setLocalDescription(answer)
         # has to use localdescription, as here the ice candidates are set
-        self.socket_client.sendRTCAnswer(self.userId, peer.localDescription)
+        self.socket_client.sendRTCAnswer(self.userId, self.peer.localDescription)
