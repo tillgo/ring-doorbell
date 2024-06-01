@@ -58,4 +58,5 @@ class CallUserController:
             print("State: " + self.peer.connectionState)
             if (self.peer.connectionState == "failed" or self.peer.connectionState == "disconnected"
                     or self.peer.connectionState == "closed"):
+                print("ending")
                 break
