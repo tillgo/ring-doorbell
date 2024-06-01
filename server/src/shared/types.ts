@@ -1,5 +1,5 @@
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
-import { device, refreshToken, user, visitor } from '../db/schema'
+import { device, historyLog, refreshToken, user, visitor } from '../db/schema'
 import { z } from 'zod'
 import { JwtPayload } from 'jsonwebtoken'
 
@@ -97,6 +97,18 @@ export const AddHouseholdMemberSchema = z.object({
 })
 export type AddHouseholdMemberData = z.infer<typeof AddHouseholdMemberSchema>
 
+export const VisitorRingSchema = z.object({
+    nfcCardId: z.string({ message: 'NFC Card ID required' }).min(1, 'NFC Card ID required'),
+})
+export type VisitorRingData = z.infer<typeof VisitorRingSchema>
+
+export const CreateHistoryLogSchema = createInsertSchema(historyLog)
+export type CreateHistoryLogData = Omit<
+    z.infer<typeof CreateHistoryLogSchema>,
+    'payload' | 'type'
+> &
+    HistoryLogVariableData
+
 // handcrafted types ----------------------------------------------------------------------------
 export type HouseholdMember = {
     userId: string
@@ -117,21 +129,21 @@ type HistoryLogBase = {
     device: Device
     timestamp: Date
 }
-export type HistoryLog = HistoryLogBase &
-    (
-        | {
-              type: 'BELL_RING'
-              payload: {
-                  visitorId: string
-                  visitorNickname: string
-              }
+export type HistoryLog = HistoryLogBase & HistoryLogVariableData
+
+export type HistoryLogVariableData =
+    | {
+          type: 'BELL_RING'
+          payload: {
+              visitorId: string
           }
-        | {
-              type: 'CALL_START' | 'CALL_END'
-              payload: {
-                  userId: string
-                  userNickname: string
-              }
+      }
+    | {
+          type: 'CALL_START' | 'CALL_END'
+          payload: {
+              userId: string
+              visitorId: string
           }
-    )
+      }
 export type HistoryLogType = HistoryLog['type']
+export type HistoryLogPayload = HistoryLog['payload']
