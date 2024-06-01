@@ -107,7 +107,7 @@ export type CreateHistoryLogData = Omit<
     z.infer<typeof CreateHistoryLogSchema>,
     'payload' | 'type'
 > &
-    HistoryLogVariableData
+    HistoryLogVariableData<HistoryLogType>
 
 // handcrafted types ----------------------------------------------------------------------------
 export type HouseholdMember = {
@@ -129,21 +129,19 @@ type HistoryLogBase = {
     device: Device
     timestamp: Date
 }
-export type HistoryLog = HistoryLogBase & HistoryLogVariableData
+export type HistoryLog<T extends HistoryLogType = HistoryLogType> = HistoryLogBase &
+    HistoryLogVariableData<T>
 
-export type HistoryLogVariableData =
-    | {
-          type: 'BELL_RING'
-          payload: {
-              visitorId: string
-          }
-      }
-    | {
-          type: 'CALL_START' | 'CALL_END'
-          payload: {
-              userId: string
-              visitorId: string
-          }
-      }
-export type HistoryLogType = HistoryLog['type']
+export type HistoryLogVariableData<T extends HistoryLogType> = {
+    type: T
+    payload: T extends 'BELL_RING'
+        ? { visitorId: string }
+        : T extends 'CALL_START' | 'CALL_END'
+          ? {
+                userId: string
+                visitorId: string
+            }
+          : never
+}
+export type HistoryLogType = 'BELL_RING' | 'CALL_START' | 'CALL_END'
 export type HistoryLogPayload = HistoryLog['payload']
