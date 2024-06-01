@@ -1,9 +1,10 @@
 import asyncio
 import json
+import uuid
 
 import psutil
 from aiortc import RTCPeerConnection, RTCConfiguration, RTCIceServer, RTCSessionDescription
-from aiortc.contrib.media import MediaPlayer
+from aiortc.contrib.media import MediaPlayer, MediaRecorder
 from aiortc.sdp import candidate_from_sdp
 
 from connectionClients.socket_client import SocketClient
@@ -27,9 +28,13 @@ def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
 
     return handleRemoteCandidate
 
+
 def saveTrack(track):
     print("received track")
     print(track)
+    print(track.kind)
+    MediaRecorder("test_track" + str(uuid.uuid4()) + ".mp4")
+
 
 class CallUserController:
 
