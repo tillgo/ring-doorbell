@@ -15,7 +15,7 @@ export const getHistoryForDevices = async (deviceIds: string[]) => {
                     },
                 },
             },
-            where: inArray(historyLog.deviceId, deviceIds),
+            where: deviceIds.length === 0 ? undefined : inArray(historyLog.deviceId, deviceIds),
             orderBy: desc(historyLog.timestamp),
         })
         .execute()
