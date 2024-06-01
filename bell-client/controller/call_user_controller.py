@@ -1,9 +1,10 @@
 import asyncio
 import json
+import uuid
 
 import psutil
 from aiortc import RTCPeerConnection, RTCConfiguration, RTCIceServer, RTCSessionDescription
-from aiortc.contrib.media import MediaPlayer
+from aiortc.contrib.media import MediaPlayer, MediaRecorder
 from aiortc.sdp import candidate_from_sdp
 
 from connectionClients.socket_client import SocketClient
@@ -26,6 +27,17 @@ def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
         await peer.addIceCandidate(ice_candidate)
 
     return handleRemoteCandidate
+
+
+async def saveTrack(track):
+    print("received track")
+    print(track)
+    print(track.kind)
+    recorder = MediaRecorder("test_track" + str(uuid.uuid4()) + ".mp4")
+    recorder.addTrack(track)
+    await recorder.start()
+    await asyncio.sleep(30)
+    await recorder.stop()
 
 
 class CallUserController:
@@ -53,14 +65,14 @@ class CallUserController:
 
         self.socket_client.sio.on('iceCandidate',
                                   lambda event: asyncio.run(getHandleRemoteIceCandidate(self.peer)(event)))
-        self.peer.on('track', lambda event: print("Track received "))
+        self.peer.on('track', lambda event: asyncio.run(saveTrack(event)))
 
         # add video
         camTrack = PiCameraTrack()
         self.peer.addTrack(camTrack)
 
         # add audio
-        audioTrack = MediaPlayer("hw:2,0", format="alsa", options={'channels': '1', 'sample_rate': '44100',
+        audioTrack = MediaPlayer("hw:2,0", format="alsa", options={'channels': '1', 'sample_rate': '100',
                                                                    'sample_fmt': 's16'})
         self.peer.addTrack(audioTrack.audio)
 
