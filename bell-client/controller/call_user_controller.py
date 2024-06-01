@@ -61,7 +61,8 @@ class CallUserController:
         self.peer.addTrack(camTrack)
 
         # add audio
-        audioTrack = MediaPlayer("hw:2,0", format="alsa")
+        audioTrack = MediaPlayer("hw:2,0", format="alsa", options={'channels': '1', 'sample_rate': '44100',
+                                                                   'sample_fmt': 's16'})
         self.peer.addTrack(audioTrack.audio)
 
         self.peer.on('connectionstatechange', lambda: print("State: " + self.peer.connectionState))
