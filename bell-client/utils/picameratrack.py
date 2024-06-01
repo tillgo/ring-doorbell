@@ -14,7 +14,7 @@ cam.configure(cam.create_video_configuration())
 #ffmpeg = FfmpegOutput(audio=True)
 #encoder.output = [ffmpeg]
 #cam.encoders = encoder
-#cam.start()
+cam.start()
 
 
 #cam.start_encoder()
