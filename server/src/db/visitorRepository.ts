@@ -10,6 +10,14 @@ export const getVisitorByNfcCardId = async (nfcCardId: string) => {
         .execute()
 }
 
+export const getVisitorById = async (visitorId: string) => {
+    return await db.query.visitor
+        .findFirst({
+            where: eq(visitor.id, visitorId),
+        })
+        .execute()
+}
+
 export const createNewVisitor = async (nfcCardId: string, deviceId: string) => {
     const newVisitor = await db
         .insert(visitor)

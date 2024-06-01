@@ -2,6 +2,8 @@ import {
     DashboardData,
     Device,
     DeviceWithStatus,
+    HistoryLog,
+    HistoryLogType,
     HouseholdMember,
     User,
     Visitor,
@@ -33,6 +35,6 @@ export type ApiVisitor = StringifyDates<Visitor>
 
 export type ApiDashboardData = StringifyDates<DashboardData>
 
-//export type ApiHistoryEntry = StringifyDates<HistoryEntry>
+export type ApiHistoryLog<T extends HistoryLogType = HistoryLogType> = StringifyDates<HistoryLog<T>>
 
 export type ApiDeviceWithStatus = StringifyDates<DeviceWithStatus>

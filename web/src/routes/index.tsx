@@ -11,6 +11,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/lib/components/ui/card.tsx'
+import { HistoryItem } from '@/common/components/HistoryItem.tsx'
 
 export const Route = createFileRoute('/')({
     component: Index,
@@ -52,7 +53,11 @@ function Index() {
                                 View the history of past activities on your door bells.
                             </CardDescription>
                         </CardHeader>
-                        <CardContent className="flex flex-col gap-4"></CardContent>
+                        <CardContent className="flex flex-col gap-4">
+                            {dashboardData.history.map((historyLog) => (
+                                <HistoryItem key={historyLog.id} historyLog={historyLog} />
+                            ))}
+                        </CardContent>
                     </Card>
                 </>
             )}
