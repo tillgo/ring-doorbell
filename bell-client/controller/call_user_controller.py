@@ -65,7 +65,7 @@ class CallUserController:
 
         self.socket_client.sio.on('iceCandidate',
                                   lambda event: asyncio.run(getHandleRemoteIceCandidate(self.peer)(event)))
-        self.peer.on('track', lambda event: asyncio.run(saveTrack(event)))
+        self.peer.on('track', lambda event: asyncio.get_running_loop().create_task(saveTrack(event)))
 
         # add video
         camTrack = PiCameraTrack()
