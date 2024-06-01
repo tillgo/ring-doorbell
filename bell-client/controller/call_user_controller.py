@@ -30,8 +30,6 @@ def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
     return handleRemoteCandidate
 
 
-
-
 class CallUserController:
 
     def __init__(self, ui):
@@ -48,8 +46,6 @@ class CallUserController:
         if track.kind == 'video':
             print("Video track")
             self.videoDisplay = VideoStreamDisplay(self.ui.video_label, track)
-
-
 
     def call_user(self, user_id: str):
         self.userId = user_id
@@ -68,7 +64,7 @@ class CallUserController:
 
         self.socket_client.sio.on('iceCandidate',
                                   lambda event: asyncio.run(getHandleRemoteIceCandidate(self.peer)(event)))
-        self.peer.on('track', lambda event: handleTrack(event))
+        self.peer.on('track', lambda event: self.handleTrack(event))
 
         # add video
         camTrack = PiCameraTrack()
