@@ -27,6 +27,7 @@ def record_frames():
     cam.configure(cam.create_video_configuration())
     cam.start()
     while True:
+        print("getting frame")
         img = cam.capture_array()
         pts = time.time() * 60
         new_frame = av.VideoFrame.from_ndarray(img, format='rgba')
