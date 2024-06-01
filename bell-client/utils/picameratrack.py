@@ -46,5 +46,7 @@ class PiCameraTrack(MediaStreamTrack):
         while True:
             if len(frames) > 0:
                 new_frame = frames.pop()
+                print("returning frane")
+                print(new_frame)
                 return new_frame
 
