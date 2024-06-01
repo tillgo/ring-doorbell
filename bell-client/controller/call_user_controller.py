@@ -15,9 +15,7 @@ class CallUserController:
         self.ui = ui
         self.socket_client = SocketClient()
         self.userId = ''
-        self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
-                                                                   RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
-
+        self.peer = None
 
     def call_user(self, user_id: str):
         self.userId = user_id
@@ -31,6 +29,8 @@ class CallUserController:
         asyncio.run(self.create_WebRTC_Connection(data))
 
     async def create_WebRTC_Connection(self, data):
+        self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
+                                                              RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
         self.peer.on('track', lambda event: print("Track received "))
 
@@ -52,3 +52,8 @@ class CallUserController:
         await self.peer.setLocalDescription(answer)
         # has to use localdescription, as here the ice candidates are set
         self.socket_client.sendRTCAnswer(self.userId, self.peer.localDescription)
+
+        while True:
+            await asyncio.sleep(1)
+            if self.peer.connectionState == "connected":
+                break
