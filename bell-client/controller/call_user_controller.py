@@ -15,7 +15,9 @@ class CallUserController:
         self.ui = ui
         self.socket_client = SocketClient()
         self.userId = ''
-        self.peer = None
+        self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
+                                                                   RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
+
 
     def call_user(self, user_id: str):
         self.userId = user_id
@@ -29,8 +31,6 @@ class CallUserController:
         asyncio.run(self.create_WebRTC_Connection(data))
 
     async def create_WebRTC_Connection(self, data):
-        self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
-                                                              RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
         self.peer.on('track', lambda event: print("Track received "))
 
@@ -38,6 +38,9 @@ class CallUserController:
         camTrack = PiCameraTrack()
         self.peer.addTrack(camTrack)
 
+        # add audio
+        audioTrack = PiAudioTrack()
+        self.peer.addTrack(audioTrack)
 
         self.peer.on('connectionstatechange', lambda: print("State: " + self.peer.connectionState))
 
