@@ -26,7 +26,6 @@ class PiCameraTrack(MediaStreamTrack):
                                                             controls={"FrameRate": 30.0}, buffer_count=2)
         self.cam.configure(configuration)
         self.cam.start_preview(Preview.NULL)
-        self.cam.start()
 
     async def recv(self):
         img = self.cam.capture_array()
