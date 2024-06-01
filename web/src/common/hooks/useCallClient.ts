@@ -56,6 +56,7 @@ export function useCallClient() {
         peer.ontrack = handleNewTrack(clientStream)
 
         socket?.on('answerSignal', async (signal) => {
+            console.log('set answerSignal')
             await peer.setRemoteDescription(signal)
         })
 

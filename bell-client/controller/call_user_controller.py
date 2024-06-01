@@ -1,13 +1,39 @@
 import asyncio
 import json
-from multiprocessing import Process
+import uuid
 
+import psutil
 from aiortc import RTCPeerConnection, RTCConfiguration, RTCIceServer, RTCSessionDescription
-from aiortc.contrib.media import MediaPlayer
+from aiortc.contrib.media import MediaPlayer, MediaRecorder
+from aiortc.sdp import candidate_from_sdp
 
 from connectionClients.socket_client import SocketClient
-from utils.piaudiotrack import PiAudioTrack
 from utils.picameratrack import PiCameraTrack
+
+
+def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
+    async def handleRemoteCandidate(data):
+        candidateData = data['candidate']
+        candidate = candidateData['candidate']
+        # if empty candidate return
+        if candidate == '':
+            return
+        sdpMLineIndex = candidateData['sdpMLineIndex']
+        sdpMid = candidateData['sdpMid']
+        ice_candidate = candidate_from_sdp(candidate)
+        ice_candidate.sdpMLineIndex = sdpMLineIndex
+        ice_candidate.sdpMid = sdpMid
+        print("adding peer")
+        await peer.addIceCandidate(ice_candidate)
+
+    return handleRemoteCandidate
+
+
+def saveTrack(track):
+    print("received track")
+    print(track)
+    print(track.kind)
+
 
 
 class CallUserController:
@@ -27,28 +53,30 @@ class CallUserController:
 
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
-        process = Process(target=self.create_WebRTC_Connection, args=(data,))
-        process.start()
+        asyncio.run(self.create_WebRTC_Connection(data))
 
     async def create_WebRTC_Connection(self, data):
         self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
-                                                              RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
+                                                                   RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
-        self.peer.on('track', lambda event: print("Track received "))
+        self.socket_client.sio.on('iceCandidate',
+                                  lambda event: asyncio.run(getHandleRemoteIceCandidate(self.peer)(event)))
+        self.peer.on('track', lambda event: saveTrack(event))
 
         # add video
         camTrack = PiCameraTrack()
         self.peer.addTrack(camTrack)
 
         # add audio
-        audioTrack = PiAudioTrack()
-        self.peer.addTrack(audioTrack)
+        audioTrack = MediaPlayer("hw:2,0", format="alsa", options={'channels': '1', 'sample_rate': '100',
+                                                                   'sample_fmt': 's16'})
+        self.peer.addTrack(audioTrack.audio)
 
         self.peer.on('connectionstatechange', lambda: print("State: " + self.peer.connectionState))
 
         remote_offer = json.loads(data)
         await self.peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
-                                                                                 type=remote_offer['type']))
+                                                                                      type=remote_offer['type']))
 
         answer = await self.peer.createAnswer()
         await self.peer.setLocalDescription(answer)
@@ -56,9 +84,11 @@ class CallUserController:
         self.socket_client.sendRTCAnswer(self.userId, self.peer.localDescription)
 
         while True:
-            await asyncio.sleep(10)
+            await asyncio.sleep(3)
             print("State: " + self.peer.connectionState)
+            print("CPU %" + str(psutil.cpu_percent()))
+            print("MEMORY" + str(psutil.virtual_memory().percent) + "%")
             if (self.peer.connectionState == "failed" or self.peer.connectionState == "disconnected"
                     or self.peer.connectionState == "closed"):
-                print("ending")
+                print("Exiting now")
                 break
