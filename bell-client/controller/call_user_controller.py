@@ -39,8 +39,8 @@ class CallUserController:
         self.peer.addTrack(camTrack)
 
         # add audio
-        audioTrack = PiAudioTrack()
-        self.peer.addTrack(audioTrack)
+        #audioTrack = PiAudioTrack()
+        #self.peer.addTrack(audioTrack)
 
         self.peer.on('connectionstatechange', lambda: print("State: " + self.peer.connectionState))
 
