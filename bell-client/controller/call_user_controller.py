@@ -46,10 +46,7 @@ class CallUserController:
 
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
-        loop = asyncio.new_event_loop()
-        loop.create_task(self.create_WebRTC_Connection(data))
-        loop.run_forever()
-        #asyncio.run(self.create_WebRTC_Connection(data))
+        asyncio.run(self.create_WebRTC_Connection(data))
 
     async def create_WebRTC_Connection(self, data):
         self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
@@ -78,12 +75,12 @@ class CallUserController:
         # has to use localdescription, as here the ice candidates are set
         self.socket_client.sendRTCAnswer(self.userId, self.peer.localDescription)
 
-        # while True:
-        #     await asyncio.sleep(3)
-        #     print("State: " + self.peer.connectionState)
-        #     print("CPU %" + str(psutil.cpu_percent()))
-        #     print("MEMORY" + str(psutil.virtual_memory().percent) + "%")
-        #     if (self.peer.connectionState == "failed" or self.peer.connectionState == "disconnected"
-        #             or self.peer.connectionState == "closed"):
-        #         print("Exiting now")
-        #         break
+        while True:
+            await asyncio.sleep(3)
+            print("State: " + self.peer.connectionState)
+            print("CPU %" + str(psutil.cpu_percent()))
+            print("MEMORY" + str(psutil.virtual_memory().percent) + "%")
+            if (self.peer.connectionState == "failed" or self.peer.connectionState == "disconnected"
+                    or self.peer.connectionState == "closed"):
+                print("Exiting now")
+                break
