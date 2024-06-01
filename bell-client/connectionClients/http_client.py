@@ -7,7 +7,7 @@ from connectionClients.token_adapter import TokenAdapter
 
 class HttpClient(object):
     _instance = None
-    url = "http://192.168.22.36:8080/api"
+    url = "https://ring-doorbell-45675126bb6e.herokuapp.com//api"
     # ToDo Identifier und Secret einlesen (evtl. aus File)
     secret: str = "ce5e7168-ee9c-4075-9d2f-b8f6a03c3ca4"
     identifier: str = "12-34-56-78"
