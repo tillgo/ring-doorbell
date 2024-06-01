@@ -6,14 +6,16 @@ from PyQt6.QtCore import QTimer, Qt
 from PyQt6.QtGui import QPixmap, QImage
 from aiortc import RTCPeerConnection, VideoStreamTrack
 from aiortc.contrib.signaling import BYE
+from aiortc.rtcrtpreceiver import RemoteStreamTrack
 from av import VideoFrame
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget
 from PyQt6.QtCore import QTimer, Qt
 from PyQt6.QtGui import QPixmap, QImage
 
+
 class VideoStreamDisplay:
-    def __init__(self, label: QLabel, video_track: VideoTrack, update_interval=30):
+    def __init__(self, label: QLabel, video_track: RemoteStreamTrack, update_interval=30):
         self.label = label
         self.video_track = video_track
 
