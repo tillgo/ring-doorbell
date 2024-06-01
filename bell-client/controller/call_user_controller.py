@@ -33,7 +33,9 @@ def saveTrack(track):
     print("received track")
     print(track)
     print(track.kind)
-    MediaRecorder("test_track" + str(uuid.uuid4()) + ".mp4")
+    recorder = MediaRecorder("test_track" + str(uuid.uuid4()) + ".mp4")
+    recorder.addTrack(track)
+    recorder.start()
 
 
 class CallUserController:
