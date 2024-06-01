@@ -30,8 +30,8 @@ class PiCameraTrack(MediaStreamTrack):
         img = cam.capture_array()
         print("Test Img" + str(self.index))
         self.index += 1
-        pts = time.time() * 60
+        pts = time.time() * 50000
         new_frame = av.VideoFrame.from_ndarray(img, format='rgba')
         new_frame.pts = int(pts)
-        new_frame.time_base = Fraction(1, 60)
+        new_frame.time_base = Fraction(1, 50000)
         return new_frame
