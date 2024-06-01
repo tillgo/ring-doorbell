@@ -4,10 +4,29 @@ import json
 import psutil
 from aiortc import RTCPeerConnection, RTCConfiguration, RTCIceServer, RTCSessionDescription
 from aiortc.contrib.media import MediaPlayer
+from aiortc.sdp import candidate_from_sdp
 
 from connectionClients.socket_client import SocketClient
 from utils.piaudiotrack import PiAudioTrack
 from utils.picameratrack import PiCameraTrack
+
+
+def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
+    def handleRemoteCandidate(data):
+        candidateData = data['candidate']
+        candidate = candidateData['candidate']
+        # if empty candidate return
+        if candidate == '':
+            return
+        sdpMLineIndex = candidateData['sdpMLineIndex']
+        sdpMid = candidateData['sdpMid']
+        ice_candidate = candidate_from_sdp(candidate)
+        ice_candidate.sdpMLineIndex = sdpMLineIndex
+        ice_candidate.sdpMid = sdpMid
+        print("adding peer")
+        peer.addIceCandidate(ice_candidate)
+
+    return handleRemoteCandidate
 
 
 class CallUserController:
@@ -33,6 +52,8 @@ class CallUserController:
         self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
                                                                    RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
+        self.socket_client.sio.on('iceCandidate',
+                                  getHandleRemoteIceCandidate(self.peer))
         self.peer.on('track', lambda event: print("Track received "))
 
         # add video
