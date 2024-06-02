@@ -24,7 +24,8 @@ class HttpClient(object):
     def connect(self):
         if not self.session:
             self.session = requests.Session()
-            self.session.mount("", TokenAdapter())
+            self.session.mount("http://", TokenAdapter())
+            self.session.mount("https://", TokenAdapter())
 
     def login(self):
         login_data = {'identifier': self.identifier, 'secret': self.secret}
