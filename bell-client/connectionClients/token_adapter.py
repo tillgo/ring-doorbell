@@ -11,8 +11,8 @@ class TokenAdapter(HTTPAdapter):
 
     def send(self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None):
         print("token adapter opened")
-        import http_client
-        client = http_client.HttpClient()
+        from connectionClients.http_client import HttpClient
+        client = HttpClient()
         # If not auth route, append jwts
         if not ("/api/auth" in request.url):
             token = client.get_token()
