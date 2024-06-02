@@ -61,7 +61,7 @@ class CallUserController:
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.call_page)
         self.socket_client.connect()
 
-        self.socket_client.callUser(self.userId, "", self.handle_call_accepted)
+        self.socket_client.callUser(self.userId, self.handle_call_accepted)
         self.socket_client.sio.on('callOver', lambda event: self.handleCallEnd("ended"))
         self.socket_client.sio.on('callDenied', lambda event: self.handleCallEnd("denied"))
         self.socket_client.sio.on('callFailed', lambda event: self.handleCallEnd("failed"))

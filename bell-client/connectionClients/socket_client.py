@@ -32,8 +32,8 @@ class SocketClient(object):
         print("Disconnected from server")
         self.sio = None
 
-    def callUser(self, user_id: str, signal_data: str, handle_call_accepted: callable):
-        self.sio.emit('callClient', {'to': user_id, 'signalData': signal_data})
+    def callUser(self, user_id: str, handle_call_accepted: callable):
+        self.sio.emit('callClient', {'to': user_id})
         self.sio.on('callAccepted', handle_call_accepted)
 
     def sendRTCAnswer(self, userId, answer):
