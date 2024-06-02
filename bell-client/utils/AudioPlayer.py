@@ -5,6 +5,7 @@ import pyaudio
 from aiortc.contrib.media import MediaRecorder
 from aiortc.rtcrtpreceiver import RemoteStreamTrack
 
+
 class AudioPlayer:
     def __init__(self, track: RemoteStreamTrack):
         if track.kind != 'audio':
@@ -18,5 +19,3 @@ class AudioPlayer:
         while self.track.readyState != 'ended':
             await asyncio.sleep(1)
         await recorder.stop()
-
-
