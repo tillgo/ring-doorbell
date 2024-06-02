@@ -9,17 +9,23 @@ from controller.ring_controller import wait_for_nfc_id
 from view import main_window
 
 
-class MainController(QMainWindow):
+class MainController:
     def __init__(self):
         super().__init__()
-        self.ui = main_window.Ui_MainWindow()
-        self.ui.setupUi(self)
-        self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
-        self.greetingController = GreetingController(self.ui, self)
-        self.show()
+        self.main_window = None
+        self.ui = None
+        self.greetingController = None
+
         self.start_app()
 
     def start_app(self):
+        self.main_window = QMainWindow()
+        self.ui = main_window.Ui_MainWindow()
+        self.ui.setupUi(self.main_window)
+        self.main_window.setWindowFlag(Qt.WindowType.FramelessWindowHint)
+        self.greetingController = GreetingController(self.ui, self)
+        self.main_window.show()
+
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.ring_page)
         # start waiting for nfc id in new thread
         t1 = threading.Thread(target=wait_for_nfc_id, args=(self.handle_nfc_id_found,))
