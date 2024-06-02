@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 import requests
 import jwt
 from connectionClients.token_adapter import TokenAdapter
+from utils.VisitorData import VisitorData
 
 
 class HttpClient(object):
@@ -50,8 +51,6 @@ class HttpClient(object):
         print("Asked for ring_data")
         print(response.status_code)
         print(response.json())
-        #visitor_data = response.json()
-        #name = visitor_data['visitor']
-        #users = visitor_data['users']
-        #print(name)
-        #print(users)
+        visitor_data = response.json()
+        visitorData = VisitorData(visitor_data)
+        return visitorData
