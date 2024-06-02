@@ -1,5 +1,8 @@
 import asyncio
 
+from controller.main_controller import MainController
+import main
+
 messages = {
     'failed': 'Call failed (User not online)',
     'ended': 'Call ended',
@@ -29,5 +32,4 @@ class AfterCallController:
             self.ui.countdown.setText(str(self.countdown))
 
         await asyncio.sleep(0.5)
-        self.ui.page_stacked_widget.setCurrentWidget(self.ui.ring_page)
-        self.ui.call_end_message.setText('')
+        main.main_window = MainController()

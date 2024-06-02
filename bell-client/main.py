@@ -37,6 +37,8 @@ def mainTestPiCam():
     sys.exit(app.exec())
 
 
+main_window = None
+
 if __name__ == "__main__":
     app = QApplication([])
     event_loop = QEventLoop(app)
@@ -45,6 +47,6 @@ if __name__ == "__main__":
     app_close_event = asyncio.Event()
     app.aboutToQuit.connect(lambda: app_close_event.set)
 
-    window = MainController()
+    main_window = MainController()
     with event_loop:
         event_loop.run_until_complete(app_close_event.wait())
