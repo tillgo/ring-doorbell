@@ -1,5 +1,6 @@
 import threading
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QMainWindow
 
 from controller.greeting_controller import GreetingController
@@ -14,6 +15,7 @@ class MainController(QMainWindow):
 
         self.ui = main_window.Ui_MainWindow()
         self.ui.setupUi(self)
+        self.setWindowFlag(Qt.WindowType.FramelessWindowHintFrame)
 
         self.greetingController = GreetingController(self.ui)
 
