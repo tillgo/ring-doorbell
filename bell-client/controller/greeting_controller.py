@@ -13,6 +13,7 @@ class GreetingController:
     def __init__(self, ui):
         self.ui = ui
         self.call_user_controller = CallUserController(ui)
+        self.selectedCameraUserId = ""
 
         self.ui.call_user_btn.clicked.connect(self.handle_call_user)
 
