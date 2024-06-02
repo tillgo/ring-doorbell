@@ -9,11 +9,11 @@ class TokenAdapter(HTTPAdapter):
     def __init__(self):
         super().__init__()
 
-
-def send(self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None):
-    import http_client
-    client = http_client.HttpClient()
-    # If not auth route, append jwts
-    if not ("/api/auth" in request.url):
-        token = self.get_token()
-        request.headers['authorization'] = f"Bearer {client.get_token()}"
+    def send(self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None):
+        import http_client
+        client = http_client.HttpClient()
+        # If not auth route, append jwts
+        if not ("/api/auth" in request.url):
+            token = client.get_token()
+            print(token)
+            request.headers['authorization'] = f"Bearer {token}"
