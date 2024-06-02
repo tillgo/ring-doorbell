@@ -1,5 +1,7 @@
 import asyncio
+import sys
 
+from PyQt6 import QtCore
 
 messages = {
     'failed': 'Call failed (User not online)',
