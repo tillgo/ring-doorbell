@@ -29,19 +29,11 @@ class MainWindow(QMainWindow):
             self.video_label.setPixmap(pixmap)
             self.video_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-
-def mainTestPiCam():
-    app = QApplication(sys.argv)
-    app.setStyleSheet('Fusion')
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec())
-
-
 main_window = None
 
 if __name__ == "__main__":
     app = QApplication([])
+    app.setStyleSheet('Windows')
     event_loop = QEventLoop(app)
     asyncio.set_event_loop(event_loop)
 
