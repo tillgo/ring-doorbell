@@ -41,3 +41,7 @@ class PiCameraTrack(MediaStreamTrack):
         except Exception as e:
             print(e)
             return self.prev_frame
+
+    def stop_cam(self):
+        self.cam.stop()
+        self.cam.close()

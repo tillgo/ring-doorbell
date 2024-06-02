@@ -40,6 +40,7 @@ class CallUserController:
         self.socket_client = SocketClient()
         self.userId = ''
         self.peer: RTCPeerConnection | None = None
+        self.video_track: PiCameraTrack | None = None
         self.videoDisplay = None
 
     def handleTrack(self, track):
@@ -69,6 +70,8 @@ class CallUserController:
     def handleCallEnd(self, end_type: str):
         self.peer.close()
         self.peer = None
+        self.video_track.stop_cam()
+        self.video_track = 0
         # Open After Call Page
         AfterCallController(end_type, self.ui, self.main_controller)
 
@@ -85,8 +88,8 @@ class CallUserController:
         self.peer.on('track', lambda event: self.handleTrack(event))
 
         # add video
-        camTrack = PiCameraTrack()
-        self.peer.addTrack(camTrack)
+        self.video_track = PiCameraTrack()
+        self.peer.addTrack(self.video_track)
 
         # add audio
         audioTrack = MediaPlayer("hw:2,0", format="alsa", options={'channels': '1', 'sample_rate': '100',
