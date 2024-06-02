@@ -70,6 +70,8 @@ class CallUserController:
         self.ui.video_label.setText("Calling...")
         self.socket_client.connect()
 
+        self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
+                                                                   RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
         self.socket_client.sio.on('iceCandidate',
                                   lambda data: asyncio.run(getHandleRemoteIceCandidate(self.peer)(data)))
         self.socket_client.sio.on('callOver', lambda: self.handleCallEnd("ended"))
@@ -94,9 +96,6 @@ class CallUserController:
         asyncio.run(self.create_WebRTC_Connection(data))
 
     async def create_WebRTC_Connection(self, data_offer):
-        self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
-                                                                   RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
-
         self.peer.on('track', lambda event: self.handleTrack(event))
 
         # add video
