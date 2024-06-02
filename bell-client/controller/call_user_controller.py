@@ -64,6 +64,8 @@ class CallUserController:
         self.ui.video_label.setText("Calling...")
         self.socket_client.connect()
 
+        self.socket_client.sio.on('iceCandidate',
+                                  lambda data: print("received candidate " + data))
         self.socket_client.sio.on('callOver', lambda: self.handleCallEnd("ended"))
         self.socket_client.sio.on('callDenied', lambda: self.handleCallEnd("denied"))
         self.socket_client.sio.on('callFailed', lambda data: self.handleCallEnd("failed"))
@@ -88,10 +90,6 @@ class CallUserController:
     async def create_WebRTC_Connection(self, data_offer):
         self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
                                                                    RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
-
-        @self.socket_client.sio.on('iceCandidate')
-        async def handleReceiveIceCandidate(data):
-            print("received candidate " + data)
 
         self.peer.on('track', lambda event: self.handleTrack(event))
 
