@@ -64,7 +64,7 @@ export function UserComboboxField<
                         <CommandGroup>
                             {users.map((user) => (
                                 <CommandItem
-                                    value={user.id}
+                                    value={user.username}
                                     key={user.id}
                                     onSelect={() => {
                                         field.onChange(user.id)
