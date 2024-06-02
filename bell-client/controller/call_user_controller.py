@@ -47,7 +47,9 @@ class CallUserController:
         if track.kind == 'video':
             print("Video track")
             self.videoDisplay = VideoStreamDisplay(self.ui.video_label, track)
-            asyncio.get_running_loop().create_task(self.videoDisplay.show_video())
+            videoThread = Thread(target=asyncio.run, args=(self.videoDisplay.show_video(),))
+            videoThread.start()
+            #asyncio.get_running_loop().create_task(self.videoDisplay.show_video())
         elif track.kind == 'audio':
             print("Audio track")
             audioPlayer = AudioPlayer(track)
