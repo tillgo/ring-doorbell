@@ -30,6 +30,7 @@ export function useCallClient() {
 
     const handleNewIceCandidate = (userId: string) => (event: RTCPeerConnectionIceEvent) => {
         if (event.candidate) {
+            console.log('Sending candidate')
             socket?.emit('iceCandidate', {
                 candidate: event.candidate,
                 to: userId,
