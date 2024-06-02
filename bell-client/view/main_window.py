@@ -38,12 +38,12 @@ class Ui_MainWindow(object):
         self.call_user_btn = QtWidgets.QPushButton(parent=self.greeting_page)
         self.call_user_btn.setGeometry(QtCore.QRect(30, 130, 87, 26))
         self.call_user_btn.setObjectName("call_user_btn")
-        self.userList = QtWidgets.QListView(parent=self.greeting_page)
-        self.userList.setGeometry(QtCore.QRect(275, 41, 171, 171))
-        self.userList.setObjectName("userList")
         self.label_2 = QtWidgets.QLabel(parent=self.greeting_page)
         self.label_2.setGeometry(QtCore.QRect(280, 20, 111, 16))
         self.label_2.setObjectName("label_2")
+        self.listWidget = QtWidgets.QListWidget(parent=self.greeting_page)
+        self.listWidget.setGeometry(QtCore.QRect(270, 40, 161, 191))
+        self.listWidget.setObjectName("listWidget")
         self.page_stacked_widget.addWidget(self.greeting_page)
         self.call_page = QtWidgets.QWidget()
         self.call_page.setObjectName("call_page")
@@ -90,7 +90,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.page_stacked_widget.setCurrentIndex(3)
+        self.page_stacked_widget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
