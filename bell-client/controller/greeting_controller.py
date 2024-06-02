@@ -28,9 +28,9 @@ class GreetingController:
         for user in self.visitorData.possibleUsers:
             self.ui.userList.addItem(user.username)
         # Select the first possible user
-        self.selectedCameraUserId = self.visitorData.possibleUsers[self.ui.userList.currentRow].id
+        self.selectedCameraUserId = self.visitorData.possibleUsers[self.ui.userList.currentRow()].id
         self.ui.userList.currentItemChanged.connect(self.on_current_changed)
-        self.ui.userList.currentRow(0)
+        self.ui.userList.setCurrentRow(0)
 
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.greeting_page)
 
