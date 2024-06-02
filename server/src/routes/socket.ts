@@ -101,6 +101,7 @@ export const setupSocket = (
             const clientToCall = data.to
             const clientToCallSocketId = clients.get(clientToCall)
             if (clientToCallSocketId) {
+                console.log("sending ice candidate to ", data.to)
                 io.to(clientToCallSocketId).emit('iceCandidate', {
                     candidate: data.candidate,
                 })
