@@ -12,14 +12,16 @@ from view import main_window
 class MainController:
     def __init__(self):
         super().__init__()
-        self.main_window = None
+        self.main_window = QMainWindow()
         self.ui = main_window.Ui_MainWindow()
         self.greetingController = None
         self.t1 = None
         self.start_app()
 
     def start_app(self):
-        self.main_window = QMainWindow()
+        layout = self.main_window.layout()
+        for i in reversed(range(layout.count())):
+            layout.itemAt(i).widget().setParent(None)
         self.ui.setupUi(self.main_window)
         self.main_window.setWindowFlag(Qt.WindowType.FramelessWindowHint)
         self.greetingController = GreetingController(self.ui, self)
