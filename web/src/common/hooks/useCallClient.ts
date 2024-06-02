@@ -58,6 +58,7 @@ export function useCallClient() {
 
         socket?.on('answerSignal', async (signal) => {
             console.log('set answerSignal')
+            console.log(signal)
             await peer.setRemoteDescription(signal)
         })
 

@@ -70,7 +70,6 @@ class CallUserController:
 
         self.socket_client.callUser(self.userId, self.handle_call_accepted)
 
-
     def handleCallEnd(self, end_type: str):
         if self.peer:
             self.peer.close()
@@ -90,8 +89,10 @@ class CallUserController:
         self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
                                                                    RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
-        self.socket_client.sio.on('iceCandidate',
-                                  lambda data: print("received candidate " + data))
+        @self.socket_client.sio.on('iceCandidate')
+        async def handleReceiveIceCandidate(data):
+            print("received candidate " + data)
+
         self.peer.on('track', lambda event: self.handleTrack(event))
 
         # add video
@@ -104,7 +105,7 @@ class CallUserController:
         self.peer.addTrack(audioTrack.audio)
 
         self.peer.on('connectionstatechange', lambda: print("State: " + self.peer.connectionState))
-        self.peer.on('iceconnectionstatechange', lambda : print("ICE State: " + self.peer.iceConnectionState))
+        self.peer.on('iceconnectionstatechange', lambda: print("ICE State: " + self.peer.iceConnectionState))
 
         remote_offer = json.loads(data_offer)
         await self.peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
@@ -119,7 +120,8 @@ class CallUserController:
             await asyncio.sleep(3)
             print("CPU %" + str(psutil.cpu_percent()))
             print("MEMORY" + str(psutil.virtual_memory().percent) + "%")
-            if (self.peer is None or self.peer.connectionState == "failed" or self.peer.connectionState == "disconnected"
+            if (
+                    self.peer is None or self.peer.connectionState == "failed" or self.peer.connectionState == "disconnected"
                     or self.peer.connectionState == "closed"):
                 print("Exiting now")
                 break
