@@ -3,7 +3,7 @@ import json
 from threading import Thread
 
 import psutil
-from aiortc import RTCPeerConnection, RTCConfiguration, RTCIceServer, RTCSessionDescription, RTCIceCandidate
+from aiortc import RTCPeerConnection, RTCConfiguration, RTCIceServer, RTCSessionDescription
 from aiortc.contrib.media import MediaPlayer
 from aiortc.sdp import candidate_from_sdp
 
@@ -16,26 +16,19 @@ from utils.picameratrack import PiCameraTrack
 
 def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
     async def handleRemoteCandidate(data):
-        print("Received remote candidate")
-        candidate = data['candidate']
-        ip = candidate['candidate'].split(' ')[4]
-        port = candidate['candidate'].split(' ')[5]
-        protocol = candidate['candidate'].split(' ')[7]
-        priority = candidate['candidate'].split(' ')[3]
-        foundation = candidate['candidate'].split(' ')[0]
-        component = candidate['candidate'].split(' ')[1]
-        type = candidate['candidate'].split(' ')[7]
-        rtc_candidate = RTCIceCandidate(
-            ip=ip,
-            port=port,
-            protocol=protocol,
-            priority=priority,
-            foundation=foundation,
-            component=component,
-            type=type,
-            sdpMid=candidate['sdpMid'],
-            sdpMLineIndex=candidate['sdpMLineIndex'])
-        await peer.addIceCandidate(rtc_candidate)
+        candidateData = data['candidate']
+        candidate = candidateData['candidate']
+        print("getting Ice candidate")
+        # if empty candidate return
+        if candidate == '':
+            print("empty candidate " + candidate)
+            return
+        sdpMLineIndex = candidateData['sdpMLineIndex']
+        sdpMid = candidateData['sdpMid']
+        ice_candidate = candidate_from_sdp(candidate)
+        ice_candidate.sdpMLineIndex = sdpMLineIndex
+        ice_candidate.sdpMid = sdpMid
+        await peer.addIceCandidate(ice_candidate)
 
     return handleRemoteCandidate
 
@@ -72,7 +65,7 @@ class CallUserController:
         self.socket_client.connect()
 
         self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
-                                                                   RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
+                                                           RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
         self.socket_client.sio.on('iceCandidate',
                                   lambda data: asyncio.run(getHandleRemoteIceCandidate(self.peer)(data)))
         self.socket_client.sio.on('callOver', lambda: self.handleCallEnd("ended"))
@@ -97,6 +90,7 @@ class CallUserController:
         asyncio.run(self.create_WebRTC_Connection(data))
 
     async def create_WebRTC_Connection(self, data_offer):
+
         self.peer.on('track', lambda event: self.handleTrack(event))
 
         # add video
