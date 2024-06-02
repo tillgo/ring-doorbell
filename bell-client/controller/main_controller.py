@@ -1,5 +1,6 @@
 import threading
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QMainWindow
 
 from controller.greeting_controller import GreetingController
@@ -11,13 +12,11 @@ class MainController(QMainWindow):
     def __init__(self):
         super().__init__()
 
-
         self.ui = main_window.Ui_MainWindow()
         self.ui.setupUi(self)
+        self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
 
         self.greetingController = GreetingController(self.ui)
-
-        self.ui.pushButton.clicked.connect(lambda: print("Button clicked"))
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.ring_page)
         self.show()
         # start waiting for nfc id in new thread
