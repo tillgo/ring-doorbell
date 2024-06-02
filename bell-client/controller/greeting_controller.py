@@ -28,7 +28,7 @@ class GreetingController:
         self.ui.userList.setModel(self.ui.model)
         self.ui.userList.setSelectionMode(QListView.SelectionMode.SingleSelection)
         # Connect the selection change signal to the slot
-        self.ui.userList.currentChanged().connect(self.on_selection_changed)
+        self.ui.userList.currentChanged.connect(self.on_current_changed())
 
         for user in self.visitorData.possibleUsers:
             self.ui.model.appendRow(QStandardItem(user.username))
@@ -41,13 +41,13 @@ class GreetingController:
         self.selectedCameraUserId = self.visitorData.possibleUsers[0].id
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.greeting_page)
 
-    def on_selection_changed(self, selected, deselected):
-        # Get the selected indexes
-        selectedIndexes = selected
-        if selectedIndexes:
+    def on_current_changed(self, current, previous):
+        # Check if a valid current index is available
+        if current.isValid():
             # Get the row index as an integer
-            index = selectedIndexes[0].row()
+            index = current.row()
             print(index)
+            # Access the corresponding item from your data model using the integer index
             self.selectedCameraUserId = self.visitorData.possibleUsers[index].id
             print("Selected user")
             print(self.visitorData.possibleUsers[index].username)
