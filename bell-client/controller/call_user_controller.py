@@ -63,10 +63,12 @@ class CallUserController:
         self.ui.video_label.setText("Calling...")
         self.socket_client.connect()
 
-        self.socket_client.callUser(self.userId, self.handle_call_accepted)
         self.socket_client.sio.on('callOver', lambda: self.handleCallEnd("ended"))
         self.socket_client.sio.on('callDenied', lambda: self.handleCallEnd("denied"))
         self.socket_client.sio.on('callFailed', lambda data: self.handleCallEnd("failed"))
+
+        self.socket_client.callUser(self.userId, self.handle_call_accepted)
+
 
     def handleCallEnd(self, end_type: str):
         if self.peer:
