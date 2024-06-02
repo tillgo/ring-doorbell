@@ -20,6 +20,7 @@ class GreetingController:
         self.ui.call_user_btn.clicked.connect(self.handle_call_user)
 
     def open_greeting_page(self, nfcCardID: str):
+        print("page opened yay")
         httpClient = HttpClient()
         httpClient.connect()
         self.visitorData = httpClient.get_visitor(nfcCardID)

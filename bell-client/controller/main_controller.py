@@ -31,4 +31,5 @@ class MainController:
         wait_for_nfc_id(self.handle_nfc_id_found)
 
     def handle_nfc_id_found(self, uid):
+        print("card found yayyyy")
         self.greetingController.open_greeting_page("".join([hex(i) for i in uid]))
