@@ -24,15 +24,13 @@ class HttpClient(object):
     def connect(self):
         if not self.session:
             self.session = requests.Session()
-            self.session.mount("http://", TokenAdapter())
-            self.session.mount("https://", TokenAdapter())
+            self.session.mount("http://", TokenAdapter(self))
+            self.session.mount("https://", TokenAdapter(self))
 
     def login(self):
         login_data = {'identifier': self.identifier, 'secret': self.secret}
         response = self.session.post(self.url + "/auth/bell/sign-in", json=login_data)
-        print(response)
         if response.status_code != 200:
-            print(response)
             # ToDO better way to handle login failure
             raise Exception("Login failed")
         return response.json()["token"]
