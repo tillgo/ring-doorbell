@@ -16,8 +16,8 @@ class GreetingController:
     def open_greeting_page(self, nfcCardID: str):
         httpClient = HttpClient()
         httpClient.connect()
-        httpClient.get_visitor(nfcCardID)
-        self.ui.uid_label.setText(nfcCardID)
+        visitorData = httpClient.get_visitor(nfcCardID)
+        self.ui.uid_label.setText(visitorData.visitor.nickname)
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.greeting_page)
 
     def handle_call_user(self):
