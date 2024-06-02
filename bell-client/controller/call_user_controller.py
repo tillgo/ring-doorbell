@@ -53,7 +53,6 @@ class CallUserController:
             audioPlayer = AudioPlayer(track)
             audio_thread = Thread(target=asyncio.run, args=(audioPlayer.play(),))
             audio_thread.start()
-            #asyncio.get_running_loop().create_task(audioPlayer.play())
 
     def call_user(self, user_id: str):
         self.userId = user_id
@@ -79,7 +78,7 @@ class CallUserController:
         self.peer.addTrack(camTrack)
 
         # add audio
-        audioTrack = MediaPlayer("hw:2,0", format="alsa", options={'channels': '1', 'sample_rate': '100',
+        audioTrack = MediaPlayer("hw:2,0", format="alsa", options={'channels': '1',
                                                                    'sample_fmt': 's16'})
         self.peer.addTrack(audioTrack.audio)
 
