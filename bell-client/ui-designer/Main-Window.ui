@@ -7,32 +7,38 @@
     <x>0</x>
     <y>0</y>
     <width>480</width>
-    <height>250</height>
+    <height>320</height>
    </rect>
   </property>
   <property name="maximumSize">
    <size>
     <width>480</width>
-    <height>250</height>
+    <height>320</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="minimumSize">
+    <size>
+     <width>480</width>
+     <height>320</height>
+    </size>
+   </property>
    <widget class="QFrame" name="main_frame">
     <property name="geometry">
      <rect>
       <x>0</x>
       <y>0</y>
       <width>480</width>
-      <height>250</height>
+      <height>320</height>
      </rect>
     </property>
     <property name="maximumSize">
      <size>
       <width>480</width>
-      <height>250</height>
+      <height>320</height>
      </size>
     </property>
     <property name="frameShape">
@@ -45,7 +51,7 @@
      <item>
       <widget class="QStackedWidget" name="page_stacked_widget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="greeting_page">
         <widget class="QLabel" name="uid_label">
@@ -87,12 +93,22 @@
           <string>Call User</string>
          </property>
         </widget>
+        <widget class="QListView" name="userList">
+         <property name="geometry">
+          <rect>
+           <x>275</x>
+           <y>41</y>
+           <width>171</width>
+           <height>171</height>
+          </rect>
+         </property>
+        </widget>
         <widget class="QLabel" name="label_2">
          <property name="geometry">
           <rect>
            <x>280</x>
            <y>20</y>
-           <width>151</width>
+           <width>111</width>
            <height>16</height>
           </rect>
          </property>
@@ -100,25 +116,15 @@
           <string>Select User to Call</string>
          </property>
         </widget>
-        <widget class="QListWidget" name="userList">
-         <property name="geometry">
-          <rect>
-           <x>280</x>
-           <y>40</y>
-           <width>151</width>
-           <height>171</height>
-          </rect>
-         </property>
-        </widget>
        </widget>
        <widget class="QWidget" name="call_page">
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="video_label">
          <property name="geometry">
           <rect>
-           <x>120</x>
-           <y>10</y>
-           <width>211</width>
-           <height>61</height>
+           <x>-10</x>
+           <y>-10</y>
+           <width>481</width>
+           <height>321</height>
           </rect>
          </property>
          <property name="text">
@@ -134,7 +140,7 @@
          <property name="geometry">
           <rect>
            <x>170</x>
-           <y>40</y>
+           <y>80</y>
            <width>121</width>
            <height>101</height>
           </rect>
@@ -153,7 +159,7 @@
          <property name="geometry">
           <rect>
            <x>180</x>
-           <y>130</y>
+           <y>180</y>
            <width>101</width>
            <height>18</height>
           </rect>
@@ -162,17 +168,67 @@
           <string>Scan your card</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton">
+       </widget>
+       <widget class="QWidget" name="after_call_page">
+        <widget class="QLabel" name="call_end_message">
          <property name="geometry">
           <rect>
-           <x>330</x>
-           <y>200</y>
-           <width>121</width>
-           <height>26</height>
+           <x>30</x>
+           <y>10</y>
+           <width>411</width>
+           <height>81</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+          </font>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Message</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="countdown">
+         <property name="geometry">
+          <rect>
+           <x>130</x>
+           <y>160</y>
+           <width>211</width>
+           <height>81</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>22</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Countdown</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>120</y>
+           <width>191</width>
+           <height>20</height>
           </rect>
          </property>
          <property name="text">
-          <string>I have no card</string>
+          <string>Returning to homepage in</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </widget>
