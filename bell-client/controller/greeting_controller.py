@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QListView
 
 from connectionClients.http_client import HttpClient
 from controller.call_user_controller import CallUserController
-from PyQt6.QtCore import QEventLoop, QItemSelectionModel
+from PyQt6.QtCore import QEventLoop, QItemSelectionModel, Qt
 
 
 class GreetingController:
@@ -27,6 +27,7 @@ class GreetingController:
         # Create the model and set it to the QListView
         self.ui.model = QStandardItemModel()
         self.ui.userList.setModel(self.ui.model)
+        self.ui.userList.setFocusPolicy(Qt.FocusPolicy.StrongFocus)  # or ClickFocus
         self.ui.userList.setSelectionMode(QListView.SelectionMode.SingleSelection)
         self.ui.userList.selectionModel().currentChanged.connect(self.on_current_changed)
 
@@ -54,6 +55,8 @@ class GreetingController:
             print(self.visitorData.possibleUsers[index].username)
             print("CameraUserID")
             print(self.selectedCameraUserId)
+        else:
+            print("current is not valid")
 
     def handle_call_user(self):
         #UserId of user Siggi for testing (password TestTest) (productive)
