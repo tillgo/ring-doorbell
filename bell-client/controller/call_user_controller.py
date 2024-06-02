@@ -47,9 +47,7 @@ class CallUserController:
         if track.kind == 'video':
             print("Video track")
             self.videoDisplay = VideoStreamDisplay(self.ui.video_label, track)
-            videoThread = Thread(target=asyncio.run, args=(self.videoDisplay.show_video(),))
-            videoThread.start()
-            #asyncio.get_running_loop().create_task(self.videoDisplay.show_video())
+            asyncio.get_running_loop().create_task(self.videoDisplay.show_video())
         elif track.kind == 'audio':
             print("Audio track")
             audioPlayer = AudioPlayer(track)
@@ -80,7 +78,7 @@ class CallUserController:
         self.peer.addTrack(camTrack)
 
         # add audio
-        audioTrack = MediaPlayer("hw:2,0", format="alsa", options={'channels': '1',
+        audioTrack = MediaPlayer("hw:2,0", format="alsa", options={'channels': '2',
                                                                    'sample_fmt': 's16'})
         self.peer.addTrack(audioTrack.audio)
 
