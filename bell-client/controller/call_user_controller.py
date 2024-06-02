@@ -51,7 +51,8 @@ class CallUserController:
         elif track.kind == 'audio':
             print("Audio track")
             audioPlayer = AudioPlayer(track)
-            asyncio.get_running_loop().create_task(audioPlayer.play())
+            audio_thread = Thread(target=asyncio.run, args=(audioPlayer.play(),))
+            audio_thread.start()
 
     def call_user(self, user_id: str):
         self.userId = user_id
