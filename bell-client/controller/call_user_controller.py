@@ -16,6 +16,7 @@ from utils.picameratrack import PiCameraTrack
 
 def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
     async def handleRemoteCandidate(data):
+        print("Received remote candidate")
         candidate = data['candidate']
         ip = candidate['candidate'].split(' ')[4]
         port = candidate['candidate'].split(' ')[5]
