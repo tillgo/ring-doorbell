@@ -42,6 +42,7 @@ class GreetingController:
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.greeting_page)
 
     def on_current_changed(self, current, previous):
+        print("current changed")
         # Check if a valid current index is available
         if current.isValid():
             # Get the row index as an integer
