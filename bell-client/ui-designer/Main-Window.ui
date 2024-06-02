@@ -45,7 +45,7 @@
      <item>
       <widget class="QStackedWidget" name="page_stacked_widget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="greeting_page">
         <widget class="QLabel" name="uid_label">
@@ -112,7 +112,7 @@
         </widget>
        </widget>
        <widget class="QWidget" name="call_page">
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="video_label">
          <property name="geometry">
           <rect>
            <x>0</x>
