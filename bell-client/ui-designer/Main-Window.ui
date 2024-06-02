@@ -106,7 +106,7 @@
           <string>Select User to Call</string>
          </property>
         </widget>
-        <widget class="QListWidget" name="listWidget">
+        <widget class="QListWidget" name="userList">
          <property name="geometry">
           <rect>
            <x>270</x>
