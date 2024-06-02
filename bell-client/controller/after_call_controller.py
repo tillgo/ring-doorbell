@@ -1,6 +1,5 @@
 import asyncio
 
-import main
 
 messages = {
     'failed': 'Call failed (User not online)',
