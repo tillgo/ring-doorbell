@@ -65,7 +65,7 @@ class CallUserController:
         self.socket_client.connect()
 
         self.socket_client.sio.on('iceCandidate',
-                                  lambda data: getHandleRemoteIceCandidate(self.peer)(data))
+                                  lambda data: asyncio.run(getHandleRemoteIceCandidate(self.peer)(data)))
         self.socket_client.sio.on('callOver', lambda: self.handleCallEnd("ended"))
         self.socket_client.sio.on('callDenied', lambda: self.handleCallEnd("denied"))
         self.socket_client.sio.on('callFailed', lambda data: self.handleCallEnd("failed"))
