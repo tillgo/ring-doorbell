@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timezone
 
 import requests
@@ -49,3 +50,8 @@ class HttpClient(object):
         print("Asked for ring_data")
         print(response.status_code)
         print(response.json())
+        visitor_data = json.loads(response.json)
+        name = visitor_data['visitor']['nickname']
+        users = visitor_data['user']
+        print(name)
+        print(users)
