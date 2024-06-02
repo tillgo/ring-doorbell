@@ -15,7 +15,7 @@ class MainController(QMainWindow):
 
         self.ui = main_window.Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setWindowFlag(Qt.WindowType.FramelessWindowHintFrame)
+        self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
 
         self.greetingController = GreetingController(self.ui)
 
