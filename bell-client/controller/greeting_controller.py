@@ -31,14 +31,17 @@ class GreetingController:
         # Select the item
         self.ui.userList.selectionModel().select(0, QItemSelectionModel.SelectionFlag.SelectCurrent)
         # Set the current index (moves the cursor to this item)
-        self.ui.userList.setCurrentIndex(0)
+        model_index = self.ui.model.index(0, 0)
+        self.ui.userList.setCurrentIndex(model_index)
         self.selectedCameraUserId = self.visitorData.possibleUsers[0].id
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.greeting_page)
 
     def on_selection_changed(self, selected, deselected):
         # Get the selected indexes
         index = self.ui.userList.selectionModel().selectedIndex()
-        self.selectedCameraUserId = self.visitorData.possibleUsers[0].id
+        # Get the model index for the item
+        model_index = self.ui.model.index(index, 0)
+        self.selectedCameraUserId = self.visitorData.possibleUsers[model_index].id
 
     def handle_call_user(self):
         #UserId of user Siggi for testing (password TestTest) (productive)
