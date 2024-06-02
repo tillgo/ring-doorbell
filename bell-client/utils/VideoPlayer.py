@@ -38,3 +38,4 @@ class VideoStreamDisplay:
             pixmap = QPixmap.fromImage(qimage)
             self.label.setPixmap(pixmap)
             self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.label.showFullScreen()
