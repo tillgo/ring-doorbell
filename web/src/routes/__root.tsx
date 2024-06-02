@@ -1,6 +1,6 @@
 import { createRootRoute, Outlet, useMatchRoute, useNavigate } from '@tanstack/react-router'
 import { AppBar, Routes } from '@/base/components/AppBar.tsx'
-import { CallControllerDrawer } from '@/app/general/components/CallControllerDrawer.tsx'
+import { VideoCallPage } from '@/base/components/VideoCallPage.tsx'
 import useAuth from '@/common/hooks/useAuth.ts'
 import { useEffect } from 'react'
 import { LayoutDashboard, Shield, Settings } from 'lucide-react'
@@ -58,7 +58,7 @@ function Main() {
 
             {isAuthenticated && userId && (
                 <>
-                    <CallControllerDrawer userId={userId} />
+                    <VideoCallPage userId={userId} />
                     <AppBar routes={routes} />
                     <ReceiveCallDialog />
                 </>

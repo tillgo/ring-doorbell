@@ -1,6 +1,4 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useAppDispatch } from '@/base/appContext.tsx'
-import { Button } from '@/lib/components/ui/button.tsx'
 import { DeviceStatus } from '@/common/components/DeviceStatus.tsx'
 import { useFetchDashboardDataQuery } from '@/base/api/hooks/useFetchDashboardDataQuery.ts'
 import { Loader2 } from 'lucide-react'
@@ -20,17 +18,9 @@ export const Route = createFileRoute('/')({
 function Index() {
     const { data: dashboardData, isLoading } = useFetchDashboardDataQuery()
 
-    const dispatch = useAppDispatch()
-
-    const onOpenDrawer = () => {
-        dispatch({ type: 'updateCallControllerOpen', payload: true })
-    }
-
     return (
         <div className="flex flex-col gap-6">
             <h1 className="text-3xl font-semibold">Dashboard</h1>
-
-            <Button onClick={onOpenDrawer}>Open Drawer</Button>
 
             {isLoading && (
                 <div className={'flex w-full justify-center'}>
