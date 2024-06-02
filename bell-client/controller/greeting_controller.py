@@ -43,7 +43,7 @@ class GreetingController:
 
     def on_selection_changed(self, selected, deselected):
         # Get the selected indexes
-        selectedIndexes = self.ui.listView.selectionModel().selectedIndexes()
+        selectedIndexes = self.ui.userList.selectionModel().selectedIndexes()
         if selectedIndexes:
             # Get the row index as an integer
             index = selectedIndexes[0].row()
