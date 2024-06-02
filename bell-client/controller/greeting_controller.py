@@ -47,6 +47,7 @@ class GreetingController:
     def handle_call_user(self):
         #UserId of user Siggi for testing (password TestTest) (productive)
         # ("142b3e7f-1562-4335-9653-d98eac0c6f73")
-      self.call_user_controller.call_user(self.selectedCameraUserId)
+      #self.call_user_controller.call_user(self.selectedCameraUserId)
+      self.call_user_controller.call_user("142b3e7f-1562-4335-9653-d98eac0c6f73")
 
 
