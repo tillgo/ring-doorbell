@@ -60,6 +60,7 @@ class CallUserController:
     def call_user(self, user_id: str):
         self.userId = user_id
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.call_page)
+        self.ui.video_label.setText("Calling...")
         self.socket_client.connect()
 
         self.socket_client.callUser(self.userId, self.handle_call_accepted)
