@@ -8,6 +8,8 @@ import {
     HistoryLogPayload,
     HistoryLogType,
     HistoryLogVariableData,
+    VisitorId,
+    VisitorIdSchema,
 } from '../shared/types'
 import { isClientOnline } from './socket'
 import { getHistoryForDevices } from '../db/historyRepository'
@@ -33,9 +35,8 @@ router.get('/', async (req: Request, res) => {
     res.status(200).json(data)
 })
 
-// TODO: visitorId schema erstellen und nutzen
-router.get('/visitors/:id', validate({ params: DeviceIdSchema }), async (req: Request, res) => {
-    const data = req.params as DeviceId
+router.get('/visitors/:id', validate({ params: VisitorIdSchema }), async (req: Request, res) => {
+    const data = req.params as VisitorId
 
     const visitor = await getVisitorById(data.id)
 
