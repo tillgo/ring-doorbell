@@ -29,7 +29,7 @@ class GreetingController:
         self.ui.userList.setModel(self.ui.model)
         self.ui.userList.setFocusPolicy(Qt.FocusPolicy.StrongFocus)  # or ClickFocus
         self.ui.userList.setSelectionMode(QListView.SelectionMode.SingleSelection)
-        self.ui.userList.selectionModel().currentChanged.connect(self.on_current_changed)
+        self.ui.userList.selectionModel().selectionChanged.connect(self.on_current_changed)
 
         for user in self.visitorData.possibleUsers:
             self.ui.model.appendRow(QStandardItem(user.username))
