@@ -13,13 +13,14 @@ class MainController(QMainWindow):
         super().__init__()
 
         self.ui = main_window.Ui_MainWindow()
-        self.ui.setupUi(self)
-        self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
         self.greetingController = None
-        self.show()
         self.start_app()
 
     def start_app(self):
+        self.ui.setupUi(self)
+        self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
+        self.show()
+
         self.greetingController = GreetingController(self.ui, self)
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.ring_page)
         # start waiting for nfc id in new thread
