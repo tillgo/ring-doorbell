@@ -18,20 +18,22 @@ export const HouseholdMemberItem = (props: Props) => {
     }
 
     return (
-        <div className="flex items-center gap-4 rounded-md border px-3 py-2">
+        <div className="flex flex-wrap items-center gap-4 rounded-md border px-3 py-2">
             <User2 />
-            <div className="flex flex-1 gap-1">
+            <div className="flex flex-wrap gap-1">
                 <p className="font-semibold">
                     {props.member.userNickname ?? props.member.user.username}
                 </p>
                 <p>(Username: {props.member.user.username})</p>
             </div>
 
-            <DeleteDialog
-                onDelete={handleDelete}
-                type={'household member'}
-                name={props.member.userNickname ?? props.member.user.username}
-            />
+            <div className={'ml-auto'}>
+                <DeleteDialog
+                    onDelete={handleDelete}
+                    type={'household member'}
+                    name={props.member.userNickname ?? props.member.user.username}
+                />
+            </div>
         </div>
     )
 }

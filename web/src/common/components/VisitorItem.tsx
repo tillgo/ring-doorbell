@@ -31,18 +31,18 @@ export const VisitorItem = (props: Props) => {
     }
 
     return (
-        <div className="flex items-center gap-4 rounded-md border px-3 py-2">
+        <div className="flex flex-wrap items-center gap-4 rounded-md border px-3 py-2">
             <User2 />
-            <div className="flex flex-1 gap-1">
+            <div className="flex flex-wrap gap-1">
                 <p className="font-semibold">{props.visitor.nickname ?? 'Unknown Visitor'}</p>
-                {!props.visitor.nickname && (
+                {props.visitor.nickname && (
                     <p>(first visited {dateToXMagnitudeAgo(props.visitor.createdAt)})</p>
                 )}
 
                 {props.visitor.isWhitelisted && <BadgeCheck className={'text-success'} />}
             </div>
 
-            <div className={'flex gap-2'}>
+            <div className={'ml-auto flex gap-2'}>
                 <EditVisitorDialog
                     onEdit={handleEdit}
                     defaultValues={{
