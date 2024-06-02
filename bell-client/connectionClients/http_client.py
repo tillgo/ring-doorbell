@@ -47,4 +47,5 @@ class HttpClient(object):
     def get_visitor(self, nfcCardId):
         ring_data = {'nfcCardId': nfcCardId}
         response = self.session.post(self.url + "/auth/bell/ring", json=ring_data)
-        print(response)
+        print(response.status_code)
+        print(response.json)
