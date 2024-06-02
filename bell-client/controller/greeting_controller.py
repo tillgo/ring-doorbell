@@ -43,15 +43,16 @@ class GreetingController:
 
     def on_selection_changed(self, selected, deselected):
         # Get the selected indexes
-        selectedIndexes = self.ui.userList.selectionModel().selectedIndexes()
-        # Get the model index for the item
-        index = selectedIndexes[0].row()
-        print(index)
-        self.selectedCameraUserId = self.visitorData.possibleUsers[index].id
-        print("Selected user")
-        print(self.visitorData.possibleUsers[index].username)
-        print("CameraUserID")
-        print(self.selectedCameraUserId)
+        selectedIndexes = self.ui.listView.selectionModel().selectedIndexes()
+        if selectedIndexes:
+            # Get the row index as an integer
+            index = selectedIndexes[0].row()
+            print(index)
+            self.selectedCameraUserId = self.visitorData.possibleUsers[index].id
+            print("Selected user")
+            print(self.visitorData.possibleUsers[index].username)
+            print("CameraUserID")
+            print(self.selectedCameraUserId)
 
     def handle_call_user(self):
         #UserId of user Siggi for testing (password TestTest) (productive)
