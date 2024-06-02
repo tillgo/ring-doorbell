@@ -1,5 +1,7 @@
 import asyncio
 
+from PyQt6.QtGui import QStandardItemModel, QStandardItem
+
 from connectionClients.http_client import HttpClient
 from controller.call_user_controller import CallUserController
 from PyQt6.QtCore import QEventLoop
@@ -18,6 +20,12 @@ class GreetingController:
         httpClient.connect()
         visitorData = httpClient.get_visitor(nfcCardID)
         self.ui.uid_label.setText(visitorData.visitor.nickname)
+        # Create the model and set it to the QListView
+        self.ui.model = QStandardItemModel()
+        self.ui.userList.setModel(self.ui.model)
+        for user in visitorData.possibleUsers:
+            self.ui.model.appendRow(QStandardItem(user.username))
+
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.greeting_page)
 
     def handle_call_user(self):
