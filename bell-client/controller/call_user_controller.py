@@ -34,8 +34,9 @@ def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
 
 class CallUserController:
 
-    def __init__(self, ui):
+    def __init__(self, ui, main_controller):
         self.ui = ui
+        self.main_controller = main_controller
         self.socket_client = SocketClient()
         self.userId = ''
         self.peer = None
@@ -68,7 +69,7 @@ class CallUserController:
     def handleCallEnd(self, end_type: str):
         self.peer = None
         # Open After Call Page
-        AfterCallController(end_type, self.ui)
+        AfterCallController(end_type, self.ui, self.main_controller)
 
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")

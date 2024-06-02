@@ -10,9 +10,10 @@ from PyQt6.QtCore import QEventLoop, QItemSelectionModel
 
 class GreetingController:
 
-    def __init__(self, ui):
+    def __init__(self, ui, main_controller):
         self.ui = ui
-        self.call_user_controller = CallUserController(ui)
+        self.main_controller = main_controller
+        self.call_user_controller = CallUserController(ui, self.main_controller)
         self.selectedCameraUserId = ""
 
         self.ui.call_user_btn.clicked.connect(self.handle_call_user)
