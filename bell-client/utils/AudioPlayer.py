@@ -30,11 +30,16 @@ class AudioPlayer:
         if track.kind != 'audio':
             raise ValueError("Track must be an audio track")
         self.track = track
+        self.track.on("ended", self.stop)
+        self.recorder: MediaRecorder | None = None
 
     async def play(self):
-        recorder = MediaRecorder("hw:3,0", format="alsa")
-        recorder.addTrack(self.track)
-        await recorder.start()
-        while self.track.readyState != 'ended':
-            await asyncio.sleep(1)
-        await recorder.stop()
+        self.recorder = MediaRecorder("hw:3,0", format="alsa")
+        self.recorder.addTrack(self.track)
+        await self.recorder.start()
+
+    def stop(self):
+        if self.recorder is None:
+            raise ValueError("Recorder not started")
+        asyncio.get_running_loop().create_task(self.recorder.stop())
+
