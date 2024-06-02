@@ -60,6 +60,7 @@ class CallUserController:
         self.socket_client.connect()
 
         self.socket_client.callUser(self.userId, "", self.handle_call_accepted)
+        self.socket_client.sio.on('')
 
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
