@@ -48,4 +48,4 @@ class HttpClient(object):
         response = self.session.post(self.url + "/bell/ring", json=ring_data)
         print("Asked for ring_data")
         print(response.status_code)
-        print(response.json)
+        print(response.json())
