@@ -77,7 +77,12 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
     }
 
     const enableVideo = () => {
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(async (stream) => {
+            const videoSettings = stream.getVideoTracks()[0].getSettings()
+            await stream.getVideoTracks()[0].applyConstraints({
+                width: { ideal: videoSettings.width! / 2 },
+                height: { ideal: videoSettings.height! / 2 },
+            })
             dispatch({ type: 'updateMyStreamRTCConn', payload: stream })
         })
     }
@@ -90,7 +95,7 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
     return (
         <div
             className={cn('fixed left-0 top-0 z-20 h-dvh w-dvw bg-background', {
-                hidden: !callControllerState.open,
+                hidden: false, //!callControllerState.open,
             })}
         >
             <VideoComponent
