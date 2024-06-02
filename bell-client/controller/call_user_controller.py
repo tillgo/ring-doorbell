@@ -91,7 +91,7 @@ class CallUserController:
                                                                    RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
         self.socket_client.sio.on('iceCandidate',
-                                  lambda data: asyncio.run(getHandleRemoteIceCandidate(self.peer)(data)))
+                                  lambda data: print("received candidate " + data))
         self.peer.on('track', lambda event: self.handleTrack(event))
 
         # add video
