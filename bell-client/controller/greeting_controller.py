@@ -45,7 +45,7 @@ class GreetingController:
         # Get the selected indexes
         model_index = self.ui.userList.selectionModel().selectedIndexes()
         # Get the model index for the item
-        index = self.ui.model.index(model_index[0].row())
+        index = self.ui.model.index(model_index[0].row(), 0)
         self.selectedCameraUserId = self.visitorData.possibleUsers[index].id
         print("Selected user")
         print(self.visitorData.possibleUsers[index].username)
