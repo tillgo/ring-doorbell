@@ -24,7 +24,6 @@ class VideoStreamDisplay:
             await self.update_frame()
 
     async def update_frame(self):
-        print("Updating frame")
         frame = await self.video_track.recv()
         if frame is not None:
             img = frame.to_ndarray(format="rgb24")
