@@ -68,10 +68,13 @@ class CallUserController:
         self.socket_client.sio.on('callFailed', lambda data: self.handleCallEnd("failed"))
 
     def handleCallEnd(self, end_type: str):
-        self.peer.close()
-        self.peer = None
-        self.video_track.stop_cam()
-        self.video_track = 0
+        if self.peer:
+            self.peer.close()
+            self.peer = None
+
+        if self.video_track:
+            self.video_track.stop_cam()
+            self.video_track = 0
         # Open After Call Page
         AfterCallController(end_type, self.ui, self.main_controller)
 
