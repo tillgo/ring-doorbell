@@ -19,6 +19,7 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout(self.central_widget)
 
         self.video_label = QLabel(self)
+        self.video_label.setWindowFlag(Qt.WindowType.FramelessWindowHint)
         layout.addWidget(self.video_label)
 
     def update_frame(self, pixmap):
