@@ -62,8 +62,8 @@ class CallUserController:
         self.socket_client.connect()
 
         self.socket_client.callUser(self.userId, self.handle_call_accepted)
-        self.socket_client.sio.on('callOver', lambda data: self.handleCallEnd("ended"))
-        self.socket_client.sio.on('callDenied', lambda data: self.handleCallEnd("denied"))
+        self.socket_client.sio.on('callOver', lambda: self.handleCallEnd("ended"))
+        self.socket_client.sio.on('callDenied', lambda: self.handleCallEnd("denied"))
         self.socket_client.sio.on('callFailed', lambda data: self.handleCallEnd("failed"))
 
     def handleCallEnd(self, end_type: str):

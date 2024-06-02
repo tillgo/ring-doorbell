@@ -24,7 +24,6 @@ class GreetingController:
         httpClient.connect()
         self.visitorData = httpClient.get_visitor(nfcCardID)
         self.ui.uid_label.setText(self.visitorData.visitor.nickname)
-
         self.ui.userList.clear()
         for user in self.visitorData.possibleUsers:
             self.ui.userList.addItem(user.username)
