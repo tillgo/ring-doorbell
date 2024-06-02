@@ -103,6 +103,7 @@ class CallUserController:
         self.peer.addTrack(audioTrack.audio)
 
         self.peer.on('connectionstatechange', lambda: print("State: " + self.peer.connectionState))
+        self.peer.on('iceconnectionstatechange', lambda : print("ICE State: " + self.peer.iceConnectionState))
 
         remote_offer = json.loads(data_offer)
         await self.peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
