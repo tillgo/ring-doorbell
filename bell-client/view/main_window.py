@@ -46,10 +46,10 @@ class Ui_MainWindow(object):
         self.page_stacked_widget.addWidget(self.greeting_page)
         self.call_page = QtWidgets.QWidget()
         self.call_page.setObjectName("call_page")
-        self.label = QtWidgets.QLabel(parent=self.call_page)
-        self.label.setGeometry(QtCore.QRect(0, 0, 480, 250))
-        self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.label.setObjectName("label")
+        self.video_label = QtWidgets.QLabel(parent=self.call_page)
+        self.video_label.setGeometry(QtCore.QRect(0, 0, 480, 250))
+        self.video_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.video_label.setObjectName("video_label")
         self.page_stacked_widget.addWidget(self.call_page)
         self.ring_page = QtWidgets.QWidget()
         self.ring_page.setObjectName("ring_page")
@@ -70,7 +70,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.page_stacked_widget.setCurrentIndex(0)
+        self.page_stacked_widget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -80,7 +80,7 @@ class Ui_MainWindow(object):
         self.greeting_label.setText(_translate("MainWindow", "Welcome User:"))
         self.call_user_btn.setText(_translate("MainWindow", "Call User"))
         self.label_2.setText(_translate("MainWindow", "Select User to Call"))
-        self.label.setText(_translate("MainWindow", "Calling User"))
+        self.video_label.setText(_translate("MainWindow", "Calling User"))
         self.nfc_scan_label.setText(_translate("MainWindow", "Scan your card"))
         self.pushButton.setText(_translate("MainWindow", "I have no card"))
 
