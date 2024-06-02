@@ -13,6 +13,7 @@ class GreetingController:
     def __init__(self, ui):
         self.ui = ui
         self.call_user_controller = CallUserController(ui)
+        self.selectedCameraUserId = ""
 
         self.ui.call_user_btn.clicked.connect(self.handle_call_user)
 
@@ -26,6 +27,9 @@ class GreetingController:
         self.ui.model = QStandardItemModel()
         self.ui.userList.setModel(self.ui.model)
         self.ui.userList.setSelectionMode(QListView.SelectionMode.SingleSelection)
+        # Connect the selection change signal to the slot
+        self.ui.userList.selectionModel().selectionChanged.connect(self.on_selection_changed)
+
         for user in self.visitorData.possibleUsers:
             self.ui.model.appendRow(QStandardItem(user.username))
         # Get the modelindex of the first item
@@ -39,10 +43,14 @@ class GreetingController:
 
     def on_selection_changed(self, selected, deselected):
         # Get the selected indexes
-        index = self.ui.userList.selectionModel().selectedIndex()
+        model_index = self.ui.userList.selectionModel().selectedIndexes()
         # Get the model index for the item
-        model_index = self.ui.model.index(index, 0)
-        self.selectedCameraUserId = self.visitorData.possibleUsers[model_index].id
+        index = self.ui.model.index(model_index[0].row())
+        self.selectedCameraUserId = self.visitorData.possibleUsers[index].id
+        print("Selected user")
+        print(self.visitorData.possibleUsers[index].username)
+        print("CameraUserID")
+        print(self.selectedCameraUserId)
 
     def handle_call_user(self):
         #UserId of user Siggi for testing (password TestTest) (productive)

@@ -35,7 +35,7 @@ export const VisitorItem = (props: Props) => {
             <User2 />
             <div className="flex flex-wrap gap-1">
                 <p className="font-semibold">{props.visitor.nickname ?? 'Unknown Visitor'}</p>
-                {props.visitor.nickname && (
+                {!props.visitor.nickname && (
                     <p>(first visited {dateToXMagnitudeAgo(props.visitor.createdAt)})</p>
                 )}
 
