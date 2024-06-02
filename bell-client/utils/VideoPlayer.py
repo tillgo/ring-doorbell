@@ -16,7 +16,7 @@ from PyQt6.QtGui import QPixmap, QImage
 
 class VideoStreamDisplay:
     def __init__(self, label: QLabel, video_track: RemoteStreamTrack, update_interval=30):
-        self.label = label
+        self.videoLabel = label
         self.video_track = video_track
 
     async def show_video(self):
@@ -36,6 +36,6 @@ class VideoStreamDisplay:
 
             # Convert QImage to QPixmap and display it
             pixmap = QPixmap.fromImage(qimage)
-            self.label.setPixmap(pixmap)
-            self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.label.showFullScreen()
+            self.videoLabel.setPixmap(pixmap)
+            self.videoLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.videoLabel.showFullScreen()

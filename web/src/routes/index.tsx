@@ -22,6 +22,10 @@ function Index() {
         <div className="flex flex-col gap-6">
             <h1 className="text-3xl font-semibold">Dashboard</h1>
 
+            <p className={'text-destructive'}>
+                THIS IS A BIG ALERT TO SEE IF THE SW CLEARED THE CACHE ON NEW UPDATE
+            </p>
+
             {isLoading && (
                 <div className={'flex w-full justify-center'}>
                     <Loader2 className={'animate-spin'} />
