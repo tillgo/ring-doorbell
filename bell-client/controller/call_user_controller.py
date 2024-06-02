@@ -62,9 +62,9 @@ class CallUserController:
         self.socket_client.connect()
 
         self.socket_client.callUser(self.userId, self.handle_call_accepted)
-        #self.socket_client.sio.on('callOver', lambda event: self.handleCallEnd("ended"))
-        #self.socket_client.sio.on('callDenied', lambda event: self.handleCallEnd("denied"))
-        #self.socket_client.sio.on('callFailed', lambda event: self.handleCallEnd("failed"))
+        self.socket_client.sio.on('callOver', lambda data: self.handleCallEnd("ended"))
+        self.socket_client.sio.on('callDenied', lambda data: self.handleCallEnd("denied"))
+        self.socket_client.sio.on('callFailed', lambda data: self.handleCallEnd("failed"))
 
     def handleCallEnd(self, end_type: str):
         self.peer = None
@@ -75,12 +75,12 @@ class CallUserController:
         print("Call was accepted yayyyyy")
         asyncio.run(self.create_WebRTC_Connection(data))
 
-    async def create_WebRTC_Connection(self, data):
+    async def create_WebRTC_Connection(self, data_offer):
         self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
                                                                    RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
         self.socket_client.sio.on('iceCandidate',
-                                  lambda event: asyncio.run(getHandleRemoteIceCandidate(self.peer)(event)))
+                                  lambda data: asyncio.run(getHandleRemoteIceCandidate(self.peer)(data)))
         self.peer.on('track', lambda event: self.handleTrack(event))
 
         # add video
@@ -94,7 +94,7 @@ class CallUserController:
 
         self.peer.on('connectionstatechange', lambda: print("State: " + self.peer.connectionState))
 
-        remote_offer = json.loads(data)
+        remote_offer = json.loads(data_offer)
         await self.peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
                                                                                       type=remote_offer['type']))
 
