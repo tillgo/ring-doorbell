@@ -24,6 +24,7 @@ class PiCameraTrack(MediaStreamTrack):
         self.cam = Picamera2()
         configuration = self.cam.create_video_configuration({"size": (240, 160)}, lores={"size": (240, 160)},
                                                             controls={"FrameRate": 30.0}, buffer_count=2)
+        self.prev_frame = None
         self.cam.configure(configuration)
         self.cam.start()
 
@@ -35,7 +36,8 @@ class PiCameraTrack(MediaStreamTrack):
             new_frame = av.VideoFrame.from_ndarray(img, format='rgba')
             new_frame.pts = int(pts)
             new_frame.time_base = Fraction(1, 1000000)
+            self.prev_frame = new_frame
             return new_frame
         except Exception as e:
             print(e)
-            return None
+            return self.prev_frame
