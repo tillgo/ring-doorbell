@@ -17,3 +17,5 @@ class TokenAdapter(HTTPAdapter):
             token = self.client.get_token()
             print(token)
             request.headers['authorization'] = f"Bearer {token}"
+
+        return super().send(request, stream, timeout, verify, cert, proxies)
