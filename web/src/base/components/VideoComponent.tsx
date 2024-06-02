@@ -30,11 +30,11 @@ export const VideoComponent = (props: VideoComponentProps & CallControllerContro
             <div className="h-full w-full">
                 <video
                     className={'h-full w-full rounded-xl object-contain'}
-                    ref={myVideo}
+                    ref={userVideo}
                     autoPlay
                 />
                 <div className={'absolute right-2 top-2 w-1/3 md:w-1/4'}>
-                    <video className={'rounded-xl'} muted ref={null} autoPlay />
+                    <video className={'rounded-xl'} muted ref={myVideo} autoPlay />
                 </div>
             </div>
 
