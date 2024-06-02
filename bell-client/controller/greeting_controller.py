@@ -30,15 +30,13 @@ class GreetingController:
         # Select the first possible user
         self.ui.userList.currentItemChanged.connect(self.on_current_changed)
         self.ui.userList.setCurrentRow(0)
-        self.selectedCameraUserId = self.visitorData.possibleUsers[self.ui.userList.currentRow()].id
-        print("Selected thing is: " + self.ui.userList.currentRow)
 
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.greeting_page)
 
     def on_current_changed(self, current, previous):
         print("current changed")
         # Get the row index as an integer
-        index = self.ui.userList.currentRow
+        index = self.ui.userList.currentRow()
         print("Current row index" + index)
         selected_item = self.ui.userList.currentItem()
         if selected_item is not None:
