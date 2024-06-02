@@ -6,6 +6,7 @@ from aiortc import RTCPeerConnection, RTCConfiguration, RTCIceServer, RTCSession
 from aiortc.contrib.media import MediaPlayer
 from aiortc.sdp import candidate_from_sdp
 
+from utils.AudioPlayer import AudioPlayer
 from utils.VideoPlayer import VideoStreamDisplay
 from connectionClients.socket_client import SocketClient
 from utils.picameratrack import PiCameraTrack
@@ -46,6 +47,10 @@ class CallUserController:
             print("Video track")
             self.videoDisplay = VideoStreamDisplay(self.ui.video_label, track)
             asyncio.get_running_loop().create_task(self.videoDisplay.show_video())
+        elif track.kind == 'audio':
+            print("Audio track")
+            audioPlayer = AudioPlayer(track)
+            asyncio.get_running_loop().create_task(audioPlayer.play())
 
     def call_user(self, user_id: str):
         self.userId = user_id
