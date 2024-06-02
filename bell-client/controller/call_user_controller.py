@@ -7,6 +7,7 @@ from aiortc import RTCPeerConnection, RTCConfiguration, RTCIceServer, RTCSession
 from aiortc.contrib.media import MediaPlayer
 from aiortc.sdp import candidate_from_sdp
 
+from controller.after_call_controller import AfterCallController
 from utils.AudioPlayer import AudioPlayer
 from utils.VideoPlayer import VideoStreamDisplay
 from connectionClients.socket_client import SocketClient
@@ -60,7 +61,14 @@ class CallUserController:
         self.socket_client.connect()
 
         self.socket_client.callUser(self.userId, "", self.handle_call_accepted)
-        self.socket_client.sio.on('')
+        self.socket_client.sio.on('callOver', lambda: self.handleCallEnd("ended"))
+        self.socket_client.sio.on('callDenied', lambda: self.handleCallEnd("denied"))
+        self.socket_client.sio.on('callFailed', lambda: self.handleCallEnd("failed"))
+
+    def handleCallEnd(self, end_type: str):
+        self.peer = None
+        # Open After Call Page
+        AfterCallController(end_type, self.ui)
 
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
