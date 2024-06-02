@@ -8,18 +8,26 @@ from controller.ring_controller import wait_for_nfc_id
 from view import main_window
 
 
+class MainPage(QMainWindow):
+
+    def __init__(self, ui):
+        super().__init__()
+        self.ui = ui
+        self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
+        self.ui.setupUi(self)
+
+
 class MainController(QMainWindow):
     def __init__(self):
         super().__init__()
-
         self.ui = main_window.Ui_MainWindow()
+        self.main_page = None
         self.greetingController = None
         self.start_app()
 
     def start_app(self):
-        self.ui.setupUi(self)
-        self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
-        self.show()
+        self.main_page = MainPage(self.ui)
+        self.main_page.show()
 
         self.greetingController = GreetingController(self.ui, self)
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.ring_page)

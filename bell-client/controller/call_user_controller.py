@@ -105,7 +105,6 @@ class CallUserController:
 
         while True:
             await asyncio.sleep(3)
-            print("State: " + self.peer.connectionState)
             print("CPU %" + str(psutil.cpu_percent()))
             print("MEMORY" + str(psutil.virtual_memory().percent) + "%")
             if (self.peer is None or self.peer.connectionState == "failed" or self.peer.connectionState == "disconnected"
