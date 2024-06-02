@@ -28,10 +28,11 @@ class GreetingController:
         self.ui.userList.setSelectionMode(QListView.SelectionMode.SingleSelection)
         for user in self.visitorData.possibleUsers:
             self.ui.model.appendRow(QStandardItem(user.username))
-        # Select the item
-        self.ui.userList.selectionModel().select(0, QItemSelectionModel.SelectionFlag.SelectCurrent)
-        # Set the current index (moves the cursor to this item)
+        # Get the modelindex of the first item
         model_index = self.ui.model.index(0, 0)
+        # Select the item
+        self.ui.userList.selectionModel().select(model_index, QItemSelectionModel.SelectionFlag.SelectCurrent)
+        # Set the current index (moves the cursor to this item)
         self.ui.userList.setCurrentIndex(model_index)
         self.selectedCameraUserId = self.visitorData.possibleUsers[0].id
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.greeting_page)
