@@ -1,3 +1,4 @@
+import av
 import pyaudio
 from aiortc.rtcrtpreceiver import RemoteStreamTrack
 
@@ -9,13 +10,15 @@ class AudioPlayer:
             raise ValueError("Track must be an audio track")
         self.track = track
 
-        #ToDo handle Stop
-        self.track.on('ended', self.stop)
-
-    def play(self):
+    async def play(self):
         audio = pyaudio.PyAudio()
-        audio.open(output=True, channels=1, )
-
-
+        stream = audio.open(format=pyaudio.paInt16,
+                                            channels=2,
+                                            rate=44100,
+                                            output=True)
+        while self.track.readyState != 'ended':
+            next_frame = await self.track.recv()
+            audio_data = av.AudioFrame.to_ndarray(next_frame).tobytes()
+            stream.write(audio_data)
 
 
