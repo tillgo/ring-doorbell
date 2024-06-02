@@ -19,9 +19,6 @@ class MainController:
         self.start_app()
 
     def start_app(self):
-        layout = self.main_window.layout()
-        for i in reversed(range(layout.count())):
-            layout.itemAt(i).widget().setParent(None)
         self.ui.setupUi(self.main_window)
         self.main_window.setWindowFlag(Qt.WindowType.FramelessWindowHint)
         self.greetingController = GreetingController(self.ui, self)
