@@ -50,7 +50,8 @@ class HttpClient(object):
         print("Asked for ring_data")
         print(response.status_code)
         print(response.json())
-        name = response.json['visitor']
-        users = response.json['users']
+        visitor_data = response.json()
+        name = visitor_data['visitor']
+        users = visitor_data['users']
         print(name)
         print(users)
