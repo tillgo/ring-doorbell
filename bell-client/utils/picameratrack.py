@@ -28,10 +28,14 @@ class PiCameraTrack(MediaStreamTrack):
         self.cam.start()
 
     async def recv(self):
-        img = self.cam.capture_array()
-        self.cam.drop_frames_()
-        pts = time.time() * 1000000
-        new_frame = av.VideoFrame.from_ndarray(img, format='rgba')
-        new_frame.pts = int(pts)
-        new_frame.time_base = Fraction(1, 1000000)
-        return new_frame
+        try:
+            img = self.cam.capture_array()
+            self.cam.drop_frames_()
+            pts = time.time() * 1000000
+            new_frame = av.VideoFrame.from_ndarray(img, format='rgba')
+            new_frame.pts = int(pts)
+            new_frame.time_base = Fraction(1, 1000000)
+            return new_frame
+        except Exception as e:
+            print(e)
+            return None
