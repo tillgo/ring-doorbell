@@ -51,7 +51,7 @@ class HttpClient(object):
         print(response.status_code)
         print(response.json())
         visitor_data = json.loads(response.json())
-        name = visitor_data['visitor']['nickname']
-        users = visitor_data['user']
+        name = response.json['visitor']['nickname']
+        users = response.json['users']
         print(name)
         print(users)
