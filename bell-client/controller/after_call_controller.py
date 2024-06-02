@@ -1,6 +1,5 @@
 import asyncio
 
-from controller.main_controller import MainController
 import main
 
 messages = {
@@ -32,4 +31,4 @@ class AfterCallController:
             self.ui.countdown.setText(str(self.countdown))
 
         await asyncio.sleep(0.5)
-        main.main_window = MainController()
+        #main.main_window = MainController()
