@@ -16,4 +16,5 @@ def send(self, request, stream=False, timeout=None, verify=True, cert=None, prox
     # If not auth route, append jwts
     if not ("/api/auth" in request.url):
         token = self.get_token()
-        request.headers['authorization'] = f"Bearer {client.get_token()}"
+        print(token)
+        request.headers['authorization'] = f"Bearer {token}"
