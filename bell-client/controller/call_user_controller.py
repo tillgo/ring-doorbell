@@ -39,7 +39,7 @@ class CallUserController:
         self.main_controller = main_controller
         self.socket_client = SocketClient()
         self.userId = ''
-        self.peer = None
+        self.peer: RTCPeerConnection | None = None
         self.videoDisplay = None
 
     def handleTrack(self, track):
@@ -67,6 +67,7 @@ class CallUserController:
         self.socket_client.sio.on('callFailed', lambda data: self.handleCallEnd("failed"))
 
     def handleCallEnd(self, end_type: str):
+        self.peer.close()
         self.peer = None
         # Open After Call Page
         AfterCallController(end_type, self.ui, self.main_controller)
