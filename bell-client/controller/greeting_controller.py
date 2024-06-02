@@ -24,39 +24,31 @@ class GreetingController:
         self.visitorData = httpClient.get_visitor(nfcCardID)
         self.ui.uid_label.setText(self.visitorData.visitor.nickname)
 
-        # Create the model and set it to the QListView
-        self.ui.model = QStandardItemModel()
-        self.ui.userList.setModel(self.ui.model)
-        self.ui.userList.setFocusPolicy(Qt.FocusPolicy.StrongFocus)  # or ClickFocus
-        self.ui.userList.setSelectionMode(QListView.SelectionMode.SingleSelection)
-        self.ui.userList.selectionModel().selectionChanged.connect(self.on_current_changed)
-
         for user in self.visitorData.possibleUsers:
-            self.ui.model.appendRow(QStandardItem(user.username))
-        # Get the modelindex of the first item
-        model_index = self.ui.model.index(0, 0)
-        # Select the item
-        self.ui.userList.selectionModel().select(model_index, QItemSelectionModel.SelectionFlag.SelectCurrent)
-        # Set the current index (moves the cursor to this item)
-        self.ui.userList.setCurrentIndex(model_index)
-        self.selectedCameraUserId = self.visitorData.possibleUsers[0].id
+            self.ui.userList.addItem(QStandardItem(user.username))
+        # Select the first possible user
+        self.ui.userList.currentRow(0)
+        self.selectedCameraUserId = self.visitorData.possibleUsers[self.ui.userList.currentRow].id
+        self.ui.userList.currentItemChanged.connect(self.on_current_changed)
+
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.greeting_page)
 
     def on_current_changed(self, current, previous):
         print("current changed")
-        # Check if a valid current index is available
-        if current.isValid():
-            # Get the row index as an integer
-            index = current.row()
-            print(index)
-            # Access the corresponding item from your data model using the integer index
-            self.selectedCameraUserId = self.visitorData.possibleUsers[index].id
-            print("Selected user")
-            print(self.visitorData.possibleUsers[index].username)
-            print("CameraUserID")
-            print(self.selectedCameraUserId)
-        else:
-            print("current is not valid")
+        # Get the row index as an integer
+        index = self.ui.userList.currentRow
+        print("Current row index" + index)
+        selected_item = self.ui.userList.currentItem()
+        if selected_item is not None:
+            print("Selected item:", selected_item.text())
+
+        # Access the corresponding item from your data model using the integer index
+        self.selectedCameraUserId = self.visitorData.possibleUsers[index].id
+        print("Selected user")
+        print(self.visitorData.possibleUsers[index].username)
+        print("CameraUserID")
+        print(self.selectedCameraUserId)
+
 
     def handle_call_user(self):
         #UserId of user Siggi for testing (password TestTest) (productive)
