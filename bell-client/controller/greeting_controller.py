@@ -28,8 +28,7 @@ class GreetingController:
         self.ui.model = QStandardItemModel()
         self.ui.userList.setModel(self.ui.model)
         self.ui.userList.setSelectionMode(QListView.SelectionMode.SingleSelection)
-        # Connect the selection change signal to the slot
-        self.ui.userList.currentChanged.connect(self.on_current_changed)
+        self.ui.userList.selectionModel().currentChanged.connect(self.on_current_changed)
 
         for user in self.visitorData.possibleUsers:
             self.ui.model.appendRow(QStandardItem(user.username))
