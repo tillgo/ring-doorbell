@@ -51,7 +51,7 @@
      <item>
       <widget class="QStackedWidget" name="page_stacked_widget">
        <property name="currentIndex">
-        <number>3</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="greeting_page">
         <widget class="QLabel" name="uid_label">
@@ -93,16 +93,6 @@
           <string>Call User</string>
          </property>
         </widget>
-        <widget class="QListView" name="userList">
-         <property name="geometry">
-          <rect>
-           <x>275</x>
-           <y>41</y>
-           <width>171</width>
-           <height>171</height>
-          </rect>
-         </property>
-        </widget>
         <widget class="QLabel" name="label_2">
          <property name="geometry">
           <rect>
@@ -114,6 +104,16 @@
          </property>
          <property name="text">
           <string>Select User to Call</string>
+         </property>
+        </widget>
+        <widget class="QListWidget" name="listWidget">
+         <property name="geometry">
+          <rect>
+           <x>270</x>
+           <y>40</y>
+           <width>161</width>
+           <height>191</height>
+          </rect>
          </property>
         </widget>
        </widget>
