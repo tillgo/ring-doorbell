@@ -18,15 +18,16 @@ def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
     async def handleRemoteCandidate(data):
         candidateData = data['candidate']
         candidate = candidateData['candidate']
+        print("getting Ice candidate")
         # if empty candidate return
         if candidate == '':
+            print("empty candidate " + candidate)
             return
         sdpMLineIndex = candidateData['sdpMLineIndex']
         sdpMid = candidateData['sdpMid']
         ice_candidate = candidate_from_sdp(candidate)
         ice_candidate.sdpMLineIndex = sdpMLineIndex
         ice_candidate.sdpMid = sdpMid
-        print("adding peer")
         await peer.addIceCandidate(ice_candidate)
 
     return handleRemoteCandidate
