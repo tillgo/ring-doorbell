@@ -13,8 +13,8 @@ class AudioPlayer:
     async def play(self):
         audio = pyaudio.PyAudio()
         stream = audio.open(format=pyaudio.paInt16,
-                                            channels=1,
-                                            rate=22000,
+                                            channels=2,
+                                            rate=44100,
                                             output=True)
         while self.track.readyState != 'ended':
             next_frame = await self.track.recv()
