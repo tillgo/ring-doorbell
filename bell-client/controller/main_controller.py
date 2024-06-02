@@ -15,7 +15,7 @@ class MainController:
         self.main_window = None
         self.ui = None
         self.greetingController = None
-
+        self.t1 = None
         self.start_app()
 
     def start_app(self):
@@ -28,8 +28,7 @@ class MainController:
 
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.ring_page)
         # start waiting for nfc id in new thread
-        t1 = threading.Thread(target=wait_for_nfc_id, args=(self.handle_nfc_id_found,))
-        t1.start()
+        wait_for_nfc_id(self.handle_nfc_id_found)
 
     def handle_nfc_id_found(self, uid):
         self.greetingController.open_greeting_page("".join([hex(i) for i in uid]))
