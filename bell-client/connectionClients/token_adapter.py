@@ -16,4 +16,4 @@ class TokenAdapter(HTTPAdapter):
         if not ("/api/auth" in request.url):
             token = client.get_token()
             print(token)
-        request.headers['authorization'] = f"Bearer {token}"
+            request.headers['authorization'] = f"Bearer {token}"
