@@ -7,6 +7,7 @@ from aiortc import RTCPeerConnection, RTCConfiguration, RTCIceServer, RTCSession
 from aiortc.contrib.media import MediaPlayer, MediaRecorder
 from aiortc.sdp import candidate_from_sdp
 
+from VideoPlayer import VideoStreamDisplay
 from connectionClients.socket_client import SocketClient
 from utils.picameratrack import PiCameraTrack
 
@@ -29,13 +30,6 @@ def getHandleRemoteIceCandidate(peer: RTCPeerConnection):
     return handleRemoteCandidate
 
 
-def saveTrack(track):
-    print("received track")
-    print(track)
-    print(track.kind)
-
-
-
 class CallUserController:
 
     def __init__(self, ui):
@@ -43,6 +37,16 @@ class CallUserController:
         self.socket_client = SocketClient()
         self.userId = ''
         self.peer = None
+        self.videoDisplay = None
+
+    def handleTrack(self, track):
+        print("received track")
+        print(track)
+        print(track.kind)
+        if track.kind == 'video':
+            print("Video track")
+            self.videoDisplay = VideoStreamDisplay(self.ui.video_label, track)
+            asyncio.get_running_loop().create_task(self.videoDisplay.show_video())
 
     def call_user(self, user_id: str):
         self.userId = user_id
@@ -61,7 +65,7 @@ class CallUserController:
 
         self.socket_client.sio.on('iceCandidate',
                                   lambda event: asyncio.run(getHandleRemoteIceCandidate(self.peer)(event)))
-        self.peer.on('track', lambda event: saveTrack(event))
+        self.peer.on('track', lambda event: self.handleTrack(event))
 
         # add video
         camTrack = PiCameraTrack()
