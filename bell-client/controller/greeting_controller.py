@@ -11,6 +11,7 @@ from PyQt6.QtCore import QEventLoop, QItemSelectionModel, Qt
 class GreetingController:
 
     def __init__(self, ui, main_controller):
+        self.visitorData = None
         self.ui = ui
         self.main_controller = main_controller
         self.call_user_controller = CallUserController(ui, self.main_controller)
@@ -25,7 +26,7 @@ class GreetingController:
         self.ui.uid_label.setText(self.visitorData.visitor.nickname)
 
         for user in self.visitorData.possibleUsers:
-            self.ui.userList.addItem(QStandardItem(user.username))
+            self.ui.userList.addItem(user.username)
         # Select the first possible user
         self.selectedCameraUserId = self.visitorData.possibleUsers[self.ui.userList.currentRow].id
         self.ui.userList.currentItemChanged.connect(self.on_current_changed)
