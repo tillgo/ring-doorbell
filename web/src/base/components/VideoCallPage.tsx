@@ -95,7 +95,7 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
     return (
         <div
             className={cn('fixed left-0 top-0 z-20 h-dvh w-dvw bg-background', {
-                hidden: false, //!callControllerState.open,
+                hidden: !callControllerState.open,
             })}
         >
             <VideoComponent
