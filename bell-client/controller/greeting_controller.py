@@ -28,9 +28,10 @@ class GreetingController:
         for user in self.visitorData.possibleUsers:
             self.ui.userList.addItem(user.username)
         # Select the first possible user
-        self.selectedCameraUserId = self.visitorData.possibleUsers[self.ui.userList.currentRow()].id
         self.ui.userList.currentItemChanged.connect(self.on_current_changed)
         self.ui.userList.setCurrentRow(0)
+        self.selectedCameraUserId = self.visitorData.possibleUsers[self.ui.userList.currentRow()].id
+        print("Selected thing is: " + self.ui.userList.currentRow)
 
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.greeting_page)
 
@@ -55,8 +56,10 @@ class GreetingController:
         #UserId of user Siggi for testing (password TestTest) (productive)
         # ("142b3e7f-1562-4335-9653-d98eac0c6f73")
         #self.call_user_controller.call_user(self.selectedCameraUserId)
-        print("CameraUserID")
-        print(self.selectedCameraUserId)
+        index = self.ui.userList.currentRow()
+        user = self.visitorData.possibleUsers[index]
+        print("Username: " + user.username)
+        print("ID: " + user.id)
         self.call_user_controller.call_user("142b3e7f-1562-4335-9653-d98eac0c6f73")
 
 
