@@ -19,9 +19,6 @@ class AfterCallController:
     def __init__(self, end_type: str, ui, main_controller):
         self.message_type = end_type
         self.ui = ui
-        QtCore.QCoreApplication.quit()
-        status = QtCore.QProcess.startDetached(sys.executable, sys.argv)
-        print(status)
         self.main_controller = main_controller
         self.ui.call_end_message.setText(messages[end_type])
         self.countdown: int = 3
