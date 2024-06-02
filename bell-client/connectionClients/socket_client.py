@@ -20,15 +20,12 @@ class SocketClient(object):
 
     def connect(self):
         if not self.sio:
-            self.restart()
-
-    def restart(self):
-        self.sio = socketio.Client()
-        httpClient = HttpClient()
-        httpClient.connect()
-        self.sio.connect(self.url, auth={"jwt": httpClient.get_token()})
-        self.sio.on('connect', lambda: print("connected to server"))
-        self.sio.on('disconnect', lambda: self.onDisconnect)
+            self.sio = socketio.Client()
+            httpClient = HttpClient()
+            httpClient.connect()
+            self.sio.connect(self.url, auth={"jwt": httpClient.get_token()})
+            self.sio.on('connect', lambda: print("connected to server"))
+            self.sio.on('disconnect', lambda: self.onDisconnect)
 
     def onDisconnect(self):
         # ToDo überlegen, wie mit ungewollten Disconnect umgehen

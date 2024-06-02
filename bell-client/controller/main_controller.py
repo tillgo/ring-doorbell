@@ -21,7 +21,6 @@ class MainController(QMainWindow):
         self.start_app()
 
     def start_app(self):
-        SocketClient().restart()
         self.greetingController = GreetingController(self.ui, self)
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.ring_page)
         # start waiting for nfc id in new thread
