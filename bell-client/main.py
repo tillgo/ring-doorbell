@@ -33,7 +33,7 @@ main_window = None
 
 if __name__ == "__main__":
     app = QApplication([])
-    app.setStyleSheet('Windows')
+    app.setStyle('Fusion')
     event_loop = QEventLoop(app)
     asyncio.set_event_loop(event_loop)
 
