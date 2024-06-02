@@ -13,10 +13,10 @@ class AfterCallController:
     message_type: 'failed' | 'ended' | 'denied'
     """
 
-    def __init__(self, message_type: str, ui):
-        self.message_type = message_type
+    def __init__(self, end_type: str, ui):
+        self.message_type = end_type
         self.ui = ui
-        self.ui.call_end_message.setText(messages[message_type])
+        self.ui.call_end_message.setText(messages[end_type])
         self.countdown: int = 3
         self.ui.countdown.setText(str(self.countdown))
         asyncio.run(self.startCountdown())

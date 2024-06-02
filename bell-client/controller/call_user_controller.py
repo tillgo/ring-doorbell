@@ -61,18 +61,14 @@ class CallUserController:
         self.socket_client.connect()
 
         self.socket_client.callUser(self.userId, "", self.handle_call_accepted)
-        self.socket_client.sio.on('callOver', lambda: self.handleCallEnded())
-        self.socket_client.sio.on('callDenied', lambda: self.handleCallDenied())
+        self.socket_client.sio.on('callOver', lambda: self.handleCallEnd("ended"))
+        self.socket_client.sio.on('callDenied', lambda: self.handleCallEnd("denied"))
+        self.socket_client.sio.on('callFailed', lambda: self.handleCallEnd("failed"))
 
-    def handleCallEnded(self):
+    def handleCallEnd(self, end_type: str):
         self.peer = None
-        # Open After Call Page with call ended message
-        AfterCallController('ended', self.ui)
-
-    def handleCallDenied(self):
-        self.peer = None
-        # Open After Call Page with call denied message
-        AfterCallController('denied', self.ui)
+        # Open After Call Page
+        AfterCallController(end_type, self.ui)
 
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
