@@ -32,6 +32,7 @@ class MainWindow(QMainWindow):
 
 def mainTestPiCam():
     app = QApplication(sys.argv)
+    app.setStyleSheet('Fusion')
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
