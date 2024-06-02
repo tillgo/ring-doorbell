@@ -1,13 +1,12 @@
 import asyncio
 import json
-import uuid
 
 import psutil
 from aiortc import RTCPeerConnection, RTCConfiguration, RTCIceServer, RTCSessionDescription
-from aiortc.contrib.media import MediaPlayer, MediaRecorder
+from aiortc.contrib.media import MediaPlayer
 from aiortc.sdp import candidate_from_sdp
 
-from VideoPlayer import VideoStreamDisplay
+from utils.VideoPlayer import VideoStreamDisplay
 from connectionClients.socket_client import SocketClient
 from utils.picameratrack import PiCameraTrack
 

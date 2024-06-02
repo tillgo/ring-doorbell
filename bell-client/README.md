@@ -36,7 +36,8 @@ To fit the touch screen, max size has to be 480px x 250px
 ## Raspberry PI
 
 ### Startup GUI
-```sudo startx```
+```startx```   
+Important: no sudo, as that would open the gui as root user. In that case some things like bluetooth wont work correctly
 
 ### Start project
 !!!must be executed directly on the pi. Not possible over ssh!!!
