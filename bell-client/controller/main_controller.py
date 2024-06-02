@@ -12,7 +12,6 @@ class MainController(QMainWindow):
     def __init__(self):
         super().__init__()
 
-
         self.ui = main_window.Ui_MainWindow()
         self.ui.setupUi(self)
         self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
