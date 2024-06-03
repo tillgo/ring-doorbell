@@ -44,7 +44,7 @@ class CallUserController:
         self.video_track: PiCameraTrack | None = None
         self.audio_track: MediaPlayer | None = None
         self.videoDisplay = None
-        self.audioPlayer: MediaRecorder | None = None
+        self.audioPlayer: AudioPlayer | None = None
 
     def handleTrack(self, track):
         print("received track")
