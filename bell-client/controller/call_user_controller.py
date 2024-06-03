@@ -126,7 +126,7 @@ class CallUserController:
         self.socket_client.sendRTCAnswer(self.userId, self.peer.localDescription)
 
         while True:
-            await asyncio.sleep(3)
+            await asyncio.sleep(1)
             print("CPU %" + str(psutil.cpu_percent()))
             print("MEMORY" + str(psutil.virtual_memory().percent) + "%")
             if (
