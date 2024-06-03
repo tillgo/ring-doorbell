@@ -21,6 +21,7 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
     })
 
     const handleConnectionClosedOrFailed = useCallback(() => {
+        console.log('Handle connection failed')
         dispatch({ type: 'updateCallEndedRTCConn:', payload: true })
         dispatch({ type: 'updateCallAcceptedRTCConn', payload: false })
         dispatch({ type: 'updateCallControllerOpen', payload: false })

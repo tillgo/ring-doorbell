@@ -47,13 +47,15 @@ export function useCallClient() {
 
     const answerCall = (clientId: string, onCallEndedOrFailed: () => void) => {
         const peer = new RTCPeerConnection(servers)
-
+        console.log('connection state change')
+        console.log(peer.connectionState)
         peer.onconnectionstatechange = () => {
             if (
                 peer.connectionState === 'disconnected' ||
                 peer.connectionState === 'failed' ||
                 peer.connectionState === 'closed'
             ) {
+                console.log('closing connection')
                 peer.close()
                 onCallEndedOrFailed()
             }
