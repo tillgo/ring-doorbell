@@ -4,7 +4,7 @@ from threading import Thread
 
 import psutil
 from aiortc import RTCPeerConnection, RTCConfiguration, RTCIceServer, RTCSessionDescription
-from aiortc.contrib.media import MediaPlayer
+from aiortc.contrib.media import MediaPlayer, MediaRecorder
 from aiortc.sdp import candidate_from_sdp
 
 from controller.after_call_controller import AfterCallController
@@ -44,6 +44,7 @@ class CallUserController:
         self.video_track: PiCameraTrack | None = None
         self.audio_track: MediaPlayer | None = None
         self.videoDisplay = None
+        self.audioPlayer: AudioPlayer | None = None
 
     def handleTrack(self, track):
         print("received track")
@@ -56,6 +57,7 @@ class CallUserController:
         elif track.kind == 'audio':
             print("Audio track")
             audioPlayer = AudioPlayer(track)
+            self.audioPlayer = audioPlayer
             audio_thread = Thread(target=asyncio.run, args=(audioPlayer.play(),))
             audio_thread.start()
 
@@ -87,6 +89,10 @@ class CallUserController:
         if self.audio_track:
             self.audio_track.audio.stop()
             self.audio_track = None
+
+        if self.audioPlayer:
+            self.audioPlayer.stop()
+            self.audioPlayer = None
         # Open After Call Page
         AfterCallController(end_type, self.ui, self.main_controller)
 
