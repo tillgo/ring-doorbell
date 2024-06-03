@@ -63,9 +63,9 @@ class CallUserController:
 
     def handle_connection_state_change(self):
         print("State: " + self.peer.connectionState)
-        if self.peer is not None and self.peer.connectionState == "closed":
+        if self.peer is not None and self.peer.connectionState == "closed" or self.peer.connectionState == 'disconnected':
             self.handleCallEnd('ended')
-        else:
+        elif self.peer is not None and self.peer.connectionState == "failed":
             self.handleCallEnd('failed')
 
     def call_user(self, user_id: str):
