@@ -88,22 +88,6 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
         handleConnectionClosedOrFailed()
     }
 
-    const enableVideo = () => {
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(async (stream) => {
-            const videoSettings = stream.getVideoTracks()[0].getSettings()
-            await stream.getVideoTracks()[0].applyConstraints({
-                width: { ideal: videoSettings.width! / 2 },
-                height: { ideal: videoSettings.height! / 2 },
-            })
-            dispatch({ type: 'updateMyStreamRTCConn', payload: stream })
-        })
-    }
-
-    //ToDo Bei disable auch keinen Stream mehr an den anderen User schicken
-    const disableVideo = () => {
-        dispatch({ type: 'updateMyStreamRTCConn', payload: undefined })
-    }
-
     return (
         <div
             className={cn('fixed left-0 top-0 z-20 h-dvh w-dvw bg-background', {
@@ -114,10 +98,7 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
                 isCallRunning={rtcData.callAccepted && !rtcData.callEnded}
                 myVideoStream={rtcData.myStream}
                 userVideoStream={rtcData.oppositeStream}
-                isVideoOn={!!rtcData.myStream}
                 id={userId}
-                onEnableVideo={enableVideo}
-                onDisableVideo={disableVideo}
                 onStartCall={() => callUser(rtcData.idToCall)}
                 onEndCall={leaveCall}
                 onIdInputChange={(event) =>

@@ -3,11 +3,8 @@ import { Phone } from 'lucide-react'
 import { ChangeEvent } from 'react'
 
 export type CallControllerControllsProps = {
-    isVideoOn: boolean
     isCallRunning: boolean
     id: string
-    onEnableVideo: () => void
-    onDisableVideo: () => void
     onStartCall: () => void
     onEndCall: () => void
     onIdInputChange: (event: ChangeEvent<HTMLInputElement>) => void
