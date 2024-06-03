@@ -29,7 +29,7 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
         rtcData.oppositeStream.getTracks().forEach((track) => track.stop())
         dispatch({ type: 'updateMyStreamRTCConn', payload: undefined })
         dispatch({ type: 'updateOppositeStreamRTCConn', payload: new MediaStream() })
-    }, [dispatch])
+    }, [dispatch, rtcData.myStream, rtcData.oppositeStream])
 
     useEffect(() => {
         if (callControllerState.isAnswerCall) {
