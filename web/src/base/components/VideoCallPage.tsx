@@ -25,6 +25,8 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
         dispatch({ type: 'updateCallEndedRTCConn:', payload: true })
         dispatch({ type: 'updateCallAcceptedRTCConn', payload: false })
         dispatch({ type: 'updateCallControllerOpen', payload: false })
+        dispatch({ type: 'updateMyStreamRTCConn', payload: undefined })
+        dispatch({ type: 'updateOppositeStreamRTCConn', payload: new MediaStream() })
     }, [dispatch])
 
     useEffect(() => {
