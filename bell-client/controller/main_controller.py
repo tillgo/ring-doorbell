@@ -17,11 +17,11 @@ class MainController(QMainWindow):
         self.ui.setupUi(self)
         self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
         self.greetingController = GreetingController(self.ui, self)
+        self.ui.page_stacked_widget.setCurrentWidget(self.ui.ring_page)
         self.show()
         self.start_app()
 
     def start_app(self):
-        self.ui.page_stacked_widget.setCurrentWidget(self.ui.ring_page)
         # start waiting for nfc id in new thread
         uid = asyncio.run(wait_for_nfc_id())
         self.handle_nfc_id_found(uid)
