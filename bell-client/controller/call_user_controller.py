@@ -42,6 +42,7 @@ class CallUserController:
         self.userId = ''
         self.peer: RTCPeerConnection | None = None
         self.video_track: PiCameraTrack | None = None
+        self.audio_track: MediaPlayer | None = None
         self.videoDisplay = None
 
     def handleTrack(self, track):
@@ -81,7 +82,11 @@ class CallUserController:
 
         if self.video_track:
             self.video_track.stop_cam()
-            self.video_track = 0
+            self.video_track = None
+
+        if self.audio_track:
+            self.audio_track.audio.stop()
+            self.audio_track = None
         # Open After Call Page
         AfterCallController(end_type, self.ui, self.main_controller)
 
@@ -98,9 +103,9 @@ class CallUserController:
         self.peer.addTrack(self.video_track)
 
         # add audio
-        audioTrack = MediaPlayer("hw:2,0", format="alsa", options={'channels': '1', 'sample_rate': '100',
+        self.audio_track = MediaPlayer("hw:2,0", format="alsa", options={'channels': '1', 'sample_rate': '100',
                                                                    'sample_fmt': 's16'})
-        self.peer.addTrack(audioTrack.audio)
+        self.peer.addTrack(self.audio_track.audio)
 
         self.peer.on('connectionstatechange', lambda: print("State: " + self.peer.connectionState))
         self.peer.on('iceconnectionstatechange', lambda: print("ICE State: " + self.peer.iceConnectionState))
