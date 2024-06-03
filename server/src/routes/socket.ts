@@ -71,16 +71,6 @@ export const setupSocket = (
             }
         })
 
-        socket.on('leaveCall', (data) => {
-            const clientToCall = data.to
-            const clientToCallSocketId = clients.get(clientToCall)
-            if (clientToCallSocketId) {
-                io.to(clientToCallSocketId).emit('callOver')
-            } else {
-                io.to(socket.id).emit('callFailed', 'Client is not online')
-            }
-        })
-
         socket.on('denyCall', (data) => {
             const clientToCall = data.to
             const clientToCallSocketId = clients.get(clientToCall)

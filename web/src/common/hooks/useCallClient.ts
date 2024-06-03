@@ -45,8 +45,20 @@ export function useCallClient() {
         })
     }
 
-    const answerCall = (clientId: string) => {
+    const answerCall = (clientId: string, onCallEndedOrFailed: () => void) => {
         const peer = new RTCPeerConnection(servers)
+
+        peer.onconnectionstatechange = () => {
+            if (
+                peer.connectionState === 'disconnected' ||
+                peer.connectionState === 'failed' ||
+                peer.connectionState === 'closed'
+            ) {
+                peer.close()
+                onCallEndedOrFailed()
+            }
+        }
+
         socket?.on('iceCandidate', async (data) => {
             await peer.addIceCandidate(new RTCIceCandidate(data.candidate))
         })
@@ -85,8 +97,23 @@ export function useCallClient() {
         })
     }
 
-    const callClient = (clientId: string, onCallAccepted: () => void) => {
+    const callClient = (
+        clientId: string,
+        onCallAccepted: () => void,
+        onCallEndedOrFailed: () => void
+    ) => {
         const peer = new RTCPeerConnection(servers)
+
+        peer.onconnectionstatechange = () => {
+            if (
+                peer.connectionState === 'disconnected' ||
+                peer.connectionState === 'failed' ||
+                peer.connectionState === 'closed'
+            ) {
+                peer.close()
+                onCallEndedOrFailed()
+            }
+        }
 
         socket?.emit('callClient', {
             to: clientId,

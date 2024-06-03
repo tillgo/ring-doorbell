@@ -134,3 +134,9 @@ class CallUserController:
                     or self.peer.connectionState == "closed"):
                 print("Exiting now")
                 break
+
+        if self.peer is not None and self.peer.connectionState == "closed":
+            self.handleCallEnd('ended')
+        else:
+            self.handleCallEnd('failed')
+

@@ -20,16 +20,16 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
         console.log(message)
     })
 
-    socket?.on('callOver', () => {
+    const handleConnectionClosedOrFailed = () => {
         dispatch({ type: 'updateCallEndedRTCConn:', payload: true })
         dispatch({ type: 'updateCallAcceptedRTCConn', payload: false })
-        connectionRef.current && connectionRef.current?.close()
-    })
+        dispatch({ type: 'updateCallControllerOpen', payload: false })
+    }
 
     useEffect(() => {
         if (callControllerState.isAnswerCall) {
             dispatch({ type: 'updateIsAnswerCall', payload: false })
-            answerCall(rtcData.oppositeId)
+            answerCall(rtcData.oppositeId, handleConnectionClosedOrFailed)
         }
     }, [answerCall, callControllerState.isAnswerCall, dispatch, rtcData.oppositeId])
 
@@ -65,14 +65,14 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
 
     const callUser = (id: string) => {
         dispatch({ type: 'updateOppositeIdRTCConn', payload: id })
-        callClient(id, () => dispatch({ type: 'updateCallAcceptedRTCConn', payload: true }))
+        callClient(
+            id,
+            () => dispatch({ type: 'updateCallAcceptedRTCConn', payload: true }),
+            handleConnectionClosedOrFailed
+        )
     }
 
     const leaveCall = () => {
-        dispatch({ type: 'updateCallEndedRTCConn:', payload: true })
-        dispatch({ type: 'updateCallAcceptedRTCConn', payload: false })
-        dispatch({ type: 'updateCallControllerOpen', payload: false })
-        socket?.emit('leaveCall', { to: rtcData.oppositeId })
         connectionRef.current && connectionRef.current?.close()
     }
 
