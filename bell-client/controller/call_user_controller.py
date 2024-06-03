@@ -66,7 +66,6 @@ class CallUserController:
 
         self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
                                                            RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
-        self.peer.on('icecandidate', lambda candidate: print("new local ice candidate " + str(candidate)))
         self.socket_client.sio.on('iceCandidate',
                                   lambda data: asyncio.run(getHandleRemoteIceCandidate(self.peer)(data)))
         self.socket_client.sio.on('callOver', lambda: self.handleCallEnd("ended"))
