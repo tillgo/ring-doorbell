@@ -61,6 +61,13 @@ class CallUserController:
             audio_thread = Thread(target=asyncio.run, args=(audioPlayer.play(),))
             audio_thread.start()
 
+    def handle_connection_state_change(self):
+        print("State: " + self.peer.connectionState)
+        if self.peer is not None and self.peer.connectionState == "closed":
+            self.handleCallEnd('ended')
+        else:
+            self.handleCallEnd('failed')
+
     def call_user(self, user_id: str):
         self.userId = user_id
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.call_page)
@@ -69,6 +76,8 @@ class CallUserController:
 
         self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
                                                            RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
+        self.peer.on('connectionstatechange', self.handle_connection_state_change)
+        self.peer.on('iceconnectionstatechange', lambda: print("ICE State: " + self.peer.iceConnectionState))
         self.socket_client.sio.on('iceCandidate',
                                   lambda data: asyncio.run(getHandleRemoteIceCandidate(self.peer)(data)))
         self.socket_client.sio.on('callOver', lambda: self.handleCallEnd("ended"))
@@ -113,9 +122,6 @@ class CallUserController:
                                                                    'sample_fmt': 's16'})
         self.peer.addTrack(self.audio_track.audio)
 
-        self.peer.on('connectionstatechange', lambda: print("State: " + self.peer.connectionState))
-        self.peer.on('iceconnectionstatechange', lambda: print("ICE State: " + self.peer.iceConnectionState))
-
         remote_offer = json.loads(data_offer)
         await self.peer.setRemoteDescription(sessionDescription=RTCSessionDescription(sdp=remote_offer['sdp'],
                                                                                       type=remote_offer['type']))
@@ -134,9 +140,4 @@ class CallUserController:
                     or self.peer.connectionState == "closed"):
                 print("Exiting now")
                 break
-
-        if self.peer is not None and self.peer.connectionState == "closed":
-            self.handleCallEnd('ended')
-        else:
-            self.handleCallEnd('failed')
 
