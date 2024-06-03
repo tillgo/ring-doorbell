@@ -1,3 +1,4 @@
+import asyncio
 import threading
 
 from PyQt6.QtCore import Qt
@@ -22,7 +23,8 @@ class MainController(QMainWindow):
     def start_app(self):
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.ring_page)
         # start waiting for nfc id in new thread
-        wait_for_nfc_id(self.handle_nfc_id_found)
+        uid = asyncio.run(wait_for_nfc_id())
+        self.handle_nfc_id_found(uid)
 
     def handle_nfc_id_found(self, uid):
         self.greetingController.open_greeting_page("".join([hex(i) for i in uid]))
