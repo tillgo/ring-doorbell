@@ -40,13 +40,3 @@ class SocketClient(object):
         self.sio.emit('answerSignal', {'to': userId, 'signal': {'type': answer.type,
                                                                 'sdp': answer.sdp}})
 
-
-class Test:
-    def __init__(self, test):
-        self.test = test
-
-
-if __name__ == "__main__":
-    client = SocketClient()
-    client.connect()
-    client.callUser("4dc66649-3b1d-426f-89f0-3df95fd02a3c", "test", lambda: print("call accepted"))
