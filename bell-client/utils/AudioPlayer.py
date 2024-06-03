@@ -1,7 +1,5 @@
 import asyncio
 
-import av
-import pyaudio
 from aiortc.contrib.media import MediaRecorder
 from aiortc.rtcrtpreceiver import RemoteStreamTrack
 

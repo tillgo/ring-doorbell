@@ -2,9 +2,8 @@ from typing import Callable
 
 import board
 import busio
-from digitalio import DigitalInOut
-
 from adafruit_pn532.i2c import PN532_I2C
+from digitalio import DigitalInOut
 
 
 def wait_for_nfc_id(on_nfc_id_found_callback: Callable[[bytearray], None]):

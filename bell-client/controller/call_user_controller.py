@@ -9,9 +9,9 @@ from aiortc.sdp import candidate_from_sdp
 
 from controller.after_call_controller import AfterCallController
 from utils.AudioPlayer import AudioPlayer
-from utils.VideoPlayer import VideoStreamDisplay
+from utils.VideoStreamDisplay import VideoStreamDisplay
 from connectionClients.socket_client import SocketClient
-from utils.picameratrack import PiCameraTrack
+from utils.VideoPlayer import PiCameraTrack
 
 
 def getHandleRemoteIceCandidate(peer: RTCPeerConnection):

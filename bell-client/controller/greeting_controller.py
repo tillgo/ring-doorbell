@@ -1,11 +1,5 @@
-import asyncio
-
-from PyQt6.QtGui import QStandardItemModel, QStandardItem
-from PyQt6.QtWidgets import QListView
-
 from connectionClients.http_client import HttpClient
 from controller.call_user_controller import CallUserController
-from PyQt6.QtCore import QEventLoop, QItemSelectionModel, Qt
 
 
 class GreetingController:

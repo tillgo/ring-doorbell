@@ -3,7 +3,6 @@ import threading
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QMainWindow
 
-from connectionClients.socket_client import SocketClient
 from controller.greeting_controller import GreetingController
 from controller.ring_controller import wait_for_nfc_id
 from view import main_window
