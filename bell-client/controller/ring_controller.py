@@ -1,4 +1,3 @@
-import asyncio
 from typing import Callable
 
 import board
@@ -8,7 +7,7 @@ from digitalio import DigitalInOut
 from adafruit_pn532.i2c import PN532_I2C
 
 
-def wait_for_nfc_id():
+def wait_for_nfc_id(on_nfc_id_found_callback: Callable[[bytearray], None]):
     # NFC-Reader is connected to I2C
     i2c = busio.I2C(board.SCL, board.SDA)
 
@@ -30,5 +29,11 @@ def wait_for_nfc_id():
         if uid is None:
             continue
 
+        # else if NFC-Card was found call callback function
+        on_nfc_id_found_callback(uid)
         print("Found card with UID:", [hex(i) for i in uid])
-        return uid
+        return
+
+
+
+
