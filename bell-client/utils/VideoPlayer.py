@@ -1,40 +1,37 @@
-import sys
-import asyncio
-import numpy as np
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget
-from PyQt6.QtCore import QTimer, Qt
-from PyQt6.QtGui import QPixmap, QImage
-from aiortc import RTCPeerConnection, VideoStreamTrack
-from aiortc.contrib.signaling import BYE
-from aiortc.rtcrtpreceiver import RemoteStreamTrack
-from av import VideoFrame
-import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget
-from PyQt6.QtCore import QTimer, Qt
-from PyQt6.QtGui import QPixmap, QImage
+import time
+from fractions import Fraction
+
+import av
+from aiortc.contrib.media import MediaStreamTrack
+from picamera2 import Picamera2
 
 
-class VideoStreamDisplay:
-    def __init__(self, label: QLabel, video_track: RemoteStreamTrack, update_interval=30):
-        self.videoLabel = label
-        self.video_track = video_track
+class PiCameraTrack(MediaStreamTrack):
+    kind = "video"
 
-    async def show_video(self):
-        while self.video_track.readyState != 'ended':
-            await self.update_frame()
+    def __init__(self):
+        super().__init__()
+        self.cam = Picamera2()
+        configuration = self.cam.create_video_configuration({"size": (240, 160)}, lores={"size": (240, 160)},
+                                                            controls={"FrameRate": 30.0}, buffer_count=2)
+        self.prev_frame = None
+        self.cam.configure(configuration)
+        self.cam.start()
 
-    async def update_frame(self):
-        frame = await self.video_track.recv()
-        if frame is not None:
-            img = frame.to_ndarray(format="rgb24")
+    async def recv(self):
+        try:
+            img = self.cam.capture_array()
+            self.cam.drop_frames_()
+            pts = time.time() * 1000000
+            new_frame = av.VideoFrame.from_ndarray(img, format='rgba')
+            new_frame.pts = int(pts)
+            new_frame.time_base = Fraction(1, 1000000)
+            self.prev_frame = new_frame
+            return new_frame
+        except Exception as e:
+            print(e)
+            return self.prev_frame
 
-            # Convert numpy array to QImage
-            height, width, channel = img.shape
-            bytes_per_line = 3 * width
-            qimage = QImage(img.data, width, height, bytes_per_line, QImage.Format.Format_RGB888)
-
-            # Convert QImage to QPixmap and display it
-            pixmap = QPixmap.fromImage(qimage)
-            self.videoLabel.setPixmap(pixmap)
-            self.videoLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.videoLabel.showFullScreen()
+    def stop_cam(self):
+        self.cam.stop()
+        self.cam.close()

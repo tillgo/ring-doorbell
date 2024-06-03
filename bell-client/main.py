@@ -1,8 +1,7 @@
 import asyncio
-import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton
-from PyQt6.QtCore import Qt, QTimer
-from PyQt6.QtGui import QPixmap
+
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget
 from qasync import QEventLoop
 
 from controller.main_controller import MainController
