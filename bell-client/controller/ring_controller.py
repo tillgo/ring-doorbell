@@ -8,9 +8,7 @@ from digitalio import DigitalInOut
 from adafruit_pn532.i2c import PN532_I2C
 
 
-async def wait_for_nfc_id():
-    await asyncio.sleep(1)
-
+def wait_for_nfc_id():
     # NFC-Reader is connected to I2C
     i2c = busio.I2C(board.SCL, board.SDA)
 
