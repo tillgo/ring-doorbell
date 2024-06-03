@@ -61,13 +61,6 @@ class CallUserController:
             audio_thread = Thread(target=asyncio.run, args=(audioPlayer.play(),))
             audio_thread.start()
 
-    def handle_connection_state_change(self):
-        print("State: " + self.peer.connectionState)
-        if self.peer is not None and self.peer.connectionState == "closed" or self.peer.connectionState == 'disconnected':
-            self.handleCallEnd('ended')
-        elif self.peer is not None and self.peer.connectionState == "failed":
-            self.handleCallEnd('failed')
-
     def call_user(self, user_id: str):
         self.userId = user_id
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.call_page)
@@ -75,8 +68,7 @@ class CallUserController:
         self.socket_client.connect()
 
         self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
-                                                           RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
-        self.peer.on('connectionstatechange', self.handle_connection_state_change)
+                                                                   RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
         self.peer.on('iceconnectionstatechange', lambda: print("ICE State: " + self.peer.iceConnectionState))
         self.socket_client.sio.on('iceCandidate',
                                   lambda data: asyncio.run(getHandleRemoteIceCandidate(self.peer)(data)))
@@ -107,8 +99,10 @@ class CallUserController:
 
     def handle_call_accepted(self, data):
         print("Call was accepted yayyyyy")
-        asyncio.run(self.create_WebRTC_Connection(data))
+        call_state = asyncio.run(self.create_WebRTC_Connection(data))
+        self.handleCallEnd(call_state)
 
+    # Returns, if call was ended normally (ended) or failed (failed)
     async def create_WebRTC_Connection(self, data_offer):
 
         self.peer.on('track', lambda event: self.handleTrack(event))
@@ -119,7 +113,7 @@ class CallUserController:
 
         # add audio
         self.audio_track = MediaPlayer("hw:2,0", format="alsa", options={'channels': '1', 'sample_rate': '100',
-                                                                   'sample_fmt': 's16'})
+                                                                         'sample_fmt': 's16'})
         self.peer.addTrack(self.audio_track.audio)
 
         remote_offer = json.loads(data_offer)
@@ -138,6 +132,7 @@ class CallUserController:
             if (
                     self.peer is None or self.peer.connectionState == "failed" or self.peer.connectionState == "disconnected"
                     or self.peer.connectionState == "closed"):
-                print("Exiting now")
-                break
+                if self.peer is not None and (self.peer.connectionState == "closed" or self.peer.connectionState == 'disconnected'):
+                    return 'ended'
 
+                return 'failed'
