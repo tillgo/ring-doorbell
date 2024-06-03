@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/base/appContext.tsx'
-import { useContext, useEffect, useRef } from 'react'
+import { useCallback, useContext, useEffect, useRef } from 'react'
 import { VideoComponent } from '@/base/components/VideoComponent.tsx'
 import { SocketContext } from '@/common/provider/SocketProvider.tsx'
 import { useCallClient } from '@/common/hooks/useCallClient.ts'
@@ -20,18 +20,24 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
         console.log(message)
     })
 
-    const handleConnectionClosedOrFailed = () => {
+    const handleConnectionClosedOrFailed = useCallback(() => {
         dispatch({ type: 'updateCallEndedRTCConn:', payload: true })
         dispatch({ type: 'updateCallAcceptedRTCConn', payload: false })
         dispatch({ type: 'updateCallControllerOpen', payload: false })
-    }
+    }, [dispatch])
 
     useEffect(() => {
         if (callControllerState.isAnswerCall) {
             dispatch({ type: 'updateIsAnswerCall', payload: false })
             answerCall(rtcData.oppositeId, handleConnectionClosedOrFailed)
         }
-    }, [answerCall, callControllerState.isAnswerCall, dispatch, rtcData.oppositeId])
+    }, [
+        answerCall,
+        callControllerState.isAnswerCall,
+        dispatch,
+        handleConnectionClosedOrFailed,
+        rtcData.oppositeId,
+    ])
 
     // ToDo kein useEffect nehmen
     useEffect(() => {
