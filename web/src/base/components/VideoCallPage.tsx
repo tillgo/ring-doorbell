@@ -81,6 +81,7 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
 
     const leaveCall = () => {
         connectionRef.current && connectionRef.current?.close()
+        handleConnectionClosedOrFailed()
     }
 
     const enableVideo = () => {
