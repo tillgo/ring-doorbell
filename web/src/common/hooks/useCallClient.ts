@@ -61,17 +61,17 @@ export function useCallClient() {
             }
         }
 
-        // Add remote ICECandidates
-        socket?.on('iceCandidate', async (data) => {
-            await peer.addIceCandidate(new RTCIceCandidate(data.candidate))
-        })
-
         // Handle new local ICECandidates
         peer.onicecandidate = handleNewIceCandidate(clientId)
 
         // Add Remote MediaTracks
         const clientStream = new MediaStream()
         peer.ontrack = handleNewTrack(clientStream)
+
+        // Add remote ICECandidates
+        socket?.on('iceCandidate', async (data) => {
+            await peer.addIceCandidate(new RTCIceCandidate(data.candidate))
+        })
 
         // Handle receive remote offer
         socket?.on('answerSignal', async (signal) => {
