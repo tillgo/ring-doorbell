@@ -6,6 +6,7 @@ import { useEffect } from 'react'
 import { LayoutDashboard, Shield, Settings } from 'lucide-react'
 import { ReceiveCallDialog } from '@/base/components/ReceiveCallDialog.tsx'
 import { cn } from '@/lib/utils.ts'
+import SocketProvider from '@/common/provider/SocketProvider.tsx'
 
 const routes: Routes = [
     {
@@ -57,11 +58,13 @@ function Main() {
             </main>
 
             {isAuthenticated && userId && (
-                <>
-                    <VideoCallPage userId={userId} />
-                    <AppBar routes={routes} />
-                    <ReceiveCallDialog />
-                </>
+                <SocketProvider>
+                    <>
+                        <VideoCallPage userId={userId} />
+                        <AppBar routes={routes} />
+                        <ReceiveCallDialog />
+                    </>
+                </SocketProvider>
             )}
 
             {/*<TanStackRouterDevtools position={'top-right'} />*/}
