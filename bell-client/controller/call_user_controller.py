@@ -64,7 +64,11 @@ class CallUserController:
 
         self.peer = RTCPeerConnection(RTCConfiguration(iceServers=[RTCIceServer(urls="stun:stun1.l.google.com:19302"),
                                                                    RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
+
+        # Set up event listeners
         self.peer.on('iceconnectionstatechange', lambda: print("ICE State: " + self.peer.iceConnectionState))
+        self.peer.on('track', lambda event: self.handleTrack(event))
+
         self.socket_client.sio.on('iceCandidate',
                                   lambda data: asyncio.run(getHandleRemoteIceCandidate(self.peer)(data)))
         self.socket_client.sio.on('callDenied', lambda: self.handleCallEnd("denied"))
@@ -97,8 +101,6 @@ class CallUserController:
 
     # Returns, if call was ended normally (ended) or failed (failed)
     async def create_WebRTC_Connection(self, data_offer):
-
-        self.peer.on('track', lambda event: self.handleTrack(event))
 
         # add video
         self.video_track = PiCameraTrack()
