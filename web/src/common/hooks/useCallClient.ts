@@ -47,9 +47,8 @@ export function useCallClient() {
 
     const answerCall = (clientId: string, onCallEndedOrFailed: () => void) => {
         const peer = new RTCPeerConnection(servers)
+
         peer.onconnectionstatechange = () => {
-            console.log('connection state change')
-            console.log(peer.connectionState)
             if (
                 peer.connectionState === 'disconnected' ||
                 peer.connectionState === 'failed' ||
@@ -61,18 +60,18 @@ export function useCallClient() {
             }
         }
 
+        // Add remote ICECandidates
         socket?.on('iceCandidate', async (data) => {
             await peer.addIceCandidate(new RTCIceCandidate(data.candidate))
         })
 
+        // Handle new local ICECandidates
         peer.onicecandidate = handleNewIceCandidate(clientId)
 
         const clientStream = new MediaStream()
         peer.ontrack = handleNewTrack(clientStream)
 
         socket?.on('answerSignal', async (signal) => {
-            console.log('set answerSignal')
-            console.log(signal)
             await peer.setRemoteDescription(signal)
         })
 
@@ -99,6 +98,7 @@ export function useCallClient() {
         })
     }
 
+    // For possible future feature of calling other clients. Currently not used
     const callClient = (
         clientId: string,
         onCallAccepted: () => void,
