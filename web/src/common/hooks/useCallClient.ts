@@ -68,10 +68,10 @@ export function useCallClient() {
         const clientStream = new MediaStream()
         peer.ontrack = handleNewTrack(clientStream)
 
-        // Add remote ICECandidates
-        socket?.on('iceCandidate', async (data) => {
-            await peer.addIceCandidate(new RTCIceCandidate(data.candidate))
-        })
+        // Add remote ICECandidates (Currently not needed, as aiortc for python doesn't support iceCandidate trickling)
+        // socket?.on('iceCandidate', async (data) => {
+        //     await peer.addIceCandidate(new RTCIceCandidate(data.candidate))
+        // })
 
         // Handle receive remote offer
         socket?.on('answerSignal', async (signal) => {
