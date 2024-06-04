@@ -48,6 +48,7 @@ export function useCallClient() {
     const answerCall = (clientId: string, onCallEndedOrFailed: () => void) => {
         const peer = new RTCPeerConnection(servers)
 
+        // Handle connection state disconnected | closed | failed
         peer.onconnectionstatechange = () => {
             if (
                 peer.connectionState === 'disconnected' ||
@@ -68,13 +69,16 @@ export function useCallClient() {
         // Handle new local ICECandidates
         peer.onicecandidate = handleNewIceCandidate(clientId)
 
+        // Add Remote MediaTracks
         const clientStream = new MediaStream()
         peer.ontrack = handleNewTrack(clientStream)
 
+        // Handle receive remote offer
         socket?.on('answerSignal', async (signal) => {
             await peer.setRemoteDescription(signal)
         })
 
+        // Get local media stream and create offer and send it to remote peer
         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
             //Set stream before creating offer
             stream.getTracks().forEach((track) => {
