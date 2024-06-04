@@ -44,7 +44,6 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
         rtcData.oppositeId,
     ])
 
-    // ToDo kein useEffect nehmen
     useEffect(() => {
         connectionRef.current = answerConnectionInfo.rtcPeer
         dispatch({ type: 'updateMyStreamRTCConn', payload: answerConnectionInfo.ownStream })
@@ -59,7 +58,6 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
         dispatch,
     ])
 
-    // ToDo kein useEffect nehmen
     useEffect(() => {
         connectionRef.current = callConnectionInfo.rtcPeer
         dispatch({ type: 'updateMyStreamRTCConn', payload: callConnectionInfo.ownStream })
