@@ -47,15 +47,10 @@ class CallUserController:
         self.audioPlayer: AudioPlayer | None = None
 
     def handleTrack(self, track):
-        print("received track")
-        print(track)
-        print(track.kind)
         if track.kind == 'video':
-            print("Video track")
             self.videoDisplay = VideoStreamDisplay(self.ui.video_label, track)
             asyncio.get_running_loop().create_task(self.videoDisplay.show_video())
         elif track.kind == 'audio':
-            print("Audio track")
             audioPlayer = AudioPlayer(track)
             self.audioPlayer = audioPlayer
             audio_thread = Thread(target=asyncio.run, args=(audioPlayer.play(),))
