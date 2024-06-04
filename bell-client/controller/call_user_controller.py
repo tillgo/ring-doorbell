@@ -98,7 +98,6 @@ class CallUserController:
         AfterCallController(end_type, self.ui, self.main_controller)
 
     def handle_call_accepted(self, data):
-        print("Call was accepted yayyyyy")
         call_state = asyncio.run(self.create_WebRTC_Connection(data))
         self.handleCallEnd(call_state)
 
