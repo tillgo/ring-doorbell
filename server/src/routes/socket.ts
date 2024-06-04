@@ -2,6 +2,7 @@ import * as http from 'http'
 import { Server } from 'socket.io'
 import { verifySecretToken } from '../util/jwtUtils'
 import { getConfig } from '../util/EnvManager'
+import { getUsersForDevice } from '../db/userRepository'
 
 // Map of clients <clientId, socketId> which are currently online
 // client id can either be userId or deviceId
@@ -37,9 +38,15 @@ export const setupSocket = (
         // Set or update client (client is online)
         clients.set(socket.data.authClient.id, socket.id)
 
-        socket.on('callClient', (data) => {
-            //ToDo check if client belongs to doorbell
+        socket.on('callClient', async (data) => {
             const clientToCall = data.to
+            //Check if doorbell is allowed to call user (user has to be registered for bell)
+            const allowedUsers = await getUsersForDevice(socket.data.authClient.id)
+            if (!allowedUsers.some((user) => user.id === clientToCall)) {
+                io.to(socket.id).emit('callNotAllowed', 'Client is not allowed to call')
+                return
+            }
+
             const clientToCallSocketId = clients.get(clientToCall)
             if (clientToCallSocketId) {
                 io.to(clientToCallSocketId).emit('callClient', {
