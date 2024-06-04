@@ -88,12 +88,6 @@ export const setupSocket = (
             }
         })
 
-        // On disconnect remove client from clients map
-        socket.on('disconnect', function () {
-            console.log('Got disconnect!', socket.data.authClient.id)
-            clients.delete(socket.data.authClient.id)
-        })
-
         socket.on('iceCandidate', (data) => {
             const clientToCall = data.to
             const clientToCallSocketId = clients.get(clientToCall)
@@ -105,6 +99,12 @@ export const setupSocket = (
             } else {
                 io.to(socket.id).emit('callFailed', 'Client is not online')
             }
+        })
+
+        // On disconnect remove client from clients map
+        socket.on('disconnect', function () {
+            console.log('Got disconnect!', socket.data.authClient.id)
+            clients.delete(socket.data.authClient.id)
         })
     })
 }
