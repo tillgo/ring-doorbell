@@ -66,7 +66,6 @@ class CallUserController:
                                                                    RTCIceServer(urls="stun:stun2.l.google.com:19302")]))
 
         # Set up event listeners
-        self.peer.on('iceconnectionstatechange', lambda: print("ICE State: " + self.peer.iceConnectionState))
         self.peer.on('track', lambda event: self.handleTrack(event))
 
         self.socket_client.sio.on('iceCandidate',
