@@ -45,23 +45,40 @@ export function useCallClient() {
         })
     }
 
-    const answerCall = (clientId: string) => {
+    const answerCall = (clientId: string, onCallEndedOrFailed: () => void) => {
         const peer = new RTCPeerConnection(servers)
-        socket?.on('iceCandidate', async (data) => {
-            await peer.addIceCandidate(new RTCIceCandidate(data.candidate))
-        })
 
+        // Handle connection state disconnected | closed | failed
+        peer.onconnectionstatechange = () => {
+            if (
+                peer.connectionState === 'disconnected' ||
+                peer.connectionState === 'failed' ||
+                peer.connectionState === 'closed'
+            ) {
+                console.log('closing connection')
+                peer.close()
+                onCallEndedOrFailed()
+            }
+        }
+
+        // Handle new local ICECandidates
         peer.onicecandidate = handleNewIceCandidate(clientId)
 
+        // Add Remote MediaTracks
         const clientStream = new MediaStream()
         peer.ontrack = handleNewTrack(clientStream)
 
+        // Add remote ICECandidates (Currently not needed, as aiortc for python doesn't support iceCandidate trickling)
+        // socket?.on('iceCandidate', async (data) => {
+        //     await peer.addIceCandidate(new RTCIceCandidate(data.candidate))
+        // })
+
+        // Handle receive remote offer
         socket?.on('answerSignal', async (signal) => {
-            console.log('set answerSignal')
-            console.log(signal)
             await peer.setRemoteDescription(signal)
         })
 
+        // Get local media stream and create offer and send it to remote peer
         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
             //Set stream before creating offer
             stream.getTracks().forEach((track) => {
@@ -85,8 +102,24 @@ export function useCallClient() {
         })
     }
 
-    const callClient = (clientId: string, onCallAccepted: () => void) => {
+    // For possible future feature of calling other clients. Currently not used
+    const callClient = (
+        clientId: string,
+        onCallAccepted: () => void,
+        onCallEndedOrFailed: () => void
+    ) => {
         const peer = new RTCPeerConnection(servers)
+
+        peer.onconnectionstatechange = () => {
+            if (
+                peer.connectionState === 'disconnected' ||
+                peer.connectionState === 'failed' ||
+                peer.connectionState === 'closed'
+            ) {
+                peer.close()
+                onCallEndedOrFailed()
+            }
+        }
 
         socket?.emit('callClient', {
             to: clientId,

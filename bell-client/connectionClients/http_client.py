@@ -10,7 +10,9 @@ from utils.VisitorData import VisitorData
 class HttpClient(object):
     _instance = None
     url = "https://ring-doorbell-45675126bb6e.herokuapp.com/api"
-    # ToDo Identifier und Secret einlesen (evtl. aus File)
+
+    # For this prototype the secret and identifier are hardcoded here,
+    # in reality this probably should read from a file or sos
     secret: str = "ce5e7168-ee9c-4075-9d2f-b8f6a03c3ca4"
     identifier: str = "12-34-56-78"
     session = None
@@ -33,7 +35,6 @@ class HttpClient(object):
         login_data = {'identifier': self.identifier, 'secret': self.secret}
         response = self.session.post(self.url + "/auth/bell/sign-in", json=login_data)
         if response.status_code != 200:
-            # ToDO better way to handle login failure
             raise Exception("Login failed")
         return response.json()["token"]
 

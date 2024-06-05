@@ -19,7 +19,6 @@ export const initialStateRTCConnection: RTCConnectionState = {
         oppositeStream: new MediaStream(),
         receivingCall: false,
         oppositeId: '',
-        //ToDo check do I really need that?
         callAccepted: false,
         idToCall: '',
         callEnded: false,

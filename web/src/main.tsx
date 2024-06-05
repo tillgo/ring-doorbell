@@ -8,7 +8,6 @@ import { routeTree } from '@/routeTree.gen.ts'
 import '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import SocketProvider from '@/common/provider/SocketProvider.tsx'
 
 const router = createRouter({ routeTree })
 const queryClient = new QueryClient()
@@ -31,13 +30,11 @@ if (!rootElement.innerHTML) {
     root.render(
         <StrictMode>
             <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-                <SocketProvider>
-                    <AppContextProvider>
-                        <QueryClientProvider client={queryClient}>
-                            <RouterProvider router={router} />
-                        </QueryClientProvider>
-                    </AppContextProvider>
-                </SocketProvider>
+                <AppContextProvider>
+                    <QueryClientProvider client={queryClient}>
+                        <RouterProvider router={router} />
+                    </QueryClientProvider>
+                </AppContextProvider>
             </ThemeProvider>
         </StrictMode>
     )

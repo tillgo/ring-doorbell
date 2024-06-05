@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/base/appContext.tsx'
-import { useContext, useEffect, useRef } from 'react'
+import { useCallback, useContext, useEffect, useRef } from 'react'
 import { VideoComponent } from '@/base/components/VideoComponent.tsx'
 import { SocketContext } from '@/common/provider/SocketProvider.tsx'
 import { useCallClient } from '@/common/hooks/useCallClient.ts'
@@ -16,24 +16,33 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
     const connectionRef = useRef<RTCPeerConnection>()
 
     socket?.on('callFailed', (message) => {
-        //ToDo handle failed call
         console.log(message)
     })
 
-    socket?.on('callOver', () => {
+    const handleConnectionClosedOrFailed = useCallback(() => {
+        console.log('Handle connection failed')
         dispatch({ type: 'updateCallEndedRTCConn:', payload: true })
         dispatch({ type: 'updateCallAcceptedRTCConn', payload: false })
-        connectionRef.current && connectionRef.current?.close()
-    })
+        dispatch({ type: 'updateCallControllerOpen', payload: false })
+        rtcData.myStream?.getTracks().forEach((track) => track.stop())
+        rtcData.oppositeStream.getTracks().forEach((track) => track.stop())
+        dispatch({ type: 'updateMyStreamRTCConn', payload: undefined })
+        dispatch({ type: 'updateOppositeStreamRTCConn', payload: new MediaStream() })
+    }, [dispatch, rtcData.myStream, rtcData.oppositeStream])
 
     useEffect(() => {
         if (callControllerState.isAnswerCall) {
             dispatch({ type: 'updateIsAnswerCall', payload: false })
-            answerCall(rtcData.oppositeId)
+            answerCall(rtcData.oppositeId, handleConnectionClosedOrFailed)
         }
-    }, [answerCall, callControllerState.isAnswerCall, dispatch, rtcData.oppositeId])
+    }, [
+        answerCall,
+        callControllerState.isAnswerCall,
+        dispatch,
+        handleConnectionClosedOrFailed,
+        rtcData.oppositeId,
+    ])
 
-    // ToDo kein useEffect nehmen
     useEffect(() => {
         connectionRef.current = answerConnectionInfo.rtcPeer
         dispatch({ type: 'updateMyStreamRTCConn', payload: answerConnectionInfo.ownStream })
@@ -48,7 +57,6 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
         dispatch,
     ])
 
-    // ToDo kein useEffect nehmen
     useEffect(() => {
         connectionRef.current = callConnectionInfo.rtcPeer
         dispatch({ type: 'updateMyStreamRTCConn', payload: callConnectionInfo.ownStream })
@@ -65,31 +73,16 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
 
     const callUser = (id: string) => {
         dispatch({ type: 'updateOppositeIdRTCConn', payload: id })
-        callClient(id, () => dispatch({ type: 'updateCallAcceptedRTCConn', payload: true }))
+        callClient(
+            id,
+            () => dispatch({ type: 'updateCallAcceptedRTCConn', payload: true }),
+            handleConnectionClosedOrFailed
+        )
     }
 
     const leaveCall = () => {
-        dispatch({ type: 'updateCallEndedRTCConn:', payload: true })
-        dispatch({ type: 'updateCallAcceptedRTCConn', payload: false })
-        dispatch({ type: 'updateCallControllerOpen', payload: false })
-        socket?.emit('leaveCall', { to: rtcData.oppositeId })
         connectionRef.current && connectionRef.current?.close()
-    }
-
-    const enableVideo = () => {
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(async (stream) => {
-            const videoSettings = stream.getVideoTracks()[0].getSettings()
-            await stream.getVideoTracks()[0].applyConstraints({
-                width: { ideal: videoSettings.width! / 2 },
-                height: { ideal: videoSettings.height! / 2 },
-            })
-            dispatch({ type: 'updateMyStreamRTCConn', payload: stream })
-        })
-    }
-
-    //ToDo Bei disable auch keinen Stream mehr an den anderen User schicken
-    const disableVideo = () => {
-        dispatch({ type: 'updateMyStreamRTCConn', payload: undefined })
+        handleConnectionClosedOrFailed()
     }
 
     return (
@@ -102,10 +95,7 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
                 isCallRunning={rtcData.callAccepted && !rtcData.callEnded}
                 myVideoStream={rtcData.myStream}
                 userVideoStream={rtcData.oppositeStream}
-                isVideoOn={!!rtcData.myStream}
                 id={userId}
-                onEnableVideo={enableVideo}
-                onDisableVideo={disableVideo}
                 onStartCall={() => callUser(rtcData.idToCall)}
                 onEndCall={leaveCall}
                 onIdInputChange={(event) =>
