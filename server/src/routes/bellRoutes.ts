@@ -15,7 +15,7 @@ router.post('/ring', validate({ body: VisitorRingSchema }), async (req: Request,
         throw new ForbiddenProblem()
     }
 
-    let visitor = await getVisitorByNfcCardId(data.nfcCardId)
+    let visitor = await getVisitorByNfcCardId(data.nfcCardId, req.client!.id)
     if (!visitor) {
         visitor = await createNewVisitor(data.nfcCardId, req.client!.id)
     }

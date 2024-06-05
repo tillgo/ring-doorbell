@@ -1,20 +1,10 @@
 import express, { Request } from 'express'
 import { getDevicesForUser } from '../db/deviceRepository'
-import {
-    DashboardData,
-    DeviceId,
-    DeviceIdSchema,
-    HistoryLog,
-    HistoryLogPayload,
-    HistoryLogType,
-    HistoryLogVariableData,
-    VisitorId,
-    VisitorIdSchema,
-} from '../shared/types'
+import { DashboardData, HistoryLog, VisitorId, VisitorIdSchema } from '../shared/types'
 import { isClientOnline } from './socket'
 import { getHistoryForDevices } from '../db/historyRepository'
 import { validate } from '../middleware/zodValidate'
-import { getVisitorById, getVisitorByNfcCardId } from '../db/visitorRepository'
+import { getVisitorById } from '../db/visitorRepository'
 
 const router = express.Router()
 

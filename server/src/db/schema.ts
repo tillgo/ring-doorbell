@@ -7,6 +7,7 @@ import {
     index,
     primaryKey,
     jsonb,
+    unique,
 } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
@@ -65,19 +66,25 @@ export const deviceRelations = relations(device, ({ one, many }) => ({
     historyLogs: many(historyLog),
 }))
 
-export const visitor = pgTable('visitors', {
-    id: uuid('id').defaultRandom().primaryKey(),
-    nickname: varchar('nickname', { length: 50 }),
+export const visitor = pgTable(
+    'visitors',
+    {
+        id: uuid('id').defaultRandom().primaryKey(),
+        nickname: varchar('nickname', { length: 50 }),
 
-    nfcCardId: varchar('nfcCardId', { length: 255 }).unique().notNull(),
-    deviceId: uuid('deviceId')
-        .notNull()
-        .references(() => device.id),
+        nfcCardId: varchar('nfcCardId', { length: 255 }).notNull(),
+        deviceId: uuid('deviceId')
+            .notNull()
+            .references(() => device.id),
 
-    isWhitelisted: boolean('isWhitelisted').notNull().default(false),
+        isWhitelisted: boolean('isWhitelisted').notNull().default(false),
 
-    createdAt: timestamp('createdAt').notNull().defaultNow(),
-})
+        createdAt: timestamp('createdAt').notNull().defaultNow(),
+    },
+    (table) => ({
+        uniqueVisitor: unique('uniqueVisitor').on(table.deviceId, table.nfcCardId),
+    })
+)
 export const visitorRelations = relations(visitor, ({ one }) => ({
     device: one(device, { fields: [visitor.deviceId], references: [device.id] }),
 }))
