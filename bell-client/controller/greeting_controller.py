@@ -23,7 +23,7 @@ class GreetingController:
         for user in self.visitorData.possibleUsers:
             self.ui.userList.addItem(user.username)
         # Select the first possible user
-        self.ui.userList.selectionModel().setCurrentIndex(0)
+        self.ui.userList.setCurrentRow(0)
 
         self.ui.page_stacked_widget.setCurrentWidget(self.ui.greeting_page)
 
