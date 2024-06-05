@@ -9,7 +9,7 @@ from utils.VisitorData import VisitorData
 
 class HttpClient(object):
     _instance = None
-    url = "http://192.168.22.36:8080/api"
+    url = "https://ring-doorbell-45675126bb6e.herokuapp.com/api"
 
     # For this prototype the secret and identifier are hardcoded here,
     # in reality this probably should read from a file or sos
