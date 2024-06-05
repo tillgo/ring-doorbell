@@ -32,7 +32,7 @@ class GreetingController:
         # ("142b3e7f-1562-4335-9653-d98eac0c6f73")
         #self.call_user_controller.call_user(self.selectedCameraUserId)
         index = self.ui.userList.currentRow()
-        print("Current Index: " + index)
+        print("Current Index: " + str(index))
         user = self.visitorData.possibleUsers[index]
         print("Username: " + user.username)
         print("ID: " + user.id)
