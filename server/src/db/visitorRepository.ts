@@ -1,11 +1,11 @@
 import { db } from '../index'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { visitor } from './schema'
 
-export const getVisitorByNfcCardId = async (nfcCardId: string) => {
+export const getVisitorByNfcCardId = async (nfcCardId: string, deviceId: string) => {
     return await db.query.visitor
         .findFirst({
-            where: eq(visitor.nfcCardId, nfcCardId),
+            where: and(eq(visitor.nfcCardId, nfcCardId), eq(visitor.deviceId, deviceId)),
         })
         .execute()
 }
