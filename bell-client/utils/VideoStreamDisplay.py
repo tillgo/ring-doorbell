@@ -1,17 +1,8 @@
-import sys
-import asyncio
-import numpy as np
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget
-from PyQt6.QtCore import QTimer, Qt
-from PyQt6.QtGui import QPixmap, QImage
-from aiortc import RTCPeerConnection, VideoStreamTrack
-from aiortc.contrib.signaling import BYE
 from aiortc.rtcrtpreceiver import RemoteStreamTrack
-from av import VideoFrame
-import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget
-from PyQt6.QtCore import QTimer, Qt
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap, QImage
+from PyQt6.QtWidgets import QLabel
+from aiortc.rtcrtpreceiver import RemoteStreamTrack
 
 
 class VideoStreamDisplay:

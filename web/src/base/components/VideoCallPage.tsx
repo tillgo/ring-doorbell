@@ -16,7 +16,6 @@ export const VideoCallPage = ({ userId }: { userId: string }) => {
     const connectionRef = useRef<RTCPeerConnection>()
 
     socket?.on('callFailed', (message) => {
-        //ToDo handle failed call
         console.log(message)
     })
 

@@ -51,7 +51,7 @@
      <item>
       <widget class="QStackedWidget" name="page_stacked_widget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="greeting_page">
         <widget class="QLabel" name="uid_label">
@@ -93,7 +93,7 @@
           <string>Call User</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_2">
+        <widget class="QLabel" name="select_user_label">
          <property name="geometry">
           <rect>
            <x>280</x>
@@ -136,30 +136,11 @@
         </widget>
        </widget>
        <widget class="QWidget" name="ring_page">
-        <widget class="QLabel" name="nfc_card_icon">
-         <property name="geometry">
-          <rect>
-           <x>170</x>
-           <y>80</y>
-           <width>121</width>
-           <height>101</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="pixmap">
-          <pixmap resource="../resources.qrc">:/nfc-card/assets/nfc-card.png</pixmap>
-         </property>
-         <property name="scaledContents">
-          <bool>true</bool>
-         </property>
-        </widget>
         <widget class="QLabel" name="nfc_scan_label">
          <property name="geometry">
           <rect>
            <x>180</x>
-           <y>180</y>
+           <y>140</y>
            <width>101</width>
            <height>18</height>
           </rect>

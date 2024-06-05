@@ -54,14 +54,8 @@ class Ui_MainWindow(object):
         self.page_stacked_widget.addWidget(self.call_page)
         self.ring_page = QtWidgets.QWidget()
         self.ring_page.setObjectName("ring_page")
-        self.nfc_card_icon = QtWidgets.QLabel(parent=self.ring_page)
-        self.nfc_card_icon.setGeometry(QtCore.QRect(170, 80, 121, 101))
-        self.nfc_card_icon.setText("")
-        self.nfc_card_icon.setPixmap(QtGui.QPixmap(":/nfc-card/assets/nfc-card.png"))
-        self.nfc_card_icon.setScaledContents(True)
-        self.nfc_card_icon.setObjectName("nfc_card_icon")
         self.nfc_scan_label = QtWidgets.QLabel(parent=self.ring_page)
-        self.nfc_scan_label.setGeometry(QtCore.QRect(180, 180, 101, 18))
+        self.nfc_scan_label.setGeometry(QtCore.QRect(180, 140, 101, 18))
         self.nfc_scan_label.setObjectName("nfc_scan_label")
         self.page_stacked_widget.addWidget(self.ring_page)
         self.after_call_page = QtWidgets.QWidget()
@@ -90,7 +84,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.page_stacked_widget.setCurrentIndex(0)
+        self.page_stacked_widget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
